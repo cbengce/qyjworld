@@ -1,0 +1,35 @@
+0 verbose cli F:\Program Files\nodejs\node.exe F:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.16.0
+2 info using node@v24.18.0
+3 silly config load:file:F:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npmrc
+5 silly config load:file:C:\Users\Admin\.npmrc
+6 silly config load:file:C:\Users\Admin\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec vercel@latest inspect https://qyjworld.com --scope team_TLISNoX6nhSAKepYNmXXT2ai
+8 verbose argv "exec" "--" "vercel@latest" "inspect" "https://qyjworld.com" "--scope" "team_TLISNoX6nhSAKepYNmXXT2ai"
+9 verbose logfile logs-max:10 dir:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-30T17_14_33_574Z-
+10 verbose logfile C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-30T17_14_33_574Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+14 http fetch GET https://registry.npmjs.org/vercel attempt 1 failed with UNABLE_TO_VERIFY_LEAF_SIGNATURE
+15 http fetch GET https://registry.npmjs.org/vercel attempt 2 failed with UNABLE_TO_VERIFY_LEAF_SIGNATURE
+16 http fetch GET https://registry.npmjs.org/vercel attempt 3 failed with UNABLE_TO_VERIFY_LEAF_SIGNATURE
+17 verbose type system
+18 verbose stack FetchError: request to https://registry.npmjs.org/vercel failed, reason: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+18 verbose stack     at ClientRequest.<anonymous> (F:\Program Files\nodejs\node_modules\npm\node_modules\minipass-fetch\lib\index.js:130:14)
+18 verbose stack     at ClientRequest.emit (node:events:509:28)
+18 verbose stack     at emitErrorEvent (node:_http_client:109:11)
+18 verbose stack     at _destroy (node:_http_client:993:9)
+18 verbose stack     at onSocketNT (node:_http_client:1014:5)
+18 verbose stack     at process.processTicksAndRejections (node:internal/process/task_queues:91:21)
+19 error code UNABLE_TO_VERIFY_LEAF_SIGNATURE
+20 error errno UNABLE_TO_VERIFY_LEAF_SIGNATURE
+21 error request to https://registry.npmjs.org/vercel failed, reason: unable to verify the first certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+22 verbose cwd C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english
+23 verbose os Windows_NT 10.0.19045
+24 verbose node v24.18.0
+25 verbose npm  v11.16.0
+26 verbose exit 1
+27 verbose code 1
+28 error A complete log of this run can be found in: C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-30T17_14_33_574Z-debug-0.log

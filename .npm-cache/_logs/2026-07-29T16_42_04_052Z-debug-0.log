@@ -1,0 +1,23 @@
+0 verbose cli F:\Program Files\nodejs\node.exe F:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.16.0
+2 info using node@v24.18.0
+3 silly config load:file:F:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npmrc
+5 silly config load:file:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.supabase-home\.npmrc
+6 silly config load:file:C:\Users\Admin\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec supabase@latest db push
+8 verbose argv "exec" "--yes" "--" "supabase@latest" "db" "push"
+9 verbose logfile logs-max:10 dir:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-29T16_42_04_052Z-
+10 verbose logfile C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-29T16_42_04_052Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+13 http fetch GET 200 https://registry.npmjs.org/supabase 270ms (cache revalidated)
+14 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+15 verbose Could not read global path C:\Users\Admin\AppData\Roaming\npm, ignoring
+16 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+17 verbose cwd C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english
+18 verbose os Windows_NT 10.0.19045
+19 verbose node v24.18.0
+20 verbose npm  v11.16.0
+21 verbose exit 1
+22 verbose code 1

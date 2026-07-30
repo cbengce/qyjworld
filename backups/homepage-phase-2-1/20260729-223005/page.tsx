@@ -1,0 +1,219 @@
+import Image from "next/image";
+import { BRAND, Locale } from "@/lib/constants";
+import { localizedPath } from "@/lib/i18n/routing";
+import { ButtonLink } from "@/components/ui";
+
+const storyCards = [
+  {
+    index: "01",
+    title: "Born in Singapore",
+    text: "A city-born tea ritual: bright, precise, and made for warm afternoons, late conversations, and small daily ascents."
+  },
+  {
+    index: "02",
+    title: "Born to Ascend",
+    text: "The brand language is lift: cleaner finishes, lighter textures, and a calm sense of occasion in every cup."
+  },
+  {
+    index: "03",
+    title: "Sparkling Tea Reimagined",
+    text: "Oriental tea notes meet fine bubbles and fruit clarity, creating a finish that feels refined rather than sweet."
+  }
+];
+
+const signatureDrinks = [
+  {
+    name: "Luna Tide",
+    note: "Jasmine green tea, moonlit citrus, white grape sparkle.",
+    image: "/assets/menu/01-luna-tide.PNG"
+  },
+  {
+    name: "Night Nectar",
+    note: "Dark oolong, plum nectar, long sparkling finish.",
+    image: "/assets/menu/02-night-nectar.PNG"
+  },
+  {
+    name: "Evenfall",
+    note: "Roasted tea, pear, and a soft amber fizz.",
+    image: "/assets/menu/03-evenfall.PNG"
+  }
+];
+
+const benefits = ["Daily Member Drink (24–30% OFF)", "Points", "Referral Rewards"];
+
+export default function HomePage({ params }: { params: { locale: Locale } }) {
+  return (
+    <main className="bg-[#f8f5ed]">
+      <section className="relative -mt-[76px] min-h-screen overflow-hidden bg-[#061713] text-white">
+        <Image
+          src="/assets/hero-home-final-v1-final.png"
+          alt="Luna Tide sparkling tea on a wooden terrace overlooking the mountains"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(102deg,rgba(5,18,15,0.97),rgba(15,47,38,0.84)_46%,rgba(15,47,38,0.20)_78%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_44%,rgba(200,148,66,0.13),transparent_34%),linear-gradient(180deg,rgba(5,18,15,0.08),rgba(5,18,15,0.32))]" />
+        <div className="qyj-grain absolute inset-0 opacity-[0.13]" />
+
+        <div className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-14 px-5 pb-20 pt-36 md:grid-cols-[1.05fr_0.95fr] md:px-8 md:pb-28 md:pt-32">
+          <div className="max-w-3xl">
+            <p className="qyj-reveal text-xs font-bold uppercase tracking-[0.34em] text-gold">Qing Yun Jian</p>
+            <h1 className="qyj-reveal mt-7 max-w-4xl font-serif text-[4.75rem] font-semibold leading-[0.86] text-white sm:text-[6.5rem] md:text-[8.5rem]">
+              Born to Ascend
+            </h1>
+            <p className="qyj-reveal mt-8 text-2xl font-semibold leading-tight text-white/90 md:text-4xl">Sparkling Tea Reimagined</p>
+            <p className="qyj-reveal mt-6 max-w-lg text-lg leading-8 text-white/70 md:text-xl md:leading-9">
+              Modern Oriental Sparkling Tea crafted in Singapore.
+            </p>
+            <div className="qyj-reveal mt-10 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink
+                className="rounded-full bg-gold px-8 text-ink shadow-[0_22px_55px_rgba(200,148,66,0.28)] hover:-translate-y-0.5 hover:bg-[#d6a85f] hover:shadow-[0_26px_65px_rgba(200,148,66,0.36)]"
+                href={localizedPath(params.locale, "/register")}
+              >
+                Become a Member
+              </ButtonLink>
+              <ButtonLink
+                className="rounded-full border border-white/30 bg-white/[0.08] px-8 text-white backdrop-blur hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/[0.16]"
+                href={localizedPath(params.locale, "/menu")}
+              >
+                Explore Menu
+              </ButtonLink>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="story" className="px-5 py-24 md:px-8 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Brand Story</p>
+              <h2 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
+                A lighter kind of luxury.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-forest/60 md:justify-self-end">
+              Designed for a more composed tea moment, Qing Yun Jian brings Oriental tea into a polished sparkling format.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-px bg-forest/10 md:grid-cols-3">
+            {storyCards.map((card) => (
+              <article key={card.title} className="min-h-[19rem] bg-[#fbfaf6] p-7 md:p-9">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{card.index}</p>
+                <p className="mt-12 font-serif text-4xl font-semibold leading-tight text-forest">{card.title}</p>
+                <p className="mt-6 text-base leading-7 text-forest/60">{card.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#e9f0ec] px-5 py-24 md:px-8 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Signature Collection</p>
+              <h2 className="mt-5 max-w-4xl font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
+                Three Expressions. One Journey.
+              </h2>
+            </div>
+            <ButtonLink
+              className="w-fit rounded-full border border-forest/20 bg-white px-7 text-forest shadow-[0_18px_45px_rgba(10,24,20,0.07)] hover:-translate-y-0.5"
+              href={localizedPath(params.locale, "/menu")}
+            >
+              Explore Menu
+            </ButtonLink>
+          </div>
+
+          <div className="mt-14 grid gap-5 md:grid-cols-3">
+            {signatureDrinks.map((drink) => (
+              <article key={drink.name} className="group bg-white shadow-[0_28px_75px_rgba(10,24,20,0.08)] transition duration-300 hover:-translate-y-1">
+                <div className="h-64 bg-cover bg-center" style={{ backgroundImage: `url("${drink.image}")` }}>
+                  <div className="flex h-full items-end p-6">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/70">Signature</p>
+                  </div>
+                </div>
+                <div className="p-7 md:p-8">
+                  <h3 className="font-serif text-4xl font-semibold text-forest md:text-5xl">{drink.name}</h3>
+                  <p className="mt-5 leading-7 text-forest/60">{drink.note}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-24 md:px-8 md:py-32">
+        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Membership</p>
+            <h2 className="mt-5 max-w-2xl font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
+              Membership That Rewards Every Visit.
+            </h2>
+            <p className="mt-7 max-w-lg text-lg leading-8 text-forest/60">
+              Join Qing Yun Jian for daily member drink privileges, points, and referral rewards across the soft launch period.
+            </p>
+          </div>
+
+          <div className="bg-forest p-6 text-white shadow-[0_35px_110px_rgba(18,60,47,0.22)] md:p-10">
+            <div className="grid gap-px bg-white/12 md:grid-cols-[1.25fr_0.75fr]">
+              <div className="bg-forest p-6 md:p-8 md:pr-10">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Membership</p>
+                <p className="mt-5 whitespace-nowrap font-serif text-6xl font-semibold md:text-[4.3rem]">S$39.90</p>
+              </div>
+              <div className="bg-forest p-6 md:p-8 md:justify-self-end md:pl-10">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Validity</p>
+                <p className="mt-5 font-serif text-6xl font-semibold md:text-7xl">60</p>
+                <p className="mt-2 text-lg font-semibold text-white/70">Days</p>
+              </div>
+            </div>
+
+            <div className="mt-7 grid gap-1">
+              {benefits.map((benefit) => (
+                <div key={benefit} className="flex items-center justify-between gap-5 border-b border-white/12 py-4 text-base font-semibold md:text-lg">
+                  <span>{benefit}</span>
+                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-gold">Included</span>
+                </div>
+              ))}
+            </div>
+
+            <ButtonLink className="mt-9 w-full rounded-full bg-gold text-ink hover:-translate-y-0.5 hover:bg-[#d4a559]" href={localizedPath(params.locale, "/register")}>
+              Join Now
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-24 md:px-8 md:py-32">
+        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr] md:items-stretch">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">VISIT US</p>
+            <h2 className="mt-5 font-serif text-[2.4rem] font-semibold leading-[0.98] text-forest md:text-[3.6rem]">
+              Visit Qing Yun Jian
+              <br />
+              at MacPherson Mall
+            </h2>
+          </div>
+
+          <div className="grid content-between gap-12 bg-[#f8f5ed] p-7 md:p-12">
+            <p className="font-serif text-4xl font-semibold leading-[1.22] text-forest md:whitespace-nowrap md:text-[2.5rem]">
+              <span>401 MacPherson Road, #01-23</span>
+              <br />
+              <span className="md:text-[2.125rem]">MacPherson Mall</span>
+              <br />
+              <span className="md:text-[2.125rem]">Singapore 368125</span>
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <ButtonLink className="rounded-full bg-forest px-8 text-white hover:-translate-y-0.5 hover:bg-ink" href={localizedPath(params.locale, "/contact")}>
+                Plan Your Visit
+              </ButtonLink>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}

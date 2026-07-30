@@ -1,0 +1,24 @@
+0 verbose cli F:\Program Files\nodejs\node.exe F:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.16.0
+2 info using node@v24.18.0
+3 silly config load:file:F:\Program Files\nodejs\node_modules\npm\npmrc
+4 silly config load:file:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npmrc
+5 silly config load:file:C:\Users\Admin\.npmrc
+6 silly config load:file:C:\Users\Admin\AppData\Roaming\npm\etc\npmrc
+7 verbose title npm exec vercel@latest inspect qing-yun-jian-kf04g8l4x-cbengce-9443s-projects.vercel.app --scope team_TLISNoX6nhSAKepYNmXXT2ai
+8 verbose argv "exec" "--" "vercel@latest" "inspect" "qing-yun-jian-kf04g8l4x-cbengce-9443s-projects.vercel.app" "--scope" "team_TLISNoX6nhSAKepYNmXXT2ai"
+9 verbose logfile logs-max:10 dir:C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-30T17_18_43_978Z-
+10 verbose logfile C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english\.npm-cache\_logs\2026-07-30T17_18_43_978Z-debug-0.log
+11 silly logfile start cleaning logs, removing 1 files
+12 silly logfile done cleaning log files
+13 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+14 http fetch GET 200 https://registry.npmjs.org/vercel 260ms (cache revalidated)
+15 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+16 verbose Could not read global path C:\Users\Admin\AppData\Roaming\npm, ignoring
+17 silly packumentCache heap:4496293888 maxSize:1124073472 maxEntrySize:562036736
+18 verbose cwd C:\Users\Admin\Documents\Codex\2026-05-21\change-to-english
+19 verbose os Windows_NT 10.0.19045
+20 verbose node v24.18.0
+21 verbose npm  v11.16.0
+22 verbose exit 1
+23 verbose code 1

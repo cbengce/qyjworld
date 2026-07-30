@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #f8f5ed;
+  color: #10201b;
+}
+
+::selection {
+  background: rgba(200, 148, 66, 0.24);
+  color: #10201b;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-paper;
+}
+
+.qyj-grain {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: linear-gradient(to bottom, transparent, black 14%, black 74%, transparent);
+}
+
+.qyj-float {
+  animation: qyj-float 7s ease-in-out infinite;
+}
+
+.qyj-reveal {
+  animation: qyj-reveal 720ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.qyj-fade-up {
+  animation: qyj-fade-up 640ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.qyj-hero-parallax {
+  transform: scale(1.015);
+  transform-origin: center;
+}
+
+.qyj-reveal:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.qyj-reveal:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.qyj-reveal:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+.qyj-reveal:nth-child(5) {
+  animation-delay: 320ms;
+}
+
+@keyframes qyj-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes qyj-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes qyj-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .qyj-hero-parallax {
+    animation: qyj-hero-parallax linear both;
+    animation-range: 0 72vh;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes qyj-hero-parallax {
+  from {
+    transform: scale(1.015) translateY(0);
+  }
+
+  to {
+    transform: scale(1.015) translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .qyj-float,
+  .qyj-fade-up,
+  .qyj-hero-parallax,
+  .qyj-reveal {
+    animation: none;
+  }
+
+  .qyj-hero-parallax {
+    transform: none;
+  }
+}
