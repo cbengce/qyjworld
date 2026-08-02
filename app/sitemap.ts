@@ -60,6 +60,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7
     }));
 
+  const bookPages: MetadataRoute.Sitemap = [
+    {
+      url: `${BRAND.domain}/en/book`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75
+    },
+    {
+      url: `${BRAND.domain}/en/book/origins/why-qing-yun-jian-exists`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7
+    },
+    {
+      url: `${BRAND.domain}/en/book/origins/the-mountain-we-wanted-to-climb`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7
+    }
+  ];
+
   return [
     {
       url: BRAND.domain,
@@ -71,6 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...promotionPages,
     ...growthIndexPages,
     ...editorialPages,
-    ...categoryPages
+    ...categoryPages,
+    ...bookPages
   ];
 }
