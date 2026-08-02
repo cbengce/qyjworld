@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { BRAND, locales } from "@/lib/constants";
 import { getPublicPromotions } from "@/lib/promotions";
+import { allContent, categories } from "@/lib/content/catalog";
 
 const publicPaths = [
   "",
@@ -14,6 +15,8 @@ const publicPaths = [
   "/privacy",
   "/terms"
 ] as const;
+
+const growthPaths = ["/blog", "/guides", "/categories", "/search"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -36,6 +39,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
+  const growthIndexPages: MetadataRoute.Sitemap = growthPaths.map((path) => ({
+    url: `${BRAND.domain}/en${path}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: path === "/blog" || path === "/guides" ? 0.9 : 0.7
+  }));
+
+  const editorialPages: MetadataRoute.Sitemap = allContent.map((entry) => ({
+      url: `${BRAND.domain}/en/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`,
+      lastModified: new Date(entry.updatedAt),
+      changeFrequency: "monthly",
+      priority: entry.kind === "guide" ? 0.85 : 0.75
+    }));
+
+  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
+      url: `${BRAND.domain}/en/categories/${category.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7
+    }));
+
   return [
     {
       url: BRAND.domain,
@@ -44,6 +68,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1
     },
     ...localizedPages,
-    ...promotionPages
+    ...promotionPages,
+    ...growthIndexPages,
+    ...editorialPages,
+    ...categoryPages
   ];
 }

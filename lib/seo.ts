@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 
-export const SEO_IMAGE = {
+export type PageSeoImage = {
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+};
+
+export const SEO_IMAGE: PageSeoImage = {
   url: "/assets/hero-home-final-v1-final.png",
   width: 1672,
   height: 941,
@@ -14,7 +21,8 @@ type PageMetadataInput = {
   title: string;
   description: string;
   keywords?: string[];
-  image?: typeof SEO_IMAGE;
+  image?: PageSeoImage;
+  includeLanguageAlternates?: boolean;
 };
 
 export function localizedUrl(locale: Locale, path = "") {
@@ -28,7 +36,8 @@ export function createPageMetadata({
   title,
   description,
   keywords,
-  image = SEO_IMAGE
+  image = SEO_IMAGE,
+  includeLanguageAlternates = true
 }: PageMetadataInput): Metadata {
   const canonical = localizedUrl(locale, path);
   const alternateLocale: Locale = locale === "en" ? "zh" : "en";
@@ -39,11 +48,13 @@ export function createPageMetadata({
     keywords,
     alternates: {
       canonical,
-      languages: {
-        "en-SG": localizedUrl("en", path),
-        "zh-SG": localizedUrl("zh", path),
-        "x-default": localizedUrl("en", path)
-      }
+      ...(includeLanguageAlternates ? {
+        languages: {
+          "en-SG": localizedUrl("en", path),
+          "zh-SG": localizedUrl("zh", path),
+          "x-default": localizedUrl("en", path)
+        }
+      } : {})
     },
     openGraph: {
       title,

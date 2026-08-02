@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     languages: {
       en: "/en",
       zh: "/zh"
+    },
+    types: {
+      "application/rss+xml": `${BRAND.domain}/rss.xml`
     }
   },
   keywords: [
