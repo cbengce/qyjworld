@@ -6,7 +6,7 @@ import { Logo } from "@/components/logo";
 const footerLinks = [
   { label: "Instagram", href: "https://www.instagram.com/qyjworld" },
   { label: "TikTok", href: "https://www.tiktok.com/@qyjworld" },
-  { label: "Xiaohongshu", href: "https://www.xiaohongshu.com/search_result?keyword=Qing%20Yun%20Jian" },
+  { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
   { label: "WhatsApp", href: "https://wa.me/?text=Hello%20Qing%20Yun%20Jian%2C%20I%20would%20like%20to%20ask%20about%20your%20tea%20and%20membership." },
   { label: "Email", href: "mailto:hello@qyjworld.com" },
   {
