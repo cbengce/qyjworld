@@ -1,9 +1,24 @@
+import type { Metadata } from "next";
 import { BRAND } from "@/lib/constants";
+import type { Locale } from "@/lib/constants";
 import { Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
 
-export default function TermsPage() {
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/terms",
+    title: "Membership Terms | Qing Yun Jian",
+    description: "Review Qing Yun Jian membership fees, validity, activation, points and referral terms.",
+    keywords: ["Qing Yun Jian membership terms", "tea membership conditions", "membership points terms"]
+  });
+}
+
+export default function TermsPage({ params }: { params: { locale: Locale } }) {
   return (
     <main>
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Membership Terms", path: "/terms" }])} />
       <Section>
         <div className="mx-auto max-w-4xl">
           <p className="text-sm font-bold text-gold">For legal review</p>

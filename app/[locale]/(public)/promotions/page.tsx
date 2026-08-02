@@ -1,9 +1,22 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { formatPromotionDateRange, getPublicPromotions, Promotion, promotionStatusLabel } from "@/lib/promotions";
 import { PromotionCardImage } from "@/components/promotions/promotion-card-image";
 import { Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/promotions",
+    title: "Tea Promotions Singapore | Qing Yun Jian",
+    description: "Explore current Qing Yun Jian seasonal promotions, member privileges and community campaigns in Singapore.",
+    keywords: ["tea promotions Singapore", "Qing Yun Jian promotions", "member tea offers", "MacPherson Mall promotions"]
+  });
+}
 
 function PromotionCard({ locale, promotion }: { locale: Locale; promotion: Promotion }) {
   const href = localizedPath(locale, `/promotions/${promotion.slug}`);
@@ -60,6 +73,7 @@ export default async function PromotionsPage({ params }: { params: { locale: Loc
 
   return (
     <main className="bg-[#f8f5ed]">
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Promotions", path: "/promotions" }])} />
       <Section className="pt-28">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Promotions</p>

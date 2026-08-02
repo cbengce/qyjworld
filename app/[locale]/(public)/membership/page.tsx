@@ -1,13 +1,27 @@
+import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { localizedPath } from "@/lib/i18n/routing";
 import { AscendCommunityCard } from "@/components/community/ascend-community-card";
 import { ButtonLink, Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/membership",
+    title: "Tea Membership Singapore | Qing Yun Jian",
+    description: "Join Qing Yun Jian Membership for exclusive member pricing and rewards.",
+    keywords: ["tea membership Singapore", "Qing Yun Jian membership", "tea rewards", "member drink pricing"]
+  });
+}
 
 export default function MembershipPage({ params }: { params: { locale: Locale } }) {
   const t = getDictionary(params.locale);
   return (
     <main className="overflow-hidden">
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Membership", path: "/membership" }])} />
       <Section>
         <div className="mx-auto grid min-w-0 max-w-7xl gap-10 md:grid-cols-[1fr_0.8fr]">
           <div className="min-w-0">

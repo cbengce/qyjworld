@@ -1,10 +1,24 @@
+import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/about",
+    title: "About Qing Yun Jian | Born to Ascend",
+    description: "Learn the story behind Qing Yun Jian, a Singapore premium sparkling tea brand inspired by Oriental tea culture.",
+    keywords: ["about Qing Yun Jian", "Singapore tea brand", "Oriental tea culture", "Born to Ascend"]
+  });
+}
 
 export default function AboutPage({ params }: { params: { locale: Locale } }) {
   const zh = params.locale === "zh";
   return (
     <main>
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "About", path: "/about" }])} />
       <Section>
         <div className="mx-auto max-w-4xl">
           <p className="text-sm font-bold text-gold">{BRAND.company}</p>

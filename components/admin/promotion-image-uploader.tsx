@@ -114,7 +114,7 @@ export function PromotionImageUploader({
       <input ref={inputRef} accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" className="hidden" onChange={handleFileChange} type="file" />
       <div className="overflow-hidden border border-forest/10 bg-mist">
         {previewUrl ? (
-          <Image alt="Promotion campaign preview" className="h-56 w-full object-cover" height={360} src={previewUrl} unoptimized width={720} />
+          <Image alt="Promotion campaign preview in the content manager" className="h-56 w-full object-cover" height={360} sizes="(min-width: 768px) 720px, 100vw" src={previewUrl} title="Promotion campaign image preview" unoptimized width={720} />
         ) : (
           <div className="flex h-56 items-center justify-center px-6 text-center text-sm font-semibold text-forest/50">
             {emptyMessage}

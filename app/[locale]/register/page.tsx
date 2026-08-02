@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Section } from "@/components/ui";
 import { RegisterForm } from "@/components/auth/register-form";
+
+export const metadata: Metadata = {
+  title: { absolute: "Membership Registration | Qing Yun Jian" },
+  robots: { index: false, follow: false, nocache: true }
+};
 
 export default function RegisterPage({ params }: { params: { locale: Locale } }) {
   const t = getDictionary(params.locale);

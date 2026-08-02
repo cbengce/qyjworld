@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { getMemberDashboard, requireUser } from "@/lib/data";
 import { getDictionary } from "@/lib/i18n/dictionaries";
@@ -5,6 +6,11 @@ import { createReferralLink, formatStatus } from "@/lib/membership";
 import { logoutMember } from "@/app/actions";
 import { QrCode } from "@/components/member/qr-code";
 import { Section } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: { absolute: "Member Dashboard | Qing Yun Jian" },
+  robots: { index: false, follow: false, nocache: true }
+};
 
 export default async function MemberPage({ params }: { params: { locale: Locale } }) {
   const t = getDictionary(params.locale);

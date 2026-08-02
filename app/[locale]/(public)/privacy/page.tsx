@@ -1,9 +1,24 @@
+import type { Metadata } from "next";
 import { BRAND } from "@/lib/constants";
+import type { Locale } from "@/lib/constants";
 import { Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
 
-export default function PrivacyPage() {
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/privacy",
+    title: "Privacy Policy | Qing Yun Jian",
+    description: "Read how Qing Yun Jian handles membership information, service communications and personal data in Singapore.",
+    keywords: ["Qing Yun Jian privacy policy", "membership data privacy Singapore"]
+  });
+}
+
+export default function PrivacyPage({ params }: { params: { locale: Locale } }) {
   return (
     <main>
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Privacy Policy", path: "/privacy" }])} />
       <Section>
         <div className="mx-auto max-w-4xl">
           <p className="text-sm font-bold text-gold">For legal review</p>

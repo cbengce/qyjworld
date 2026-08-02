@@ -1,10 +1,22 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 import { formatPromotionDateRange, getHomepagePromotions, promotionStatusLabel } from "@/lib/promotions";
 import { AscendCommunityCard } from "@/components/community/ascend-community-card";
 import { PromotionCardImage } from "@/components/promotions/promotion-card-image";
 import { ButtonLink } from "@/components/ui";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    title: "Premium Sparkling Tea Singapore | Qing Yun Jian",
+    description: "Discover Singapore's modern Oriental sparkling tea experience. Premium tea crafted with real tea leaves, fruits and botanicals.",
+    keywords: ["premium sparkling tea Singapore", "Oriental tea Singapore", "Qing Yun Jian", "MacPherson Mall tea"]
+  });
+}
 
 const storyCards = [
   {
@@ -69,10 +81,12 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
 
   return (
     <main className="bg-[#f8f5ed]">
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }])} />
       <section className="relative -mt-[76px] min-h-screen overflow-hidden bg-[#061713] text-white">
         <Image
           src="/assets/hero-home-final-v1-final.png"
           alt="Luna Tide sparkling tea on a wooden terrace overlooking the mountains"
+          title="Qing Yun Jian Luna Tide sparkling tea"
           fill
           priority
           sizes="100vw"
@@ -187,6 +201,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   <Image
                     src={drink.image}
                     alt={`${drink.nameEn} Qing Yun Jian product artwork`}
+                    title={`${drink.nameEn} sparkling tea by Qing Yun Jian`}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="p-3 object-contain transition duration-500 group-hover:scale-[1.015]"

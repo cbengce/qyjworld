@@ -50,6 +50,8 @@ export function PromotionCardImage({
           if (image.naturalWidth && image.naturalHeight) setRatio(image.naturalWidth / image.naturalHeight);
         }}
         src={src}
+        sizes={isHomepage ? "(min-width: 1024px) 42vw, 90vw" : "(min-width: 1024px) 33vw, 100vw"}
+        title={alt}
       />
     </div>
   );
@@ -58,7 +60,7 @@ export function PromotionCardImage({
 export function PromotionDetailImage({ alt, src }: { alt: string; src: string }) {
   return (
     <div className="bg-[#e8eee8] p-4 md:p-6">
-      <img alt={alt} className="mx-auto h-auto max-h-[80vh] w-auto max-w-full object-contain" loading="eager" src={src} />
+      <img alt={alt} className="mx-auto h-auto max-h-[80vh] w-auto max-w-full object-contain" loading="eager" sizes="(min-width: 1024px) 960px, 100vw" src={src} title={alt} />
     </div>
   );
 }

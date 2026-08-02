@@ -1,12 +1,26 @@
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { getPublicLeaderboardEntries } from "@/lib/promotions";
 import { Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/leaderboard",
+    title: "Community Leaderboard | Qing Yun Jian Singapore",
+    description: "Discover Qing Yun Jian community participation highlights and current campaign rankings.",
+    keywords: ["Qing Yun Jian community", "community leaderboard Singapore", "tea campaign"]
+  });
+}
 
 export default async function LeaderboardPage({ params }: { params: { locale: Locale } }) {
   const entries = await getPublicLeaderboardEntries();
 
   return (
     <main className="overflow-hidden bg-[#f8f5ed]">
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Community Leaderboard", path: "/leaderboard" }])} />
       <Section className="pt-28">
         <div className="mx-auto max-w-5xl">
           <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">QING YUN JIAN</p>

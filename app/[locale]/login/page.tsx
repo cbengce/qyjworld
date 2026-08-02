@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { getDictionary } from "@/lib/i18n/dictionaries";
 import { Section } from "@/components/ui";
 import { LoginForm } from "@/components/auth/login-form";
+
+export const metadata: Metadata = {
+  title: { absolute: "Member Login | Qing Yun Jian" },
+  robots: { index: false, follow: false, nocache: true }
+};
 
 export default function LoginPage({
   params,

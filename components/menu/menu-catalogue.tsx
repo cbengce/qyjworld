@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Locale } from "@/lib/constants";
 import { finalMenuItems } from "@/lib/final-menu-items";
@@ -46,20 +47,20 @@ function isSignature(name: string) {
   return signatureNames.some((signature) => name.toLowerCase().includes(signature.toLowerCase()));
 }
 
-function ProductArtwork({ item }: { item: MenuItem }) {
+function ProductArtwork({ context = "catalogue", item }: { context?: "catalogue" | "featured"; item: MenuItem }) {
   if (item.image_url) {
     return (
-      <div
-        aria-label={`${item.name_en} product image`}
-        className="h-full min-h-[15rem] w-full bg-[#f8f5ed]"
-        role="img"
-        style={{
-          backgroundImage: `url("${item.image_url}")`,
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "contain"
-        }}
-      />
+      <div className="relative h-full min-h-[15rem] w-full bg-[#f8f5ed]">
+        <Image
+          alt={`${item.name_en} (${item.name_zh}) ${context === "featured" ? "featured" : "catalogue"} tea product artwork`}
+          className="object-contain"
+          fill
+          sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+          src={item.image_url}
+          title={`${item.name_en} by Qing Yun Jian`}
+          unoptimized={item.image_url.startsWith("http")}
+        />
+      </div>
     );
   }
 
@@ -82,7 +83,7 @@ function SignatureSpotlight({ locale }: { locale: Locale }) {
       {signatureItems.map((item) => (
         <article key={item.id} className="group overflow-hidden bg-white shadow-[0_30px_80px_rgba(10,24,20,0.12)] transition duration-500 hover:-translate-y-1">
           <div className="aspect-[3/2] overflow-hidden bg-[#f8f5ed]">
-            <ProductArtwork item={item} />
+            <ProductArtwork context="featured" item={item} />
           </div>
           <div className="p-6">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{zh ? "招牌" : "Signature"}</p>

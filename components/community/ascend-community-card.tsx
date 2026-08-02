@@ -60,7 +60,9 @@ export function AscendCommunityCard({ compact = false }: { compact?: boolean }) 
               alt={ASCEND_COMMUNITY.qrAlt}
               className="h-auto w-[min(78vw,20rem)] object-contain md:w-[min(32vw,26rem)]"
               height={526}
+              sizes="(min-width: 768px) min(32vw, 416px), min(78vw, 320px)"
               src={ASCEND_COMMUNITY.qrImagePath}
+              title="Scan to join the QING YUN JIAN Ascend Community on WhatsApp"
               unoptimized
               width={526}
             />

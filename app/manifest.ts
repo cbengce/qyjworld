@@ -5,7 +5,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: `${BRAND.nameEn} | ${BRAND.line}`,
     short_name: BRAND.nameEn,
-    description: `${BRAND.nameEn} is a Singapore-based modern Oriental tea brand.`,
+    description:
+      "Modern Oriental Sparkling Tea crafted in Singapore. Experience premium tea, fresh ingredients and exclusive member privileges.",
     start_url: "/en",
     display: "standalone",
     background_color: "#f8f5ed",

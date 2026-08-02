@@ -1,5 +1,18 @@
+import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
 import { ButtonLink, Section } from "@/components/ui";
+import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import { StructuredData } from "@/components/structured-data";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return createPageMetadata({
+    locale: params.locale,
+    path: "/contact",
+    title: "Contact Qing Yun Jian Singapore",
+    description: "Visit Qing Yun Jian at MacPherson Mall Singapore.",
+    keywords: ["Qing Yun Jian contact", "MacPherson Mall tea", "tea shop MacPherson Road", "Qing Yun Jian opening hours"]
+  });
+}
 
 export default function ContactPage({ params }: { params: { locale: Locale } }) {
   const zh = params.locale === "zh";
@@ -10,6 +23,7 @@ export default function ContactPage({ params }: { params: { locale: Locale } }) 
 
   return (
     <main>
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Contact", path: "/contact" }])} />
       <Section>
         <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2">
           <div>

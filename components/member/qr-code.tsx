@@ -11,5 +11,5 @@ export function QrCode({ value }: { value: string }) {
   }, [value]);
 
   if (!src) return <div className="h-[180px] w-[180px] bg-mist" aria-label="QR code loading" />;
-  return <img alt="Personal member QR code" className="h-[180px] w-[180px]" src={src} />;
+  return <img alt="Personal Qing Yun Jian membership QR code" className="h-[180px] w-[180px]" height="180" src={src} title="Personal Qing Yun Jian membership QR code" width="180" />;
 }
