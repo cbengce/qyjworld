@@ -9,17 +9,11 @@ import { ascendCardVisuals } from "@/lib/ascend/card-visuals";
 import { ascendProfiles, isAscendProfileSlug } from "@/lib/ascend/profiles";
 import { trackAscendEvent } from "@/lib/ascend/analytics";
 import { createAscendReferral, recordAscendReferral, REFERRAL_CODE_PATTERN } from "@/lib/ascend/referrals";
+import { buildShareCaption } from "@/lib/ascend/share";
 
 function shareUrlFor(locale: string, referralCode: string | null) {
   const safeLocale = locale === "zh" ? "zh" : "en";
   return referralCode ? `https://qyjworld.com/${safeLocale}/ascend?ref=${referralCode}` : `https://qyjworld.com/${safeLocale}/ascend`;
-}
-
-function captionFor(locale: string, discoveryUrl: string) {
-  const message = locale === "zh"
-    ? "我在青云间找到了属于自己的 ASCEND 收藏卡。\nBorn to Ascend."
-    : "I discovered my place in The ASCEND Collection by Qing Yun Jian.\nBorn to Ascend.";
-  return `${message}\n\n${discoveryUrl}\n\n#QingYunJian\n#BornToAscend\n#AscendTeaProfile`;
 }
 
 function isAppleMobileBrowser() {
@@ -64,7 +58,7 @@ export function AscendResult({ locale }: { locale: string }) {
       .catch(() => setStatus("Referral features are temporarily unavailable. You can still create your card."));
   }, [profile, referralCode]);
   const shareUrl = useMemo(() => shareUrlFor(locale, referralCode), [locale, referralCode]);
-  const caption = useMemo(() => captionFor(locale, shareUrl), [locale, shareUrl]);
+  const caption = useMemo(() => buildShareCaption(shareUrl), [shareUrl]);
 
   if (!profile) return <main className="grid min-h-[70svh] place-items-center bg-paper px-5 text-center"><div><h1 className="font-serif text-5xl font-semibold text-forest">Your profile is waiting.</h1><p className="mt-5 text-forest/60">Complete the five questions to discover today&apos;s tea.</p><Link className="focus-ring mt-8 inline-flex min-h-12 items-center rounded-full bg-forest px-7 font-bold text-white" href={`/${locale}/ascend`}>Begin the profile</Link></div></main>;
   const activeProfile = profile;
@@ -158,9 +152,17 @@ export function AscendResult({ locale }: { locale: string }) {
   async function copyLink() {
     try {
       await copyText(shareUrl);
-      setStatus("Link copied.");
+      setStatus("Referral link copied.");
       trackAscendEvent("ascend_link_copied", { locale, profile: activeProfile.slug, referral_code: referralCode ?? undefined });
     } catch { setStatus("The link could not be copied. Please copy it from your browser address bar."); }
+  }
+
+  async function copyCaption() {
+    try {
+      await copyText(caption);
+      setStatus("Caption copied. Ready to paste into Instagram, TikTok or Xiaohongshu.");
+      trackAscendEvent("ascend_caption_copied", { locale, profile: activeProfile.slug, referral_code: referralCode ?? undefined });
+    } catch { setStatus("The caption could not be copied. Please try again."); }
   }
 
   return <main className="overflow-hidden bg-paper text-forest">
@@ -169,6 +171,6 @@ export function AscendResult({ locale }: { locale: string }) {
       <div><p className="text-xs font-bold uppercase tracking-[0.22em] text-gold">Your Ascend Profile</p><p className="mt-5 text-sm font-semibold text-forest/55">Today, you are:</p><h1 className="mt-4 font-serif text-7xl font-semibold leading-none sm:text-8xl">{profile.nameZh}</h1><p className="mt-4 text-2xl font-bold tracking-[0.12em]">{profile.nameEn}</p><h2 className="mt-8 text-sm font-bold tracking-[0.2em] text-gold">{profile.title}</h2><ul className="mt-5 flex flex-wrap gap-2">{profile.keywords.map((keyword) => <li className="border border-forest/15 bg-white px-4 py-2 text-sm font-semibold" key={keyword}>{keyword}</li>)}</ul><div className="mt-8 max-w-xl space-y-4 text-lg leading-8 text-forest/70">{profile.message.map((line) => <p key={line}>{line}</p>)}</div><p className="mt-9 text-sm font-bold uppercase tracking-[0.16em] text-gold">Recommended tea · {profile.nameEn}</p><p className="mt-2 font-serif text-2xl font-semibold">Born to Ascend</p>
       <div className="mt-9 flex flex-wrap gap-3"><button className="focus-ring min-h-12 rounded-full bg-forest px-7 font-bold text-white disabled:opacity-50" disabled={generating} onClick={generate} type="button">{generating ? "Creating My Card…" : "Create My Card"}</button><Link className="focus-ring inline-flex min-h-12 items-center rounded-full border border-forest/20 px-7 font-bold" href={`/${locale}/ascend`} onClick={() => trackAscendEvent("ascend_try_again", { locale, profile: profile.slug })}>Try Again</Link><Link className="focus-ring inline-flex min-h-12 items-center rounded-full border border-forest/20 px-7 font-bold" href={`/${locale}/menu`} onClick={() => trackAscendEvent("ascend_menu_clicked", { locale, profile: profile.slug })}>Explore the Menu</Link></div></div>
     </div></section>
-    {cardBlob && previewUrl ? <section className="bg-[#071d18] px-5 py-16 text-white md:px-8"><div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[0.75fr_1fr]"><div className="mx-auto w-full max-w-[340px]"><Image alt={`Generated ${profile.nameEn} Ascend Profile social card preview`} className="h-auto w-full" height={1920} src={previewUrl} unoptimized width={1080} /></div><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Ready to share</p><h2 className="mt-4 font-serif text-5xl font-semibold">Your profile, made visible.</h2><div aria-live="polite" className="mt-5 min-h-6 text-sm text-white/65">{status}</div><div className="mt-7 flex flex-wrap gap-3"><button className="focus-ring min-h-12 rounded-full bg-gold px-6 font-bold text-[#071d18]" onClick={() => void download()} type="button">Download Card</button><button className="focus-ring min-h-12 rounded-full border border-white/30 px-6 font-bold" onClick={() => void share()} type="button">Share My ASCEND Card</button><button className="focus-ring min-h-12 rounded-full border border-white/30 px-6 font-bold" onClick={() => void copyLink()} type="button">Copy Link</button></div><p className="mt-7 max-w-lg text-sm leading-7 text-white/55">Use your device&apos;s share sheet for WhatsApp or Facebook. For Instagram, TikTok and Xiaohongshu, save the image, copy the caption and post it from the app.</p></div></div></section> : <p aria-live="polite" className="sr-only">{status}</p>}
+    {cardBlob && previewUrl ? <section className="bg-[#071d18] px-5 py-16 text-white md:px-8"><div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[0.75fr_1fr]"><div className="mx-auto w-full max-w-[340px]"><Image alt={`Generated ${profile.nameEn} Ascend Profile social card preview`} className="h-auto w-full" height={1920} src={previewUrl} unoptimized width={1080} /></div><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Ready to share</p><h2 className="mt-4 font-serif text-5xl font-semibold">Your profile, made visible.</h2><div aria-live="polite" className="mt-5 min-h-6 text-sm text-white/65">{status}</div><div className="mt-7 flex flex-wrap gap-3"><button className="focus-ring min-h-12 rounded-full bg-gold px-6 font-bold text-[#071d18]" onClick={() => void download()} type="button">Download Card</button><button className="focus-ring min-h-12 rounded-full border border-white/30 px-6 font-bold" onClick={() => void copyCaption()} type="button">Copy Caption</button><button className="focus-ring min-h-12 rounded-full border border-white/30 px-6 font-bold" onClick={() => void copyLink()} type="button">Copy Link</button><button className="focus-ring min-h-12 rounded-full border border-white/30 px-6 font-bold" onClick={() => void share()} type="button">Share My ASCEND Card</button></div><div className="mt-7 max-w-lg text-sm leading-7 text-white/55"><p>For Instagram, TikTok and Xiaohongshu:</p><ol className="list-decimal pl-5"><li>Download your ASCEND Card.</li><li>Tap &quot;Copy Caption&quot;.</li><li>Paste everything into your post.</li></ol></div></div></div></section> : <p aria-live="polite" className="sr-only">{status}</p>}
   </main>;
 }

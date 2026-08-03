@@ -111,9 +111,11 @@ for (const edition of editions) {
 }
 
 const resultSource = readFileSync(join(process.cwd(), "components", "ascend", "ascend-result.tsx"), "utf8");
-for (const label of ["Download Card", "Share My ASCEND Card", "Copy Link"]) {
+for (const label of ["Download Card", "Copy Caption", "Copy Link", "Share My ASCEND Card"]) {
   assert.match(resultSource, new RegExp(label), `Ascend result must expose the ${label} control`);
 }
+const buttonOrder = ["Download Card", "Copy Caption", "Copy Link", "Share My ASCEND Card"].map((label) => resultSource.indexOf(`>${label}</button>`));
+assert.deepEqual(buttonOrder, [...buttonOrder].sort((left, right) => left - right), "Ascend sharing controls must follow the customer workflow");
 assert.match(resultSource, /https:\/\/qyjworld\.com\/\$\{safeLocale\}\/ascend\?ref=\$\{referralCode\}/, "referral links must use the production Ascend URL");
 assert.doesNotMatch(resultSource, /localhost/i, "production Ascend results must not contain localhost URLs");
 assert.match(resultSource, /disabled=\{generating\}/, "Create My Card should be disabled only during active generation");
@@ -124,6 +126,13 @@ assert.match(resultSource, /Creating My Card…/, "the result should expose visi
 assert.match(resultSource, /Card creation failed\. Please try again\./, "rendering failures should be recoverable");
 assert.match(resultSource, /Referral features are temporarily unavailable/, "referral failure should use non-blocking messaging");
 assert.match(resultSource, /href=\{`\/\$\{locale\}\/ascend`\}/, "Try Again should return to a fresh quiz");
+
+const { buildShareCaption } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
+const expectedCaption = "I discovered where I belong.\nBorn to Ascend.\nhttps://qyjworld.com/en/ascend?ref=0123456789abcdef\n#QingYunJian\n#BornToAscend\n#AscendTeaProfile\n#TeaJourney\n#TeaPersonality";
+assert.equal(buildShareCaption("https://qyjworld.com/en/ascend?ref=0123456789abcdef"), expectedCaption, "share captions must use the approved reusable wording");
+assert.doesNotMatch(buildShareCaption("https://qyjworld.com/en/ascend"), /I discovered my plac/, "the obsolete caption wording must not return");
+assert.match(resultSource, /Caption copied\. Ready to paste into Instagram, TikTok or Xiaohongshu\./, "Copy Caption should provide useful confirmation");
+assert.match(resultSource, /Referral link copied\./, "Copy Link should provide referral-specific confirmation");
 
 const { trackAscendEvent } = require(join(process.cwd(), "lib", "ascend", "analytics.ts"));
 const previousWindow = global.window;
