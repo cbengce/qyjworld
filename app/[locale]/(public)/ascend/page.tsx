@@ -5,7 +5,7 @@ import type { Locale } from "@/lib/constants";
 import { breadcrumbSchema, createPageMetadata, localizedUrl } from "@/lib/seo";
 
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
-  const canonical = "https://www.qyjworld.com/en/ascend";
+  const canonical = "https://qyjworld.com/en/ascend";
   const metadata = createPageMetadata({ locale: params.locale, path: "/ascend", title: "The Ascend Tea Profile | QING YUN JIAN", description: "Answer five simple questions and discover the Qing Yun Jian tea that matches who you are today. Create and share your personalised Ascend Card.", keywords: ["Ascend Tea Profile", "tea quiz Singapore", "Qing Yun Jian tea recommendation"], includeLanguageAlternates: false });
   return { ...metadata, alternates: { canonical }, openGraph: { ...metadata.openGraph, url: canonical } };
 }

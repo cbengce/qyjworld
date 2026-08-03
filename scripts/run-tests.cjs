@@ -94,10 +94,40 @@ for (const [expected, answers] of Object.entries(profileCases)) {
 assert.equal(scoreAscendAnswers([]), "luna-tide", "an exact tie should use the documented stable profile order");
 console.log("Ascend scoring tests passed.");
 
-const { ASCEND_CARD_SIZE, ASCEND_SOCIAL_FORMATS } = require(join(process.cwd(), "lib", "ascend", "card.ts"));
+const { ASCEND_CARD_SIZE, ASCEND_SOCIAL_FORMATS, ascendCardReferralUrl } = require(join(process.cwd(), "lib", "ascend", "card.ts"));
 assert.deepEqual(ASCEND_CARD_SIZE, { width: 1080, height: 1920 }, "Ascend cards must use the approved portrait dimensions");
 for (const dimensions of Object.values(ASCEND_SOCIAL_FORMATS)) assert.deepEqual(dimensions, ASCEND_CARD_SIZE, "All supported fullscreen story/status formats must remain 9:16");
+assert.equal(ascendCardReferralUrl(), "https://qyjworld.com/en/ascend", "card generation must work without a referral service");
+assert.equal(ascendCardReferralUrl("0123456789abcdef"), "https://qyjworld.com/en/ascend?ref=0123456789abcdef", "successful referrals should enrich the card URL");
 const { REFERRAL_CODE_PATTERN } = require(join(process.cwd(), "lib", "ascend", "referrals.ts"));
 assert.equal(REFERRAL_CODE_PATTERN.test("0123456789abcdef"), true, "generated referral codes should validate");
 assert.equal(REFERRAL_CODE_PATTERN.test("not-a-referral"), false, "invalid referral codes should be rejected");
+
+const { ascendCardVisuals } = require(join(process.cwd(), "lib", "ascend", "card-visuals.ts"));
+const editions = Object.values(ascendCardVisuals).map(({ edition }) => edition);
+assert.equal(new Set(editions).size, 8, "every Ascend identity should have a unique edition number");
+for (const edition of editions) {
+  assert.match(edition, /^\d{3} \/ 008$/, "Ascend edition numbers must use the production three-digit format");
+}
+
+const resultSource = readFileSync(join(process.cwd(), "components", "ascend", "ascend-result.tsx"), "utf8");
+for (const label of ["Download Card", "Share My ASCEND Card", "Copy Link"]) {
+  assert.match(resultSource, new RegExp(label), `Ascend result must expose the ${label} control`);
+}
+assert.match(resultSource, /https:\/\/qyjworld\.com\/\$\{safeLocale\}\/ascend\?ref=\$\{referralCode\}/, "referral links must use the production Ascend URL");
+assert.doesNotMatch(resultSource, /localhost/i, "production Ascend results must not contain localhost URLs");
+assert.match(resultSource, /disabled=\{generating\}/, "Create My Card should be disabled only during active generation");
+assert.doesNotMatch(resultSource, /disabled=\{[^}]*referralCode/, "referral availability must not disable card generation");
+assert.doesNotMatch(resultSource, /if \(!referralCode\).*return/, "referral failure must not short-circuit card generation");
+assert.match(resultSource, /finally \{ setGenerating\(false\); \}/, "generation state must reset after success or failure");
+assert.match(resultSource, /Creating My Card…/, "the result should expose visible generation progress");
+assert.match(resultSource, /Card creation failed\. Please try again\./, "rendering failures should be recoverable");
+assert.match(resultSource, /Referral features are temporarily unavailable/, "referral failure should use non-blocking messaging");
+assert.match(resultSource, /href=\{`\/\$\{locale\}\/ascend`\}/, "Try Again should return to a fresh quiz");
+
+const { trackAscendEvent } = require(join(process.cwd(), "lib", "ascend", "analytics.ts"));
+const previousWindow = global.window;
+global.window = { gtag() { throw new Error("analytics unavailable"); } };
+assert.doesNotThrow(() => trackAscendEvent("ascend_card_generated", { locale: "en" }), "analytics failure must not block card generation");
+global.window = previousWindow;
 console.log("Ascend card dimensions passed.");

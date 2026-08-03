@@ -9,3 +9,7 @@ dist
 *.tsbuildinfo
 
 .vercel
+.tmp-cli-home/
+.tmp-universe-chrome/
+.tmp-universe-chrome-2/
+.tmp-universe-chrome-3/
