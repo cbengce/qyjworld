@@ -13,7 +13,8 @@ const publicPaths = [
   "/leaderboard",
   "/promotions",
   "/privacy",
-  "/terms"
+  "/terms",
+  "/ascend"
 ] as const;
 
 const growthPaths = ["/blog", "/guides", "/categories", "/search"] as const;

@@ -1,0 +1,8 @@
+export type AscendEventName = "ascend_start_quiz" | "ascend_question_completed" | "ascend_complete_quiz" | "ascend_result_viewed" | "ascend_card_generated" | "ascend_download_card" | "ascend_share_card" | "ascend_caption_copied" | "ascend_try_again" | "ascend_menu_clicked" | "ascend_referral_visit" | "ascend_referral_completion" | "ascend_reward_unlock";
+export type AscendEventProperties = { locale: string; profile?: string; referral_code?: string; reward?: string; device?: "mobile" | "tablet" | "desktop" };
+
+declare global { interface Window { gtag?: (command: "event", name: string, properties?: Record<string, unknown>) => void } }
+
+export function trackAscendEvent(name: AscendEventName, properties: AscendEventProperties) {
+  if (typeof window !== "undefined") window.gtag?.("event", name, properties);
+}
