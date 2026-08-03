@@ -104,6 +104,25 @@ assert.equal(REFERRAL_CODE_PATTERN.test("0123456789abcdef"), true, "generated re
 assert.equal(REFERRAL_CODE_PATTERN.test("not-a-referral"), false, "invalid referral codes should be rejected");
 
 const { ascendCardVisuals } = require(join(process.cwd(), "lib", "ascend", "card-visuals.ts"));
+const { ascendProfiles } = require(join(process.cwd(), "lib", "ascend", "profiles.ts"));
+const expectedIdentities = {
+  "luna-tide": ["001 / 008", "LUNA TIDE", "月汐", "CALM CLARITY", "Moon Lake"],
+  "night-nectar": ["002 / 008", "NIGHT NECTAR", "星津", "TRANSFORMATIVE ALLURE", "Rain Pavilion"],
+  evenfall: ["003 / 008", "EVENFALL", "归岚", "GENTLE WARMTH", "Autumn Forest"],
+  clearsky: ["004 / 008", "CLEARSKY", "破云", "CLEAR RESOLVE", "Cloud Valley"],
+  monsoon: ["005 / 008", "MONSOON", "长风", "RESTLESS MOMENTUM", "Highland Rain"],
+  drift: ["006 / 008", "DRIFT", "云隐", "QUIET FREEDOM", "Ancient Tea Path"],
+  stillearth: ["007 / 008", "STILLEARTH", "山止", "GROUNDED STRENGTH", "Winter Silence"],
+  cloudlift: ["008 / 008", "CLOUDLIFT", "扶摇", "RISING POSSIBILITY", "Highland Sunrise"]
+};
+for (const [slug, [edition, nameEn, nameZh, title, motif]] of Object.entries(expectedIdentities)) {
+  assert.equal(ascendCardVisuals[slug].edition, edition, `${slug} should use the approved edition`);
+  assert.equal(ascendCardVisuals[slug].motif, motif, `${slug} should use the approved location`);
+  assert.equal(ascendProfiles[slug].nameEn, nameEn, `${slug} should use the approved English name`);
+  assert.equal(ascendProfiles[slug].nameZh, nameZh, `${slug} should use the approved Chinese name`);
+  assert.equal(ascendProfiles[slug].title, title, `${slug} should use the approved theme`);
+  assert.match(ascendCardVisuals[slug].landscape ?? "", new RegExp(`/assets/ascend/landscapes/${slug}`), `${slug} should use its deterministic landscape`);
+}
 const editions = Object.values(ascendCardVisuals).map(({ edition }) => edition);
 assert.equal(new Set(editions).size, 8, "every Ascend identity should have a unique edition number");
 for (const edition of editions) {
@@ -128,9 +147,17 @@ assert.match(resultSource, /Referral features are temporarily unavailable/, "ref
 assert.match(resultSource, /href=\{`\/\$\{locale\}\/ascend`\}/, "Try Again should return to a fresh quiz");
 
 const { buildShareCaption } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
-const expectedCaption = "I discovered where I belong.\nBorn to Ascend.\nhttps://qyjworld.com/en/ascend?ref=0123456789abcdef\n#QingYunJian\n#BornToAscend\n#AscendTeaProfile\n#TeaJourney\n#TeaPersonality";
-assert.equal(buildShareCaption("https://qyjworld.com/en/ascend?ref=0123456789abcdef"), expectedCaption, "share captions must use the approved reusable wording");
-assert.doesNotMatch(buildShareCaption("https://qyjworld.com/en/ascend"), /I discovered my plac/, "the obsolete caption wording must not return");
+for (const profile of Object.values(ascendProfiles)) {
+  const captionUrl = `https://qyjworld.com/en/ascend?ref=0123456789abcdef`;
+  const caption = buildShareCaption(profile, captionUrl);
+  assert.match(caption, /I discovered where I belong\./, `${profile.slug} caption should use the approved opening`);
+  assert.match(caption, new RegExp(profile.nameEn), `${profile.slug} caption should include the profile name`);
+  assert.match(caption, new RegExp(profile.title), `${profile.slug} caption should include the approved theme`);
+  assert.match(caption, new RegExp(profile.quote.replaceAll(".", "\\.")), `${profile.slug} caption should include its statement`);
+  assert.match(caption, /https:\/\/qyjworld\.com\/en\/ascend\?ref=0123456789abcdef/, `${profile.slug} caption should include the referral URL`);
+  for (const hashtag of ["#QingYunJian", "#BornToAscend", "#AscendTeaProfile", "#TeaJourney", "#TeaPersonality"]) assert.match(caption, new RegExp(hashtag), `${profile.slug} caption should include ${hashtag}`);
+  assert.doesNotMatch(caption, /plac(?!e)/i, `${profile.slug} caption must not contain the historical typo`);
+}
 assert.match(resultSource, /Caption copied\. Ready to paste into Instagram, TikTok or Xiaohongshu\./, "Copy Caption should provide useful confirmation");
 assert.match(resultSource, /Referral link copied\./, "Copy Link should provide referral-specific confirmation");
 
@@ -139,4 +166,12 @@ const previousWindow = global.window;
 global.window = { gtag() { throw new Error("analytics unavailable"); } };
 assert.doesNotThrow(() => trackAscendEvent("ascend_card_generated", { locale: "en" }), "analytics failure must not block card generation");
 global.window = previousWindow;
+
+const referralRouteSource = readFileSync(join(process.cwd(), "app", "api", "ascend", "referrals", "route.ts"), "utf8");
+const referralClientSource = readFileSync(join(process.cwd(), "lib", "ascend", "referrals.ts"), "utf8");
+assert.match(referralRouteSource, /export async function GET/, "referral progress should be served by a server route");
+assert.match(referralRouteSource, /createServiceClient\(\)/, "referral progress should use server-side database access");
+assert.doesNotMatch(referralClientSource, /SERVICE_ROLE|createServiceClient/, "the browser referral client must not contain server credentials");
+assert.match(resultSource, /overflow-hidden/, "the result page should prevent horizontal overflow at mobile widths");
+assert.match(resultSource, /flex flex-wrap gap-3/, "result actions should wrap at 390px");
 console.log("Ascend card dimensions passed.");

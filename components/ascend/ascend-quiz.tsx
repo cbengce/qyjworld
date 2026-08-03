@@ -53,6 +53,7 @@ export function AscendQuiz({ locale }: { locale: string }) {
       setCompleting(true);
       const profile = scoreAscendAnswers(answers);
       trackAscendEvent("ascend_complete_quiz", { locale, profile });
+      trackAscendEvent("ascend_profile_completed", { locale, profile });
       const sourceReferral = sessionStorage.getItem("qyj-ascend-source-ref");
       if (sourceReferral && REFERRAL_CODE_PATTERN.test(sourceReferral)) {
         const completionKey = `qyj-ascend-completed-${sourceReferral}`;

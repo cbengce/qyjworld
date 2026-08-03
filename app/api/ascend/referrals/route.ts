@@ -9,6 +9,39 @@ export const dynamic = "force-dynamic";
 
 type RequestBody = { action?: string; profileId?: string; referralCode?: string };
 
+export async function GET(request: Request) {
+  const referralCode = new URL(request.url).searchParams.get("code");
+  if (!referralCode || !REFERRAL_CODE_PATTERN.test(referralCode)) return NextResponse.json({ error: "Invalid referral code." }, { status: 400 });
+
+  const supabase = createServiceClient();
+  const { data: referral, error: referralError } = await supabase
+    .from("ascend_referrals")
+    .select("completed_tests")
+    .eq("referral_code", referralCode)
+    .maybeSingle();
+  if (referralError) return NextResponse.json({ error: "Unable to load referral progress." }, { status: 500 });
+  if (!referral) return NextResponse.json({ error: "Referral not found." }, { status: 404 });
+
+  const completedTests = Number(referral.completed_tests);
+  const { data: milestones, error: milestoneError } = await supabase
+    .from("ascend_reward_rules")
+    .select("reward_name,completed_referrals_required")
+    .eq("status", "active")
+    .gt("completed_referrals_required", completedTests)
+    .order("completed_referrals_required", { ascending: true })
+    .limit(1);
+  if (milestoneError) return NextResponse.json({ error: "Unable to load referral progress." }, { status: 500 });
+
+  const next = milestones?.[0];
+  return NextResponse.json({
+    completedTests,
+    nextMilestone: next ? {
+      remainingCount: Number(next.completed_referrals_required) - completedTests,
+      rewardName: next.reward_name
+    } : undefined
+  });
+}
+
 export async function POST(request: Request) {
   let body: RequestBody;
   try { body = await request.json() as RequestBody; }
