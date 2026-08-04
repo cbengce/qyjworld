@@ -18,12 +18,15 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
 }
 
 type SchoolLeaderboardRow = {
-  rank_position: number | string;
+  rank_position: number;
   school_id: string;
   school_name: string;
-  total_cups: number | string;
+  total_cups: number;
   last_updated: string;
 };
+
+type ActiveSchoolRow = { id: string; school_name: string };
+type CupEventRow = { school_id: string; cups: number; created_at: string };
 
 const dateTime = new Intl.DateTimeFormat("en-SG", {
   dateStyle: "medium",
@@ -34,8 +37,36 @@ const dateTime = new Intl.DateTimeFormat("en-SG", {
 export default async function AscendLeaderboardPage({ params }: { params: { locale: Locale } }) {
   if (params.locale === "zh") redirect("/en/ascend/leaderboard");
   noStore();
-  const { data, error } = await createServiceClient().rpc("get_ascend_school_cup_leaderboard", { p_limit: 10 });
-  const schools = (error ? [] : data ?? []) as SchoolLeaderboardRow[];
+  const service = createServiceClient();
+  const [schoolResult, eventResult] = await Promise.all([
+    service.from("ascend_schools").select("id,school_name").eq("is_active", true),
+    service.from("ascend_school_cup_events").select("school_id,cups,created_at")
+  ]);
+  const error = schoolResult.error ?? eventResult.error;
+  const totals = new Map<string, SchoolLeaderboardRow>();
+
+  for (const school of (schoolResult.data ?? []) as ActiveSchoolRow[]) {
+    totals.set(school.id, {
+      rank_position: 0,
+      school_id: school.id,
+      school_name: school.school_name,
+      total_cups: 0,
+      last_updated: ""
+    });
+  }
+
+  for (const event of (eventResult.data ?? []) as CupEventRow[]) {
+    const school = totals.get(event.school_id);
+    if (!school) continue;
+    school.total_cups += event.cups;
+    if (!school.last_updated || event.created_at > school.last_updated) school.last_updated = event.created_at;
+  }
+
+  const schools = Array.from(totals.values())
+    .filter((school) => school.total_cups >= 1)
+    .sort((a, b) => b.total_cups - a.total_cups || a.school_name.localeCompare(b.school_name) || a.school_id.localeCompare(b.school_id))
+    .slice(0, 10)
+    .map((school, index) => ({ ...school, rank_position: index + 1 }));
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#071d18] text-white">
@@ -62,9 +93,9 @@ export default async function AscendLeaderboardPage({ params }: { params: { loca
               ))}
             </ol>
           ) : (
-            <div className="mt-14 border border-white/15 bg-white/[0.04] p-8 text-center md:p-14"><h2 className="font-serif text-4xl">Leaderboard coming soon.</h2><p className="mx-auto mt-4 max-w-xl text-white/60">Schools appear after reaching 10 recorded cups.</p></div>
+            <div className="mt-14 border border-white/15 bg-white/[0.04] p-8 text-center md:p-14"><h2 className="font-serif text-4xl">Leaderboard coming soon.</h2><p className="mx-auto mt-4 max-w-xl text-white/60">Schools appear after their first recorded cup.</p></div>
           )}
-          <p className="mt-8 text-xs leading-6 text-white/40">Top 10 active schools with at least 10 recorded cups.</p>
+          <p className="mt-8 text-xs leading-6 text-white/40">Top 10 active schools with at least 1 recorded cup.</p>
         </div>
       </section>
     </main>
