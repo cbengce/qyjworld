@@ -62,7 +62,6 @@ export function AscendQuiz({ locale }: { locale: string }) {
           try {
             const completion = await recordAscendReferral("complete", sourceReferral);
             trackAscendEvent("ascend_referral_completion", { locale, profile, referral_code: sourceReferral });
-            if (completion.unlockedReward) trackAscendEvent("ascend_reward_unlock", { locale, profile, referral_code: sourceReferral, reward: completion.unlockedReward });
           } catch { sessionStorage.removeItem(completionKey); }
         }
       }

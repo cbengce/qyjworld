@@ -5,7 +5,6 @@ export const REFERRAL_CODE_PATTERN = /^[a-f0-9]{16}$/;
 export type AscendReferralResponse = {
   referralCode?: string;
   completedTests?: number;
-  unlockedReward?: string;
 };
 
 export type AscendReferralProgress = {
