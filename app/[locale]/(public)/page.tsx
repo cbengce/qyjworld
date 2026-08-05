@@ -248,7 +248,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 </ButtonLink>
                 <ButtonLink
                   className="rounded-full bg-forest px-7 text-white shadow-[0_18px_45px_rgba(10,24,20,0.10)] hover:-translate-y-0.5 hover:bg-ink"
-                  href={localizedPath(params.locale, "/leaderboard")}
+                  href={localizedPath(params.locale, "/ascend/leaderboard")}
                 >
                   View Community Leaderboard
                 </ButtonLink>

@@ -10,7 +10,6 @@ const publicPaths = [
   "/about",
   "/contact",
   "/faq",
-  "/leaderboard",
   "/ascend/leaderboard",
   "/promotions",
   "/privacy",
