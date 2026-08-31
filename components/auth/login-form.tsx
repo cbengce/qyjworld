@@ -13,7 +13,19 @@ function LoginSubmitButton({ label }: { label: string }) {
   return <SubmitButton pending={pending} pendingLabel="Signing in...">{label}</SubmitButton>;
 }
 
-export function LoginForm({ locale, returnTo }: { locale: Locale; returnTo?: string }) {
+export function LoginForm({
+  locale,
+  returnTo,
+  submitLabel,
+  emailLabel,
+  passwordLabel
+}: {
+  locale: Locale;
+  returnTo?: string;
+  submitLabel?: string;
+  emailLabel?: string;
+  passwordLabel?: string;
+}) {
   const t = getDictionary(locale);
   const [state, action] = useFormState(loginMember, initialState);
 
@@ -21,10 +33,10 @@ export function LoginForm({ locale, returnTo }: { locale: Locale; returnTo?: str
     <form action={action} className="grid gap-5 bg-white p-6 shadow-soft">
       <input name="locale" type="hidden" value={locale} />
       {returnTo ? <input name="returnTo" type="hidden" value={returnTo} /> : null}
-      <Field label={t.register.email} name="email" type="email" required />
-      <Field label={t.register.password} name="password" type="password" required />
+      <Field label={emailLabel ?? t.register.email} name="email" type="email" required />
+      <Field label={passwordLabel ?? t.register.password} name="password" type="password" required />
       {state.message ? <p className="font-semibold text-red-700">{state.message}</p> : null}
-      <LoginSubmitButton label={t.login.submit} />
+      <LoginSubmitButton label={submitLabel ?? t.login.submit} />
     </form>
   );
 }

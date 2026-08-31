@@ -17,6 +17,8 @@ import {
   leaderboardMoveSchema,
   leaderboardPublicationSchema,
   loginSchema,
+  passwordRecoverySchema,
+  passwordResetSchema,
   pointsAdjustmentSchema,
   promotionSchema,
   promotionStatusSchema,
@@ -177,6 +179,59 @@ export async function logoutMember() {
   const supabase = createClient();
   await supabase.auth.signOut();
   redirect("/en/login");
+}
+
+export async function logoutPartner() {
+  const supabase = createClient();
+  await supabase.auth.signOut();
+  redirect("/en/partner/login");
+}
+
+export async function requestPartnerPasswordRecovery(_: ActionState, formData: FormData): Promise<ActionState> {
+  const parsed = passwordRecoverySchema.safeParse({
+    email: formData.get("email"),
+    locale: formData.get("locale")
+  });
+  if (!parsed.success) return { ok: false, message: "Enter a valid email address." };
+
+  const rate = checkRateLimit(`partner-password-recovery:${parsed.data.email.toLowerCase()}`);
+  if (!rate.ok) return { ok: false, message: "Too many attempts. Please try again later." };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  if (!siteUrl) return { ok: false, message: "Password recovery is not configured for this environment." };
+
+  try {
+    const redirectTo = `${siteUrl}/api/auth/callback?next=${encodeURIComponent(`/${parsed.data.locale}/partner/reset-password`)}`;
+    const supabase = createClient();
+    await supabase.auth.resetPasswordForEmail(parsed.data.email, { redirectTo });
+  } catch {
+    // Do not reveal whether an account exists for the submitted email.
+  }
+
+  return { ok: true, message: "If this email is linked to an account, a password recovery email has been sent." };
+}
+
+export async function resetPartnerPassword(_: ActionState, formData: FormData): Promise<ActionState> {
+  const parsed = passwordResetSchema.safeParse({
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+    locale: formData.get("locale")
+  });
+  if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Enter a valid password." };
+
+  const supabase = createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) return { ok: false, message: "This recovery link is invalid or has expired. Request a new recovery email." };
+
+  const { count, error: mappingError } = await supabase
+    .from("partner_users")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "active");
+  if (mappingError || count !== 1) return { ok: false, message: "This account is not linked to one active corporate partner." };
+
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) return { ok: false, message: error.message };
+  redirect(`/${parsed.data.locale}/partner/dashboard`);
 }
 
 export async function bootstrapSuperAdmin(_: ActionState, formData: FormData): Promise<ActionState> {

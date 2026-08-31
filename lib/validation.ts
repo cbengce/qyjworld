@@ -35,6 +35,22 @@ export const loginSchema = z.object({
   password: z.string().min(1)
 });
 
+export const passwordRecoverySchema = z.object({
+  email: z.string().trim().email().max(180),
+  locale: z.enum(["en", "zh"])
+});
+
+export const passwordResetSchema = z
+  .object({
+    password: z.string().min(8).max(128),
+    confirmPassword: z.string().min(8).max(128),
+    locale: z.enum(["en", "zh"])
+  })
+  .refine((value) => value.password === value.confirmPassword, {
+    message: "Passwords do not match.",
+    path: ["confirmPassword"]
+  });
+
 export const bootstrapSuperAdminSchema = z.object({
   password: z.string().min(8).max(128)
 });
