@@ -39,7 +39,7 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
           : "border-b border-forest/10 bg-[#fbfaf6]/[0.88] backdrop-blur-xl"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-[1.05rem] md:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-[1.05rem] sm:gap-3 sm:px-5 md:px-8">
         <Link href={localizedPath(locale)} aria-label={`${BRAND.nameEn} home`} className="shrink-0">
           <Logo priority />
         </Link>
@@ -61,7 +61,7 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-3">
           <Link
             className={`hidden text-xs font-bold uppercase tracking-[0.14em] transition duration-300 hover:-translate-y-px sm:inline ${
               transparentOnHero ? "text-white/60 hover:text-white" : "text-forest/50 hover:text-forest"
@@ -71,7 +71,7 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
             {otherLocale.toUpperCase()}
           </Link>
           <Link
-            className={`focus-ring hidden min-h-11 items-center px-3 text-sm font-semibold transition duration-300 hover:-translate-y-px sm:inline-flex ${
+            className={`focus-ring inline-flex min-h-11 items-center px-2 text-xs font-semibold transition duration-300 hover:-translate-y-px sm:px-3 sm:text-sm ${
               transparentOnHero ? "text-white/75 hover:text-white" : "text-forest/80 hover:text-forest"
             }`}
             href={localizedPath(locale, "/login")}
@@ -79,7 +79,7 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
             Login
           </Link>
           <Link
-            className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-bold shadow-[0_14px_35px_rgba(18,60,47,0.18)] transition duration-300 hover:-translate-y-0.5 ${
+            className={`focus-ring inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-3 text-xs font-bold shadow-[0_14px_35px_rgba(18,60,47,0.18)] transition duration-300 hover:-translate-y-0.5 sm:px-5 sm:text-sm ${
               transparentOnHero
                 ? "bg-white text-forest hover:bg-gold hover:text-ink"
                 : "bg-forest text-white hover:bg-ink"
