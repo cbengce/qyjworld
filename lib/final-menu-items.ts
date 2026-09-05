@@ -11,6 +11,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: null,
     image_url: "/assets/menu/01-luna-tide.PNG",
     is_featured: true,
+    is_signature: true,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "Signature Sparkling Tea", name_zh: "招牌气泡茶" }
   },
   {
@@ -23,6 +26,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 6,
     image_url: "/assets/menu/02-night-nectar.PNG",
     is_featured: true,
+    is_signature: true,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "Signature Sparkling Tea", name_zh: "招牌气泡茶" }
   },
   {
@@ -35,6 +41,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 5,
     image_url: "/assets/menu/03-evenfall.PNG",
     is_featured: true,
+    is_signature: true,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "Signature Milk Tea", name_zh: "招牌鲜奶茶" }
   },
   {
@@ -47,6 +56,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 6,
     image_url: "/assets/menu/04-clear-sky.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "House Sparkling Tea", name_zh: "青云气泡茶" }
   },
   {
@@ -59,6 +71,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 5,
     image_url: "/assets/menu/05-glowstate.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "House Sparkling Tea", name_zh: "青云气泡茶" }
   },
   {
@@ -71,6 +86,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 5,
     image_url: "/assets/menu/06-monsoon.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "House Sparkling Tea", name_zh: "青云气泡茶" }
   },
   {
@@ -83,6 +101,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 5,
     image_url: "/assets/menu/07-stillearth.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "Signature Milk Tea", name_zh: "招牌鲜奶茶" }
   },
   {
@@ -95,6 +116,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 6,
     image_url: "/assets/menu/08-cloudlift.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "House Sparkling Tea", name_zh: "青云气泡茶" }
   },
   {
@@ -107,6 +131,9 @@ export const finalMenuItems: MenuItem[] = [
     member_price: 5,
     image_url: "/assets/menu/09-drift.PNG",
     is_featured: false,
+    is_signature: false,
+    availability_status: "available",
+    online_ordering_enabled: false,
     menu_categories: { name_en: "House Sparkling Tea", name_zh: "青云气泡茶" }
   }
 ];

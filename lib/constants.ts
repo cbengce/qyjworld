@@ -4,7 +4,6 @@ export const BRAND = {
   nameZh: "青云间",
   tagline: "Born to Ascend",
   line: "Sparkling Tea Reimagined",
-  address: "401 MacPherson Road, #01-23, MacPherson Mall, Singapore 368125",
   domain: "https://qyjworld.com",
   membershipFee: "SGD 39.90",
   membershipDays: 60

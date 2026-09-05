@@ -124,32 +124,6 @@ const structuredData = {
       name,
       url: `${BRAND.domain}${path}`
     }))
-  },
-  {
-    "@type": ["LocalBusiness", "FoodEstablishment", "CafeOrCoffeeShop"],
-    "@id": `${BRAND.domain}/#location`,
-    name: BRAND.nameEn,
-    url: BRAND.domain,
-    logo: logoUrl,
-    image: `${BRAND.domain}${SEO_IMAGE.url}`,
-    brand: { "@id": organizationId },
-    sameAs,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "401 MacPherson Road, #01-23, MacPherson Mall",
-      addressLocality: "Singapore",
-      postalCode: "368125",
-      addressCountry: "SG"
-    },
-    servesCuisine: "Tea",
-    priceRange: "$$",
-    openingHoursSpecification: [{
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-      opens: "11:00",
-      closes: "21:00"
-    }],
-    hasMap: "https://www.google.com/maps/search/?api=1&query=401%20MacPherson%20Road%20%2301-23%20MacPherson%20Mall%20Singapore%20368125"
   }
   ]
 };

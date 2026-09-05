@@ -8,6 +8,9 @@ export type MenuItem = {
   member_price: number | null;
   image_url: string | null;
   is_featured: boolean;
+  is_signature: boolean;
+  availability_status: "available" | "unavailable" | "coming_soon";
+  online_ordering_enabled: boolean;
   menu_categories: {
     name_en: string;
     name_zh: string;
