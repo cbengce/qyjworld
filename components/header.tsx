@@ -7,7 +7,7 @@ import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { Logo } from "@/components/logo";
 
-export function Header({ locale }: { locale: Locale }) {
+export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: string | null }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const otherLocale = locale === "en" ? "zh" : "en";
@@ -17,6 +17,7 @@ export function Header({ locale }: { locale: Locale }) {
     { label: "Home", href: localizedPath(locale) },
     { label: "Menu", href: localizedPath(locale, "/menu") },
     { label: "Membership", href: localizedPath(locale, "/membership") },
+    ...(orderingUrl ? [{ label: "Order Online", href: orderingUrl }] : []),
     { label: "Story", href: localizedPath(locale, "/about") },
     { label: "Visit Us", href: localizedPath(locale, "/contact") }
   ];
