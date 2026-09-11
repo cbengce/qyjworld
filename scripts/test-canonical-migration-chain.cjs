@@ -26,7 +26,9 @@ const expectedActive = [
   "0025_partner_combined_commercial_cap.sql",
   "0027_ascend_canonical_runtime.sql",
   "0028_partner_archive_lifecycle.sql",
-  "0029_partner_paid_only_pos_rpc.sql"
+  "0029_partner_paid_only_pos_rpc.sql",
+  "0030_store_menu_cms.sql",
+  "0031_public_menu_idempotency.sql"
 ];
 
 assert.deepEqual(active, expectedActive, "active Supabase migration set must remain canonical");
@@ -38,7 +40,7 @@ const archived = [
   ["migrations_archive", "superseded", "0021_ascend_school_cup_leaderboard.sql"],
   ["migrations_archive", "superseded", "0023_partner_refund_accounting.sql"],
   ["migrations_archive", "superseded", "0024_partner_dynamic_rates.sql"],
-  ["migrations_pending", "0026_store_menu_cms.sql"]
+  ["migrations_archive", "not-deployed", "0026_store_menu_cms.sql"]
 ];
 for (const parts of archived) {
   assert.equal(existsSync(join(root, "supabase", ...parts)), true, `${parts.at(-1)} must remain outside the active migration directory`);
@@ -79,5 +81,16 @@ assert.match(paidOnlyRpc, /revoke all on function public\.process_partner_pos_ev
 assert.match(paidOnlyRpc, /grant execute on function public\.process_partner_pos_event\(jsonb\) to service_role/i, "0029 must remain service-role only");
 assert.doesNotMatch(paidOnlyRpc, /partial_refund|refundedAmount|commission_reversal|partner_payouts|refunded_amount/i, "0029 must contain no refund-era behavior");
 assert.doesNotMatch(paidOnlyRpc, /\b(create|alter|drop)\s+table\b|\b(create|alter|drop)\s+(index|trigger|policy)\b/i, "0029 must not change structural database objects");
+
+const storeMenu = readFileSync(join(migrations, "0030_store_menu_cms.sql"), "utf8");
+assert.match(storeMenu, /Canonical Store\/Menu CMS migration/i, "0030 must identify the canonical Store/Menu migration");
+assert.match(storeMenu, /QYJ-MPM-001/, "0030 must target the owner-approved MacPherson store identity");
+assert.doesNotMatch(storeMenu, /student_month_|ascend_|partner_|refund|reversal|payout/i, "0030 must contain only Store/Menu CMS state");
+const archivedStoreMenu = readFileSync(join(root, "supabase", "migrations_archive", "not-deployed", "0026_store_menu_cms.sql"), "utf8");
+assert.match(archivedStoreMenu, /NEVER DEPLOYED.*Superseded by canonical migration 0030_store_menu_cms\.sql/is, "archived 0026 must record its never-deployed supersession");
+
+const publicMenuIdempotency = readFileSync(join(migrations, "0031_public_menu_idempotency.sql"), "utf8");
+assert.match(publicMenuIdempotency, /get_or_create_public_menu/i, "0031 must add only the canonical Public Menu idempotency path");
+assert.doesNotMatch(publicMenuIdempotency, /student_month_|ascend_|partner_|refund|reversal|payout/i, "0031 must contain only Store/Menu idempotency state");
 
 console.log("Canonical migration chain source checks passed.");

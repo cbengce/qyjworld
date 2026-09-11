@@ -4,6 +4,7 @@ const { join } = require("node:path");
 
 const root = process.cwd();
 const migration = readFileSync(join(root, "supabase", "migrations", "0030_store_menu_cms.sql"), "utf8");
+const idempotencyMigration = readFileSync(join(root, "supabase", "migrations", "0031_public_menu_idempotency.sql"), "utf8");
 const menu = readFileSync(join(root, "lib", "menu.ts"), "utf8");
 const catalogue = readFileSync(join(root, "components", "menu", "menu-catalogue.tsx"), "utf8");
 const home = readFileSync(join(root, "app", "[locale]", "(public)", "page.tsx"), "utf8");
@@ -29,6 +30,7 @@ assert.match(menuActions, /requireAdminPermission\([^;]+"menu\.manage"/g, "Menu 
 assert.match(storeActions, /requireAdminPermission\([^;]+"store\.identity\.manage"/g, "store identity mutations must retain their separate permission");
 assert.match(storeActions, /requireAdminPermission\([^;]+"store\.operations\.manage"/g, "store operations and hours must retain their separate permission");
 assert.match(migration, /staff_has_permission\('menu\.manage'/i, "Menu CMS RLS and RPC paths must enforce menu.manage");
+assert.match(idempotencyMigration, /get_or_create_public_menu/i, "Public Menu creation must use the additive idempotent RPC");
 for (const table of ["product_categories", "products", "product_images", "menus", "menu_items"]) {
   assert.match(
     migration,

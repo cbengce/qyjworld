@@ -27,6 +27,8 @@ begin
   if not exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'stores' and policyname = 'stores_staff_scoped_read' and qual like '%staff_has_permission%') then raise exception 'scoped staff store reads are missing'; end if;
   if not exists (select 1 from pg_policies where schemaname = 'public' and tablename = 'store_operating_hours' and policyname = 'store_hours_staff_manage' and qual like '%store_id%') then raise exception 'store-scoped hours management is missing'; end if;
   if has_table_privilege('anon', 'public.store_operating_hours', 'INSERT') then raise exception 'anonymous users must not insert operating hours'; end if;
+  if not exists (select 1 from pg_indexes where schemaname = 'public' and indexname = 'menus_one_canonical_public_per_store_idx') then raise exception 'canonical Public Menu uniqueness is missing'; end if;
+  if to_regprocedure('public.get_or_create_public_menu(uuid)') is null then raise exception 'idempotent Public Menu RPC is missing'; end if;
 
   select id into v_brand from public.brands where brand_code = 'QYJ';
   select id into v_store from public.stores where brand_id = v_brand and store_code = 'QYJ-MPM-001';

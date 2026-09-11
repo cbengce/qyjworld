@@ -103,12 +103,10 @@ export async function saveMenuItem(formData: FormData) {
 
 export async function createOutletMenu(formData: FormData) {
   const locale = String(formData.get("locale") || "en"); const brandId = String(formData.get("brandId")); const storeId = String(formData.get("storeId"));
-  const { user } = await requireAdminPermission(locale, "menu.manage", { brandId, storeId });
+  await requireAdminPermission(locale, "menu.manage", { brandId, storeId });
   const supabase = createClient();
-  const { data, error } = await supabase.from("menus").insert({ brand_id: brandId, store_id: storeId, name: "Public Menu", status: "inactive", created_by: user.id, updated_by: user.id }).select("id").single();
+  const { error } = await supabase.rpc("get_or_create_public_menu", { p_store_id: storeId });
   if (error) throw new Error(error.message);
-  const activation = await supabase.rpc("activate_store_menu", { p_menu_id: data.id });
-  if (activation.error) throw new Error(activation.error.message);
   refreshMenu(locale); redirect(`/${locale}/admin/menu/outlets/${storeId}`);
 }
 
