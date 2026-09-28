@@ -17,8 +17,11 @@ export type AppzposOrderWrite = {
   totalPayableMinor: number;
   cupQuantity: number;
   payloadHash: string;
-  paymentInfo: AppzposOrder["paymentInfo"];
-  itemList: AppzposOrder["itemList"];
+  paymentInfo: Array<{ paymentType: string; paymentAmount: number }>;
+  itemList: Array<{
+    id: string; itemName: string; quantity: number; discountAmount: number; unitPrice: number;
+    modifiers: Array<{ id: string; modifierName: string; quantity: number; additionalPrice: number }>;
+  }>;
 };
 
 export type AppzposPollDependencies = {
@@ -51,8 +54,11 @@ export async function pollAppzposOrders(
       totalPayableMinor: order.orderDetails.totalPayableAmount,
       cupQuantity: order.itemList.reduce((sum, item) => sum + item.quantity, 0),
       payloadHash: createHash("sha256").update(JSON.stringify(order.raw)).digest("hex"),
-      paymentInfo: order.paymentInfo,
-      itemList: order.itemList
+      paymentInfo: order.paymentInfo.map(({ paymentType, paymentAmount }) => ({ paymentType, paymentAmount })),
+      itemList: order.itemList.map(({ id, itemName, quantity, discountAmount, unitPrice, modifiers }) => ({
+        id, itemName, quantity, discountAmount, unitPrice,
+        modifiers: modifiers.map(({ id, modifierName, quantity, additionalPrice }) => ({ id, modifierName, quantity, additionalPrice }))
+      }))
     });
     processed += 1;
   }
