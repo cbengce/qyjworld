@@ -31,6 +31,9 @@ jobs:
       - name: Verify sanitized APPZPOS mapping fixtures
         run: npx vitest run lib/pos/appzpos/appzpos.test.ts
 
+      - name: Verify canonical migration source chain
+        run: node scripts/test-canonical-migration-chain.cjs
+
       - name: Run repository tests and canonical migration checks
         run: npm test
 

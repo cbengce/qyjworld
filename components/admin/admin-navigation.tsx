@@ -30,4 +30,3 @@ export function AdminNavigation({ locale }: { locale: Locale }) {
     </div>
   );
 }
-
