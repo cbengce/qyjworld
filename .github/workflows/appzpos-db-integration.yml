@@ -1,0 +1,56 @@
+name: APPZPOS database integration
+
+on:
+  push:
+    branches:
+      - appzpos-db-ci
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  appzpos-database:
+    name: Canonical migrations and APPZPOS SQL/RLS tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out test branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Verify sanitized APPZPOS mapping fixtures
+        run: npx vitest run lib/pos/appzpos/appzpos.test.ts
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start disposable local Supabase
+        run: supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector
+
+      - name: Rebuild from complete canonical migration chain
+        run: supabase db reset --local
+
+      # This repository test is a transactional SQL assertion script, not a
+      # pgTAP suite, so run it directly and fail on the first SQL error.
+      - name: Run APPZPOS SQL integration and RLS test
+        run: >-
+          psql postgresql://postgres:postgres@127.0.0.1:54322/postgres
+          -v ON_ERROR_STOP=1
+          -f supabase/tests/appzpos_getorders_partner_integration.sql
+
+      - name: Stop disposable Supabase
+        if: always()
+        run: supabase stop --no-backup
+
