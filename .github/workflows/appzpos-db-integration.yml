@@ -10,8 +10,8 @@ permissions:
   contents: read
 
 jobs:
-  appzpos-database:
-    name: Canonical migrations and APPZPOS SQL/RLS tests
+  appzpos-application:
+    name: APPZPOS application and repository checks
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install project dependencies
@@ -30,6 +30,38 @@ jobs:
 
       - name: Verify sanitized APPZPOS mapping fixtures
         run: npx vitest run lib/pos/appzpos/appzpos.test.ts
+
+      - name: Run repository tests and canonical migration checks
+        run: npm test
+
+      - name: Typecheck
+        if: always()
+        run: npm run typecheck
+
+      - name: ESLint
+        if: always()
+        run: npm run lint
+
+      - name: Production build
+        if: always()
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-service-role-key
+        run: npm run build
+
+      - name: Check patch whitespace
+        if: always()
+        run: git diff --check HEAD^ HEAD
+
+  appzpos-database:
+    name: Canonical migrations and APPZPOS SQL/RLS tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out test branch
+        uses: actions/checkout@v4
 
       - name: Set up Supabase CLI
         uses: supabase/setup-cli@v1

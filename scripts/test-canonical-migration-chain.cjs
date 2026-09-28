@@ -28,7 +28,8 @@ const expectedActive = [
   "0028_partner_archive_lifecycle.sql",
   "0029_partner_paid_only_pos_rpc.sql",
   "0030_store_menu_cms.sql",
-  "0031_public_menu_idempotency.sql"
+  "0031_public_menu_idempotency.sql",
+  "0032_appzpos_getorders_partner_integration.sql"
 ];
 
 assert.deepEqual(active, expectedActive, "active Supabase migration set must remain canonical");
@@ -93,4 +94,16 @@ const publicMenuIdempotency = readFileSync(join(migrations, "0031_public_menu_id
 assert.match(publicMenuIdempotency, /get_or_create_public_menu/i, "0031 must add only the canonical Public Menu idempotency path");
 assert.doesNotMatch(publicMenuIdempotency, /student_month_|ascend_|partner_|refund|reversal|payout/i, "0031 must contain only Store/Menu idempotency state");
 
+const appzposGetOrders = readFileSync(join(migrations, "0032_appzpos_getorders_partner_integration.sql"), "utf8");
+assert.match(appzposGetOrders, /^\s*--[\s\S]*?\bbegin;[\s\S]*\bcommit;\s*$/i, "0032 must apply atomically inside an explicit transaction");
+assert.match(appzposGetOrders, /unique \(provider, provider_store_id, order_reference\)/i, "0032 must enforce provider order idempotency");
+assert.match(appzposGetOrders, /unique \(provider, store_id\)/i, "0032 must keep one provider store ID per internal store");
+assert.match(appzposGetOrders, /order_status in \('PENDING', 'PAID', 'COMPLETED', 'CANCELLED'\)/i, "0032 must preserve the documented APPZPOS states");
+assert.match(appzposGetOrders, /referral_match_status in \('none', 'matched', 'unknown', 'inactive'\)/i, "0032 must preserve observable unmatched referrals");
+assert.match(appzposGetOrders, /v_count >= 12/i, "0032 must enforce the conservative shared polling reservation cap");
+assert.match(appzposGetOrders, /p_requested_to > p_requested_from \+ interval '5 days'/i, "0032 must enforce the supplier's maximum five-day range");
+assert.doesNotMatch(appzposGetOrders, /insert into public\.partner_commission_ledger|commission_reversal|payout/i, "0032 must reuse the existing commission rule and must not invent reversal or payout rules");
+assert.match(appzposGetOrders, /'grossAmount', round\(p_subtotal_minor::numeric \/ 100, 2\)/i, "0032 commission eligibility must pass APPZPOS subTotal without recalculation");
+
 console.log("Canonical migration chain source checks passed.");
+

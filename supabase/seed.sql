@@ -90,4 +90,3 @@ begin
       updated_at = now();
 end;
 $$;
-
