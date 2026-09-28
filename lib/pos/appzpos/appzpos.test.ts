@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildAppzposGetOrdersRequest, buildAppzposTokenRequest, getAppzposAccessToken, getAppzposOrders } from "./client";
 import { parseAppzposGetOrdersResponse, parseAppzposTokenResponse } from "./schema";
 import { pollAppzposOrders } from "./poller";
+import { appzposTransactionId } from "./identity";
 import { decryptAppzposToken, encryptAppzposToken } from "./token-crypto";
 import { formatAppzposSingaporeDateTime, parseAppzposSingaporeTimestamp, splitAppzposWindows } from "./time";
 
@@ -115,6 +116,35 @@ describe("APPZPOS GetOrders", () => {
       { fetchOrders: async () => parseAppzposGetOrdersResponse({ orders }), upsertOrder: async (write) => { writes.push(write); } }
     );
     expect(writes.map(({ orderReference, referralCode, itemDiscountMinor }) => [orderReference, referralCode, itemDiscountMinor])).toEqual(fixtures);
+  });
+
+  it("uses store and order together when matching commissions", () => {
+    expect(appzposTransactionId("STORE-A", "OR822")).toBe("STORE-A:OR822");
+    expect(appzposTransactionId("STORE-B", "OR822")).not.toBe(appzposTransactionId("STORE-A", "OR822"));
+  });
+
+  it("stores only approved item and payment fields, omitting customer notes and unknown payload fields", async () => {
+    const order = parseAppzposGetOrdersResponse({ orders: [{
+      ...baseOrder,
+      customerInfo: { mobile: "99999999" },
+      paymentInfo: [{ ...baseOrder.paymentInfo[0], remarks: "private payment note", cardNumber: "sensitive" }],
+      itemList: [{ ...baseOrder.itemList[0], remarks: "private customer note", customerName: "sensitive", modifiers: [
+        { id: "MOD-1", modifierName: "Pearls", quantity: 1, additionalPrice: 50, customerNote: "sensitive" }
+      ] }]
+    }] })[0];
+    let persisted: unknown;
+    await pollAppzposOrders(
+      { storeID: "STORE-A", fromDateTime: "2026-06-19 00:00:00.000", toDateTime: "2026-06-19 23:59:59.999" },
+      { fetchOrders: async () => [order], upsertOrder: async (write) => { persisted = write; } }
+    );
+    const text = JSON.stringify(persisted);
+    expect(text).not.toContain("private");
+    expect(text).not.toContain("sensitive");
+    expect(text).not.toContain("99999999");
+    expect(persisted).toMatchObject({
+      paymentInfo: [{ paymentType: "CARD", paymentAmount: 4500 }],
+      itemList: [{ itemName: "Tea", modifiers: [{ modifierName: "Pearls", additionalPrice: 50 }] }]
+    });
   });
 });
 
