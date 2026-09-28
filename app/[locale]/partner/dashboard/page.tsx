@@ -3,6 +3,7 @@ import { CopyPartnerLink } from "@/components/partner/copy-partner-link";
 import { PartnerReferralQr } from "@/components/partner/partner-referral-qr";
 import type { Locale } from "@/lib/constants";
 import { getPartnerReferralUrl } from "@/lib/partners/referral-url";
+import { appzposTransactionId } from "@/lib/pos/appzpos/identity";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -35,11 +36,15 @@ export default async function PartnerDashboard({ params, searchParams }: { param
   const rows = (data ?? []) as unknown as Order[];
   const completed = rows.filter((row) => row.order_status === "PAID" || row.order_status === "COMPLETED");
 
-  const { data: transactions } = await client.from("pos_transactions").select("id,pos_order_id,partner_commission_ledger(reward_amount)").in("pos_order_id", completed.length ? completed.map((row) => row.order_reference) : ["__none__"]);
+  const { data: transactions, error: transactionsError } = await client.from("pos_transactions")
+    .select("pos_transaction_id,partner_commission_ledger(reward_amount)")
+    .eq("provider", "appzpos")
+    .in("pos_transaction_id", completed.length ? completed.map((row) => appzposTransactionId(row.provider_store_id, row.order_reference)) : ["__none__"]);
+  if (transactionsError) throw new Error("Unable to load APPZPOS partner commissions.");
   const commission = new Map<string, number>();
-  for (const transaction of transactions ?? []) commission.set(transaction.pos_order_id ?? "", (transaction.partner_commission_ledger ?? []).reduce((sum: number, entry: { reward_amount: number }) => sum + Number(entry.reward_amount), 0));
+  for (const transaction of transactions ?? []) commission.set(transaction.pos_transaction_id ?? "", (transaction.partner_commission_ledger ?? []).reduce((sum: number, entry: { reward_amount: number }) => sum + Number(entry.reward_amount), 0));
   const total = (key: keyof Pick<Order, "cup_quantity" | "subtotal_minor" | "discount_minor" | "item_discount_minor" | "coupon_discount_minor" | "total_payable_minor">) => completed.reduce((sum, row) => sum + Number(row[key]), 0);
-  const commissionTotal = completed.reduce((sum, row) => sum + (commission.get(row.order_reference) ?? 0), 0);
+  const commissionTotal = completed.reduce((sum, row) => sum + (commission.get(appzposTransactionId(row.provider_store_id, row.order_reference)) ?? 0), 0);
   const referralUrl = getPartnerReferralUrl(partner?.partner_code ?? "");
 
   return <main className="min-h-screen bg-paper px-5 py-12 text-forest md:px-8"><div className="mx-auto max-w-7xl">
@@ -48,7 +53,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
     <form className="mt-8 grid gap-4 bg-white p-5 md:grid-cols-5"><label>From<input className="mt-1 w-full border p-2" defaultValue={from} name="from" type="date" /></label><label>To (exclusive)<input className="mt-1 w-full border p-2" defaultValue={to} name="to" type="date" /></label><label>Store<input className="mt-1 w-full border p-2" defaultValue={searchParams.store} name="store" placeholder="Store UUID" /></label><label>Status<select className="mt-1 w-full border p-2" defaultValue={searchParams.status ?? ""} name="status"><option value="">All</option>{["PENDING","PAID","COMPLETED","CANCELLED"].map((status) => <option key={status}>{status}</option>)}</select></label><button className="self-end bg-forest p-2 text-white">Apply filters</button></form>
     <p className="mt-3 text-sm text-ink/55">Use the date filter for Today, This Week, This Month or Lifetime reporting.</p>
     <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[["Order count", completed.length], ["Cups purchased", total("cup_quantity")], ["Gross eligible sales", money(total("subtotal_minor"))], ["Item discount", money(total("item_discount_minor"))], ["Order discount / Customer discounts", money(total("discount_minor"))], ["Coupon discount", money(total("coupon_discount_minor"))], ["Paid sales", money(total("total_payable_minor"))], ["Partner commission earned", `S$${commissionTotal.toFixed(2)}`]].map(([label,value]) => <div className="bg-white p-5" key={label}><div className="text-xs font-bold uppercase tracking-wider text-ink/45">{label}</div><div className="mt-2 text-2xl">{value}</div></div>)}</section>
-    <div className="mt-10 overflow-x-auto"><table className="w-full min-w-[1200px] bg-white text-left"><thead><tr><th className="p-4">Order</th><th>Date/time (SGT)</th><th>Partner</th><th>Store</th><th>Status</th><th>Products</th><th>Cups</th><th>Item discount</th><th>Order discount</th><th>Coupon</th><th>Paid</th><th>Commission</th></tr></thead><tbody>{rows.map((row) => <tr className="border-t align-top" key={row.id}><td className="p-4">{row.order_reference}</td><td>{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })}</td><td>{row.partners?.partner_name ?? row.referral_code ?? "-"}</td><td>{row.stores?.name ?? row.provider_store_id}</td><td>{row.order_status}</td><td>{row.item_list.map((item) => `${item.quantity ?? 0}× ${item.itemName ?? "Item"}`).join(", ") || "-"}</td><td>{row.cup_quantity}</td><td>{money(row.item_discount_minor)}</td><td>{money(row.discount_minor)}</td><td>{money(row.coupon_discount_minor)}</td><td>{money(row.total_payable_minor)}</td><td>S${(commission.get(row.order_reference) ?? 0).toFixed(2)}</td></tr>)}{!rows.length ? <tr><td className="p-6 text-ink/55" colSpan={12}>No transactions match these filters.</td></tr> : null}</tbody></table></div>
+    <div className="mt-10 overflow-x-auto"><table className="w-full min-w-[1200px] bg-white text-left"><thead><tr><th className="p-4">Order</th><th>Date/time (SGT)</th><th>Partner</th><th>Store</th><th>Status</th><th>Products</th><th>Cups</th><th>Item discount</th><th>Order discount</th><th>Coupon</th><th>Paid</th><th>Commission</th></tr></thead><tbody>{rows.map((row) => <tr className="border-t align-top" key={row.id}><td className="p-4">{row.order_reference}</td><td>{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })}</td><td>{row.partners?.partner_name ?? row.referral_code ?? "-"}</td><td>{row.stores?.name ?? row.provider_store_id}</td><td>{row.order_status}</td><td>{row.item_list.map((item) => `${item.quantity ?? 0}× ${item.itemName ?? "Item"}`).join(", ") || "-"}</td><td>{row.cup_quantity}</td><td>{money(row.item_discount_minor)}</td><td>{money(row.discount_minor)}</td><td>{money(row.coupon_discount_minor)}</td><td>{money(row.total_payable_minor)}</td><td>S${(commission.get(appzposTransactionId(row.provider_store_id, row.order_reference)) ?? 0).toFixed(2)}</td></tr>)}{!rows.length ? <tr><td className="p-6 text-ink/55" colSpan={12}>No transactions match these filters.</td></tr> : null}</tbody></table></div>
   </div></main>;
 }
 
