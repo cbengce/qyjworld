@@ -3,10 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { Locale } from "@/lib/constants";
-import { finalMenuItems } from "@/lib/final-menu-items";
 import type { MenuItem } from "@/lib/menu-types";
-
-const signatureNames = ["Luna Tide", "Night Nectar", "Evenfall"] as const;
 
 function displayPrimaryName(item: MenuItem, locale: Locale) {
   return locale === "zh" ? item.name_zh || item.name_en : item.name_en;
@@ -27,7 +24,7 @@ function displayCategory(item: MenuItem, locale: Locale) {
 }
 
 function isComingSoon(item: MenuItem) {
-  return item.name_en.toLowerCase() === "golden tide";
+  return item.availability_status === "coming_soon";
 }
 
 function formatPrice(price: number | null, item: MenuItem, locale: Locale) {
@@ -41,10 +38,6 @@ function formatPrice(price: number | null, item: MenuItem, locale: Locale) {
     currency: "SGD",
     minimumFractionDigits: 2
   }).format(price);
-}
-
-function isSignature(name: string) {
-  return signatureNames.some((signature) => name.toLowerCase().includes(signature.toLowerCase()));
 }
 
 function ProductArtwork({ context = "catalogue", item }: { context?: "catalogue" | "featured"; item: MenuItem }) {
@@ -74,9 +67,9 @@ function ProductArtwork({ context = "catalogue", item }: { context?: "catalogue"
   );
 }
 
-function SignatureSpotlight({ locale }: { locale: Locale }) {
+function SignatureSpotlight({ items, locale }: { items: MenuItem[]; locale: Locale }) {
   const zh = locale === "zh";
-  const signatureItems = finalMenuItems.filter((item) => isSignature(item.name_en));
+  const signatureItems = items.filter((item) => item.is_signature);
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -145,7 +138,7 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
             </p>
           </div>
           <div className="mt-12">
-            <SignatureSpotlight locale={locale} />
+        <SignatureSpotlight items={items} locale={locale} />
           </div>
         </div>
       </section>
@@ -187,7 +180,7 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
               const secondaryName = displaySecondaryName(item, locale);
               const description = displayDescription(item, locale);
               const memberHasBenefit = item.regular_price !== null && item.member_price !== null && item.member_price < item.regular_price;
-              const signature = isSignature(item.name_en);
+              const signature = item.is_signature;
               const comingSoon = isComingSoon(item);
 
               return (
@@ -247,3 +240,4 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
     </div>
   );
 }
+
