@@ -8,6 +8,9 @@ import { AscendCommunityCard } from "@/components/community/ascend-community-car
 import { PromotionCardImage } from "@/components/promotions/promotion-card-image";
 import { ButtonLink } from "@/components/ui";
 import { StructuredData } from "@/components/structured-data";
+import { getPrimaryStore } from "@/lib/stores";
+import { effectiveStoreHoursForDate, formatEffectiveStoreHours, storeAddressLines, storeDirectionsUrl, storeMapEmbedUrl } from "@/lib/store-types";
+import { getMenuItems } from "@/lib/menu";
 
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   return createPageMetadata({
@@ -51,33 +54,13 @@ const teaCategories = [
   }
 ];
 
-const signatureDrinks = [
-  {
-    nameZh: "月汐",
-    nameEn: "LUNA TIDE",
-    note: "Osmanthus jasmine fizz with jasmine xue ya tea, osmanthus jelly, lemon slice and osmanthus essence.",
-    image: "/assets/menu/01-luna-tide.PNG"
-  },
-  {
-    nameZh: "星津",
-    nameEn: "NIGHT NECTAR",
-    note: "Strawberry jasmine fizz with jasmine xue ya tea, strawberry and grape sparkle.",
-    image: "/assets/menu/02-night-nectar.PNG"
-  },
-  {
-    nameZh: "归岚",
-    nameEn: "EVENFALL",
-    note: "Berry milk jasmine with strawberry, light fresh milk and jasmine xue ya tea.",
-    image: "/assets/menu/03-evenfall.PNG"
-  }
-];
-
 const benefits = ["Daily Member Drink (24–30% OFF)", "Points", "Referral Rewards"];
 
 export default async function HomePage({ params }: { params: { locale: Locale } }) {
-  const directionsUrl =
-    "https://www.google.com/maps/search/?api=1&query=401%20MacPherson%20Road%20%2301-23%20MacPherson%20Mall%20Singapore%20368125";
-  const homepagePromotions = await getHomepagePromotions();
+  const [homepagePromotions, store, featuredDrinks] = await Promise.all([getHomepagePromotions(), getPrimaryStore(), getMenuItems({ featuredOnly: true })]);
+  const addressLines = store ? storeAddressLines(store) : [];
+  const effectiveHours = store ? effectiveStoreHoursForDate(store) : null;
+  const hoursDisplay = effectiveHours ? formatEffectiveStoreHours(effectiveHours) : "";
 
   return (
     <main className="bg-[#f8f5ed]">
@@ -195,27 +178,27 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           </div>
 
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
-            {signatureDrinks.map((drink) => (
-              <article key={drink.nameEn} className="qyj-fade-up group overflow-hidden bg-white shadow-[0_28px_75px_rgba(10,24,20,0.08)] transition duration-300 hover:-translate-y-1">
+            {featuredDrinks.map((drink) => (
+              <article key={drink.id} className="qyj-fade-up group overflow-hidden bg-white shadow-[0_28px_75px_rgba(10,24,20,0.08)] transition duration-300 hover:-translate-y-1">
                 <div className="relative aspect-[4/5] overflow-hidden bg-[linear-gradient(180deg,#fbfaf6,#edf3ef)] p-5">
-                  <Image
-                    src={drink.image}
-                    alt={`${drink.nameEn} Qing Yun Jian product artwork`}
-                    title={`${drink.nameEn} sparkling tea by Qing Yun Jian`}
+                  {drink.image_url ? <Image
+                    src={drink.image_url}
+                    alt={`${drink.name_en} Qing Yun Jian product artwork`}
+                    title={`${drink.name_en} sparkling tea by Qing Yun Jian`}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="p-3 object-contain transition duration-500 group-hover:scale-[1.015]"
-                  />
+                  /> : <div className="grid h-full place-items-center font-serif text-3xl text-forest">{drink.name_en}</div>}
                 </div>
                 <div className="p-7 md:p-8">
                   <div className="flex items-start justify-between gap-5">
                     <div>
-                      <p className="font-serif text-3xl font-semibold text-forest">{drink.nameZh}</p>
-                      <h3 className="mt-2 text-xs font-bold uppercase tracking-[0.22em] text-gold">{drink.nameEn}</h3>
+                      <p className="font-serif text-3xl font-semibold text-forest">{drink.name_zh}</p>
+                      <h3 className="mt-2 text-xs font-bold uppercase tracking-[0.22em] text-gold">{drink.name_en}</h3>
                     </div>
                     <span className="mt-1 h-px min-w-12 flex-1 bg-forest/10" />
                   </div>
-                  <p className="mt-5 leading-7 text-forest/60">{drink.note}</p>
+                  <p className="mt-5 leading-7 text-forest/60">{drink.description_en}</p>
                   <ButtonLink
                     className="mt-7 rounded-full border border-forest/20 px-6 text-forest hover:-translate-y-0.5 hover:border-forest"
                     href={localizedPath(params.locale, "/menu")}
@@ -345,14 +328,14 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         </div>
       </section>
 
-      <section className="bg-white px-5 py-24 md:px-8 md:py-32">
+      {store && <section className="bg-white px-5 py-24 md:px-8 md:py-32">
         <div className="qyj-fade-up mx-auto grid max-w-7xl gap-12 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] xl:items-stretch">
           <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">VISIT US</p>
             <h2 className="mt-5 font-serif text-[2.4rem] font-semibold leading-[0.98] text-forest md:text-[3.6rem]">
               Visit Qing Yun Jian
               <br />
-              at MacPherson Mall
+              at {store.name}
             </h2>
           </div>
 
@@ -361,39 +344,32 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Address</p>
                 <p className="mt-4 font-serif text-4xl font-semibold leading-[1.22] text-forest md:text-[2.5rem]">
-                  <span>401 MacPherson Road, #01-23</span>
-                  <br />
-                  <span className="md:text-[2.125rem]">MacPherson Mall</span>
-                  <br />
-                  <span className="md:text-[2.125rem]">Singapore 368125</span>
+                  {addressLines.map((line, index) => <span className={index ? "block md:text-[2.125rem]" : "block"} key={line}>{line}</span>)}
                 </p>
               </div>
-              <div className="min-w-0 text-sm font-semibold leading-7 text-forest/65 lg:justify-self-end lg:text-right">
+              {hoursDisplay && <div className="min-w-0 text-sm font-semibold leading-7 text-forest/65 lg:justify-self-end lg:text-right">
                 <p className="text-xs uppercase tracking-[0.18em] text-gold">Opening Hours</p>
-                <p className="mt-4">
-                  Daily
-                  <br />
-                  11:00 AM – 9:00 PM
-                </p>
-              </div>
+                <p className="mt-4">Today: {hoursDisplay}</p>
+              </div>}
             </div>
             <div className="relative aspect-[16/10] min-h-[18rem] w-full min-w-0 overflow-hidden">
               <iframe
                 className="absolute inset-0 h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps?q=401%20MacPherson%20Road%20%2301-23%20MacPherson%20Mall%20Singapore%20368125&output=embed"
-                title="Google Map showing Qing Yun Jian at MacPherson Mall"
+                src={storeMapEmbedUrl(store)}
+                title={`Google Map showing Qing Yun Jian at ${store.name}`}
               />
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <ButtonLink className="rounded-full bg-forest px-8 text-white hover:-translate-y-0.5 hover:bg-ink" href={directionsUrl}>
+              <ButtonLink className="rounded-full bg-forest px-8 text-white hover:-translate-y-0.5 hover:bg-ink" href={storeDirectionsUrl(store)}>
                 Plan Your Visit
               </ButtonLink>
             </div>
           </div>
         </div>
-      </section>
+      </section>}
     </main>
   );
 }
+
