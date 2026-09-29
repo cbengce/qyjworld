@@ -24,8 +24,8 @@ begin
       tagline = excluded.tagline,
       core_line = excluded.core_line;
 
-  insert into public.stores (brand_id, store_code, name, address_line_1, address_line_2, city, country_code, postal_code, timezone, currency_code)
-  values (brand_id_value, 'QYJ-MPM-001', 'MacPherson Mall', '401 MacPherson Road', 'MacPherson Mall', 'Singapore', 'SG', '368125', 'Asia/Singapore', 'SGD')
+  insert into public.stores (brand_id, store_code, name, address_line_1, address_line_2, city, country_code, postal_code, timezone, currency_code, public_slug)
+  values (brand_id_value, 'QYJ-MPM-001', 'MacPherson Mall', '401 MacPherson Road', 'MacPherson Mall', 'Singapore', 'SG', '368125', 'Asia/Singapore', 'SGD', 'macpherson-mall')
   on conflict (brand_id, store_code) do update
   set name = excluded.name,
       address_line_1 = excluded.address_line_1,
