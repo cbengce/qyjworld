@@ -150,7 +150,7 @@ const { buildShareCaption } = require(join(process.cwd(), "lib", "ascend", "shar
 for (const profile of Object.values(ascendProfiles)) {
   const captionUrl = `https://qyjworld.com/en/ascend?ref=0123456789abcdef`;
   const caption = buildShareCaption(profile, captionUrl);
-  assert.match(caption, /I discovered where I belong\./, `${profile.slug} caption should use the approved opening`);
+  assert.match(caption, /I discovered my place\./, `${profile.slug} caption should use the approved opening`);
   assert.match(caption, new RegExp(profile.nameEn), `${profile.slug} caption should include the profile name`);
   assert.match(caption, new RegExp(profile.title), `${profile.slug} caption should include the approved theme`);
   assert.match(caption, new RegExp(profile.quote.replaceAll(".", "\\.")), `${profile.slug} caption should include its statement`);
