@@ -79,9 +79,17 @@ export async function runAppzposPolling(input: { from?: Date; to?: Date } = {}) 
           }
         });
         processed += result.processed;
-        await service.rpc("complete_pos_poll_request", { p_request_id: requestId, p_succeeded: true, p_response_status: 200, p_error_message: null });
+        const { error: completionError } = await service.rpc("complete_pos_poll_request", {
+          p_request_id: requestId, p_succeeded: true, p_response_status: 200, p_error_message: null
+        });
+        if (completionError) throw new Error(`Unable to complete APPZPOS poll: ${completionError.message}`);
       } catch (error) {
-        await service.rpc("complete_pos_poll_request", { p_request_id: requestId, p_succeeded: false, p_response_status: null, p_error_message: safeError(error) });
+        const { error: failureRecordError } = await service.rpc("complete_pos_poll_request", {
+          p_request_id: requestId, p_succeeded: false, p_response_status: null, p_error_message: safeError(error)
+        });
+        if (failureRecordError) {
+          throw new AggregateError([error, failureRecordError], "APPZPOS poll and failure recording both failed.");
+        }
         throw error;
       }
     }
