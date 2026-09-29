@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - appzpos-db-ci
+      - appzpos-full-validation
   workflow_dispatch:
 
 permissions:
