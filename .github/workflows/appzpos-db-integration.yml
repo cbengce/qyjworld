@@ -57,7 +57,12 @@ jobs:
 
       - name: Check patch whitespace
         if: always()
-        run: git diff --check HEAD^ HEAD
+        run: |
+          if git rev-parse -q --verify HEAD^2 >/dev/null; then
+            git diff --check HEAD^2 HEAD
+          else
+            git diff --check HEAD^ HEAD
+          fi
 
   appzpos-database:
     name: Canonical migrations and APPZPOS SQL/RLS tests
