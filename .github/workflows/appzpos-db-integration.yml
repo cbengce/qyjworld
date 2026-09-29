@@ -19,7 +19,7 @@ jobs:
       - name: Check out test branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -57,12 +57,7 @@ jobs:
 
       - name: Check patch whitespace
         if: always()
-        run: |
-          if git rev-parse -q --verify HEAD^2 >/dev/null; then
-            git diff --check HEAD^2 HEAD
-          else
-            git diff --check HEAD^ HEAD
-          fi
+        run: git diff --check "$(git merge-base origin/main HEAD)" HEAD
 
   appzpos-database:
     name: Canonical migrations and APPZPOS SQL/RLS tests
