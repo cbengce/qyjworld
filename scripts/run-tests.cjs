@@ -106,14 +106,14 @@ assert.equal(REFERRAL_CODE_PATTERN.test("not-a-referral"), false, "invalid refer
 const { ascendCardVisuals } = require(join(process.cwd(), "lib", "ascend", "card-visuals.ts"));
 const { ascendProfiles } = require(join(process.cwd(), "lib", "ascend", "profiles.ts"));
 const expectedIdentities = {
-  "luna-tide": ["001 / 008", "LUNA TIDE", "鏈堟睈", "CALM CLARITY", "Moon Lake"],
-  "night-nectar": ["002 / 008", "NIGHT NECTAR", "鏄熸触", "TRANSFORMATIVE ALLURE", "Rain Pavilion"],
-  evenfall: ["003 / 008", "EVENFALL", "褰掑矚", "GENTLE WARMTH", "Autumn Forest"],
-  clearsky: ["004 / 008", "CLEARSKY", "鐮翠簯", "CLEAR RESOLVE", "Cloud Valley"],
-  monsoon: ["005 / 008", "MONSOON", "闀块", "RESTLESS MOMENTUM", "Highland Rain"],
-  drift: ["006 / 008", "DRIFT", "浜戦殣", "QUIET FREEDOM", "Ancient Tea Path"],
-  stillearth: ["007 / 008", "STILLEARTH", "灞辨", "GROUNDED STRENGTH", "Winter Silence"],
-  cloudlift: ["008 / 008", "CLOUDLIFT", "鎵舵憞", "RISING POSSIBILITY", "Highland Sunrise"]
+  "luna-tide": ["001 / 008", "LUNA TIDE", "月汐", "CALM CLARITY", "Moon Lake"],
+  "night-nectar": ["002 / 008", "NIGHT NECTAR", "星津", "TRANSFORMATIVE ALLURE", "Rain Pavilion"],
+  evenfall: ["003 / 008", "EVENFALL", "归岚", "GENTLE WARMTH", "Autumn Forest"],
+  clearsky: ["004 / 008", "CLEARSKY", "破云", "CLEAR RESOLVE", "Cloud Valley"],
+  monsoon: ["005 / 008", "MONSOON", "长风", "RESTLESS MOMENTUM", "Highland Rain"],
+  drift: ["006 / 008", "DRIFT", "云隐", "QUIET FREEDOM", "Ancient Tea Path"],
+  stillearth: ["007 / 008", "STILLEARTH", "山止", "GROUNDED STRENGTH", "Winter Silence"],
+  cloudlift: ["008 / 008", "CLOUDLIFT", "扶摇", "RISING POSSIBILITY", "Highland Sunrise"]
 };
 for (const [slug, [edition, nameEn, nameZh, title, motif]] of Object.entries(expectedIdentities)) {
   assert.equal(ascendCardVisuals[slug].edition, edition, `${slug} should use the approved edition`);
@@ -141,21 +141,22 @@ assert.match(resultSource, /disabled=\{generating\}/, "Create My Card should be 
 assert.doesNotMatch(resultSource, /disabled=\{[^}]*referralCode/, "referral availability must not disable card generation");
 assert.doesNotMatch(resultSource, /if \(!referralCode\).*return/, "referral failure must not short-circuit card generation");
 assert.match(resultSource, /finally \{ setGenerating\(false\); \}/, "generation state must reset after success or failure");
-assert.match(resultSource, /Creating My Card鈥?, "the result should expose visible generation progress");
+assert.match(resultSource, /Creating My Card…/, "the result should expose visible generation progress");
 assert.match(resultSource, /Card creation failed\. Please try again\./, "rendering failures should be recoverable");
 assert.match(resultSource, /Referral features are temporarily unavailable/, "referral failure should use non-blocking messaging");
 assert.match(resultSource, /href=\{`\/\$\{locale\}\/ascend`\}/, "Try Again should return to a fresh quiz");
 
-const { buildShareCaption } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
+const { buildShareCaption, buildShareText } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
 for (const profile of Object.values(ascendProfiles)) {
   const captionUrl = `https://qyjworld.com/en/ascend?ref=0123456789abcdef`;
   const caption = buildShareCaption(profile, captionUrl);
-  assert.match(caption, /I discovered where I belong\./, `${profile.slug} caption should use the approved opening`);
+  const shareText = buildShareText(profile, captionUrl);
+  assert.match(caption, /I discovered my place\./, `${profile.slug} caption should use the approved opening`);
   assert.match(caption, new RegExp(profile.nameEn), `${profile.slug} caption should include the profile name`);
   assert.match(caption, new RegExp(profile.title), `${profile.slug} caption should include the approved theme`);
   assert.match(caption, new RegExp(profile.quote.replaceAll(".", "\\.")), `${profile.slug} caption should include its statement`);
   assert.match(caption, /https:\/\/qyjworld\.com\/en\/ascend\?ref=0123456789abcdef/, `${profile.slug} caption should include the referral URL`);
-  for (const hashtag of ["#QingYunJian", "#BornToAscend", "#AscendTeaProfile", "#TeaJourney", "#TeaPersonality"]) assert.match(caption, new RegExp(hashtag), `${profile.slug} caption should include ${hashtag}`);
+  for (const hashtag of ["#QingYunJian", "#BornToAscend", "#AscendTeaProfile", "#TeaJourney", "#TeaPersonality"]) assert.match(shareText, new RegExp(hashtag), `${profile.slug} caption should include ${hashtag}`);
   assert.doesNotMatch(caption, /plac(?!e)/i, `${profile.slug} caption must not contain the historical typo`);
 }
 assert.match(resultSource, /Caption copied\. Ready to paste into Instagram, TikTok or Xiaohongshu\./, "Copy Caption should provide useful confirmation");
