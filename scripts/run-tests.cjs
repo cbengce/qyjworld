@@ -146,16 +146,17 @@ assert.match(resultSource, /Card creation failed\. Please try again\./, "renderi
 assert.match(resultSource, /Referral features are temporarily unavailable/, "referral failure should use non-blocking messaging");
 assert.match(resultSource, /href=\{`\/\$\{locale\}\/ascend`\}/, "Try Again should return to a fresh quiz");
 
-const { buildShareCaption } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
+const { buildShareCaption, buildShareText } = require(join(process.cwd(), "lib", "ascend", "share.ts"));
 for (const profile of Object.values(ascendProfiles)) {
   const captionUrl = `https://qyjworld.com/en/ascend?ref=0123456789abcdef`;
   const caption = buildShareCaption(profile, captionUrl);
+  const shareText = buildShareText(profile, captionUrl);
   assert.match(caption, /I discovered my place\./, `${profile.slug} caption should use the approved opening`);
   assert.match(caption, new RegExp(profile.nameEn), `${profile.slug} caption should include the profile name`);
   assert.match(caption, new RegExp(profile.title), `${profile.slug} caption should include the approved theme`);
   assert.match(caption, new RegExp(profile.quote.replaceAll(".", "\\.")), `${profile.slug} caption should include its statement`);
   assert.match(caption, /https:\/\/qyjworld\.com\/en\/ascend\?ref=0123456789abcdef/, `${profile.slug} caption should include the referral URL`);
-  for (const hashtag of ["#QingYunJian", "#BornToAscend", "#AscendTeaProfile", "#TeaJourney", "#TeaPersonality"]) assert.match(caption, new RegExp(hashtag), `${profile.slug} caption should include ${hashtag}`);
+  for (const hashtag of ["#QingYunJian", "#BornToAscend", "#AscendTeaProfile", "#TeaJourney", "#TeaPersonality"]) assert.match(shareText, new RegExp(hashtag), `${profile.slug} caption should include ${hashtag}`);
   assert.doesNotMatch(caption, /plac(?!e)/i, `${profile.slug} caption must not contain the historical typo`);
 }
 assert.match(resultSource, /Caption copied\. Ready to paste into Instagram, TikTok or Xiaohongshu\./, "Copy Caption should provide useful confirmation");
