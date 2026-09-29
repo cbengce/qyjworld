@@ -97,4 +97,3 @@ export async function runAppzposPolling(input: { from?: Date; to?: Date } = {}) 
   }
   return results;
 }
-

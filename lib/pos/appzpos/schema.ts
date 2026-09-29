@@ -73,4 +73,3 @@ export function parseAppzposGetOrdersResponse(payload: unknown): AppzposOrder[] 
 export function isPaidAppzposStatus(status: AppzposOrder["orderDetails"]["orderStatus"]) {
   return status === "PAID" || status === "COMPLETED";
 }
-

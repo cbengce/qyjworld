@@ -32,4 +32,3 @@ export function decryptAppzposToken(token: EncryptedAppzposToken, encodedKey: st
     decipher.final()
   ]).toString("utf8");
 }
-

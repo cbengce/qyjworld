@@ -26,4 +26,3 @@ async function handle(request: NextRequest) {
 
 export const GET = handle;
 export const POST = handle;
-

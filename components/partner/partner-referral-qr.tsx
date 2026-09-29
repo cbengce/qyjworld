@@ -72,4 +72,3 @@ export function PartnerReferralQr({ partnerCode, url }: { partnerCode: string; u
     </div>
   );
 }
-

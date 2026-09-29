@@ -185,4 +185,3 @@ $$;
 reset role;
 
 rollback;
-

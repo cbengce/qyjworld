@@ -106,4 +106,3 @@ assert.doesNotMatch(appzposGetOrders, /insert into public\.partner_commission_le
 assert.match(appzposGetOrders, /'grossAmount', round\(p_subtotal_minor::numeric \/ 100, 2\)/i, "0032 commission eligibility must pass APPZPOS subTotal without recalculation");
 
 console.log("Canonical migration chain source checks passed.");
-

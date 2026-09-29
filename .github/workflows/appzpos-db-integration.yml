@@ -90,4 +90,3 @@ jobs:
       - name: Stop disposable Supabase
         if: always()
         run: supabase stop --no-backup
-

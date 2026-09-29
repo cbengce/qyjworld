@@ -28,4 +28,3 @@ export function splitAppzposWindows(from: Date, to: Date): AppzposPollWindow[] {
   }
   return windows;
 }
-

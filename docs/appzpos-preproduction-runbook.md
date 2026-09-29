@@ -119,4 +119,3 @@ This plan requires separate approval and real credentials; it must not be run du
 7. Merge the reviewed cron entry into root `vercel.json`, deploy, and confirm it appears in Vercel Settings > Cron Jobs.
 8. Observe the first two invocations and verify leases, checkpoints, counts, status codes and sanitized logs.
 9. Keep a named owner and alert path for failed polls, unknown referral codes and stale checkpoints.
-

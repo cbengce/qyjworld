@@ -63,4 +63,3 @@ export type AppzposTokenResponse = {
 };
 
 export type AppzposPollWindow = { from: Date; to: Date };
-

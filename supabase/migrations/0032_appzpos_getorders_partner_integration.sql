@@ -348,4 +348,3 @@ grant execute on function public.complete_pos_poll_request(uuid, boolean, intege
 grant execute on function public.upsert_appzpos_order(text, text, text, text, timestamptz, text, bigint, bigint, bigint, bigint, bigint, integer, jsonb, jsonb, text) to service_role;
 
 commit;
-
