@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { Logo } from "@/components/logo";
+import { logoutAccount } from "@/app/actions";
 
-export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: string | null }) {
+export type HeaderAccount = { label: string; email: string; href: string };
+
+export function Header({ locale, orderingUrl, account }: { locale: Locale; orderingUrl?: string | null; account?: HeaderAccount | null }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const otherLocale = locale === "en" ? "zh" : "en";
@@ -62,7 +65,16 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-          <Link
+          {account ? <>
+            <Link href={account.href} title={account.email} className={`focus-ring flex min-h-11 max-w-[150px] flex-col justify-center px-2 text-xs font-semibold sm:max-w-[200px] ${transparentOnHero ? "text-white" : "text-forest"}`}>
+              <span>{account.label}</span>
+              <span className="truncate text-[10px] font-normal opacity-65">{account.email}</span>
+            </Link>
+            <form action={logoutAccount}>
+              <input name="locale" type="hidden" value={locale} />
+              <button className={`focus-ring min-h-11 rounded-full border px-3 text-xs font-bold sm:px-5 sm:text-sm ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`} type="submit">{locale === "zh" ? "退出登录" : "Logout"}</button>
+            </form>
+          </> : <><Link
             className={`hidden text-xs font-bold uppercase tracking-[0.14em] transition duration-300 hover:-translate-y-px sm:inline ${
               transparentOnHero ? "text-white/60 hover:text-white" : "text-forest/50 hover:text-forest"
             }`}
@@ -88,6 +100,7 @@ export function Header({ locale, orderingUrl }: { locale: Locale; orderingUrl?: 
           >
             Join Now
           </Link>
+          </>}
         </div>
       </div>
     </header>
