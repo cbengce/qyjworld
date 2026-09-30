@@ -6,6 +6,9 @@ const from = dateAtSingaporeMidnight("2026-09-01");
 const to = new Date("2026-09-30T04:34:00Z");
 const windows = buildWindows(from, to);
 assert.equal(windows.length, 6);
+const revisedWindows = buildWindows(dateAtSingaporeMidnight("2026-09-27"), to);
+assert.equal(revisedWindows.length, 1);
+assert.equal(revisedWindows[0].from.toISOString(), "2026-09-26T16:00:00.000Z");
 assert.deepEqual(windows[0].from, from);
 assert.deepEqual(windows.at(-1).to, to);
 for (let i = 0; i < windows.length; i++) {
