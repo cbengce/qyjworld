@@ -181,6 +181,15 @@ export async function logoutMember() {
   redirect("/en/login");
 }
 
+export async function logoutAccount(formData: FormData) {
+  const locale = formData.get("locale") === "zh" ? "zh" : "en";
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error("Unable to sign out. Please try again.");
+  revalidatePath("/", "layout");
+  redirect(`/${locale}/login`);
+}
+
 export async function logoutPartner() {
   const supabase = createClient();
   await supabase.auth.signOut();
