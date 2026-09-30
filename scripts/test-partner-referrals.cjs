@@ -80,10 +80,11 @@ for (const period of ["Today", "This Week", "This Month", "Lifetime"]) {
 for (const metric of ["Order count", "Cups purchased", "Gross eligible sales", "Customer discounts", "Paid sales", "Partner commission earned"]) {
   assert.match(dashboard, new RegExp(metric, "i"), `dashboard must include ${metric}`);
 }
-assert.match(referralUrl, /\/api\/partner\/route/, "canonical links must use the QYJ partner entry route");
+assert.match(referralUrl, /https:\/\/order\.qyjworld\.com\/Order\/12/, "canonical links must use the supplier-issued order page");
+assert.match(referralUrl, /"Referral_Code"/, "supplier referral parameter is case-sensitive");
 assert.match(adminPage, /getPartnerReferralUrl/, "Admin must use the canonical referral URL helper");
 assert.match(dashboard, /getPartnerReferralUrl/, "Partner dashboard must use the canonical referral URL helper");
-assert.match(partnerRouter, /buildOrderingUrl\(\{ partnerCode: partner\.partner_code, referralReference: reference \}\)/, "router must forward separate partner and referral identifiers");
+assert.match(partnerRouter, /getPartnerReferralUrl\(partner\.partner_code\)/, "legacy router must use the verified supplier referral format");
 assert.match(partnerRouter, /\.eq\("status", "active"\)\.is\("archived_at", null\)/, "archived partners must not create referral sessions");
 assert.match(adminActions, /requireAdminPermission\([^,]+, "settings\.manage"\)/, "sensitive partner maintenance must require settings.manage");
 assert.match(adminActions, /partner\.login_mapping\.(activate|deactivate)/, "login mapping changes must be audited");
