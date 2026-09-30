@@ -1,3 +1,4 @@
+import { PartnerOrderList, type PartnerOrder } from "@/components/partner/partner-order-list";
 import { CopyPartnerLink } from "@/components/partner/copy-partner-link";
 import { PartnerReferralQr } from "@/components/partner/partner-referral-qr";
 import type { Locale } from "@/lib/constants";
@@ -9,7 +10,7 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 type Search = { from?: string; to?: string; store?: string; partner?: string; status?: string; order?: string };
-type Order = { id: string; provider_store_id: string; store_id: string; order_reference: string; referral_code: string | null; partner_id: string | null; order_status: string; order_created_at: string; subtotal_minor: number; discount_minor: number; item_discount_minor: number; coupon_discount_minor: number; total_payable_minor: number; cup_quantity: number; item_list: Array<{ itemName?: string; quantity?: number }>; partners?: { partner_name?: string; partner_code?: string } | null; stores?: { name?: string } | null };
+type Order = PartnerOrder;
 const money = (minor: number) => `S$${(Number(minor) / 100).toFixed(2)}`;
 const validDate = (value?: string) => value && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : undefined;
 
@@ -56,7 +57,6 @@ export default async function PartnerDashboard({ params, searchParams }: { param
   const referralUrl = partner ? getPartnerReferralUrl(partner.partner_code) : null;
 
   const inputClass = "focus-ring mt-2 min-h-12 w-full rounded-xl border border-forest/15 bg-paper/40 px-3 py-2 text-base font-normal text-forest";
-  const commissionFor = (row: Order) => `S$${(commission.get(appzposTransactionId(row.provider_store_id, row.order_reference)) ?? 0).toFixed(2)}`;
   const summary = [
     ["Paid orders", completed.length], ["Cups purchased", total("cup_quantity")],
     ["Paid sales", money(total("total_payable_minor"))], ["Partner commission", `S$${commissionTotal.toFixed(2)}`]
@@ -90,19 +90,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
         <div className="mt-8 flex items-baseline justify-between gap-3"><h2 className="font-serif text-2xl font-semibold">Partner orders</h2><p className="text-sm text-ink/55">{rows.length} orders</p></div>
         {rows.length === 1000 ? <p className="mt-3 rounded-xl bg-white p-4 text-sm text-ink/65">Showing the latest 1,000 matching orders. Narrow the date range to see a complete period.</p> : null}
         <p className="mt-2 text-xs text-ink/55">Times shown in Singapore time. Summary includes paid and completed orders.</p>
-        <div className="mt-4 grid gap-3 xl:hidden">{rows.map((row) => (
-          <article className="rounded-2xl border border-forest/10 bg-white p-5 shadow-soft" key={row.id}>
-            <div className="flex items-start justify-between gap-3"><div><p className="text-lg font-bold">{row.order_reference}</p><p className="mt-1 text-sm text-ink/60">{row.partners?.partner_name ?? row.referral_code}</p></div><span className="rounded-full bg-paper px-3 py-1 text-xs font-bold">{row.order_status}</span></div>
-            <p className="mt-3 text-xs leading-5 text-ink/55">{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })} · {row.stores?.name ?? row.provider_store_id}</p>
-            <p className="mt-3 border-t border-forest/10 pt-3 text-sm leading-6">{(row.item_list ?? []).map((item) => `${item.quantity ?? 0}× ${item.itemName ?? "Item"}`).join(", ") || "No product details"}</p>
-            <dl className="mt-4 grid grid-cols-3 gap-3"><div><dt className="text-xs text-ink/55">Cups</dt><dd className="mt-1 font-bold">{row.cup_quantity}</dd></div><div><dt className="text-xs text-ink/55">Paid</dt><dd className="mt-1 font-bold">{money(row.total_payable_minor)}</dd></div><div><dt className="text-xs text-ink/55">Commission</dt><dd className="mt-1 font-bold">{commissionFor(row)}</dd></div></dl>
-            <details className="mt-4 text-sm"><summary className="cursor-pointer text-ink/55">Sales & discounts</summary><dl className="mt-3 grid grid-cols-2 gap-2"><dt>Gross sales</dt><dd>{money(row.subtotal_minor)}</dd><dt>Item discount</dt><dd>{money(row.item_discount_minor)}</dd><dt>Order discount</dt><dd>{money(row.discount_minor)}</dd><dt>Coupon discount</dt><dd>{money(row.coupon_discount_minor)}</dd></dl></details>
-          </article>
-        ))}</div>
-        <div className="mt-4 hidden overflow-x-auto rounded-2xl border border-forest/10 bg-white xl:block">
-          <table className="w-full min-w-[1200px] text-left text-sm"><thead className="bg-forest/5 text-xs text-ink/60"><tr>{["Order", "Date / time (SGT)", "Partner", "Store", "Status", "Cups", "Gross", "Item discount", "Order discount", "Coupon", "Paid", "Commission"].map((label) => <th className="px-3 py-4" key={label}>{label}</th>)}</tr></thead><tbody>{rows.map((row) => <tr className="border-t border-forest/10" key={row.id}><td className="px-3 py-4 font-bold">{row.order_reference}</td><td className="px-3 py-4">{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })}</td><td className="px-3 py-4">{row.partners?.partner_name ?? row.referral_code}</td><td className="px-3 py-4">{row.stores?.name ?? row.provider_store_id}</td><td className="px-3 py-4">{row.order_status}</td><td className="px-3 py-4">{row.cup_quantity}</td><td className="px-3 py-4">{money(row.subtotal_minor)}</td><td className="px-3 py-4">{money(row.item_discount_minor)}</td><td className="px-3 py-4">{money(row.discount_minor)}</td><td className="px-3 py-4">{money(row.coupon_discount_minor)}</td><td className="px-3 py-4">{money(row.total_payable_minor)}</td><td className="px-3 py-4 font-bold">{commissionFor(row)}</td></tr>)}</tbody></table>
-        </div>
-        {!rows.length ? <div className="mt-4 rounded-2xl bg-white p-8 text-center text-ink/55">No partner orders match these filters.</div> : null}
+        <PartnerOrderList rows={rows} commission={commission} />
       </div>
     </main>
   );
