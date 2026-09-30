@@ -49,12 +49,18 @@ async function main() {
   const guest = renderToStaticMarkup(React.createElement(Header, { locale: "en" }));
   assert.match(guest, />Login</);
   assert.match(guest, />Join Now</);
+  assert.match(guest, /href="\/en\/partner\/login"/);
+  assert.match(guest, /Partner Dashboard/);
   const signedIn = renderToStaticMarkup(React.createElement(Header, { locale: "en", account: { label: "Super Admin", email: "admin@example.com", href: "/en/admin" } }));
   assert.match(signedIn, />Super Admin</);
   assert.match(signedIn, /admin@example.com/);
   assert.match(signedIn, />Logout</);
   assert.doesNotMatch(signedIn, />Login</);
   assert.doesNotMatch(signedIn, />Join Now</);
+  assert.match(signedIn, /href="\/en\/partner\/login"/);
+  const chinese = renderToStaticMarkup(React.createElement(Header, { locale: "zh" }));
+  assert.match(chinese, /href="\/zh\/partner\/login"/);
+  assert.match(chinese, /合作伙伴后台/);
   console.log("Login experience checks passed: guest, member, super admin, revoked role, and header identity.");
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });
