@@ -17,10 +17,8 @@ export function getPublicSiteUrl() {
 }
 
 export function getPartnerReferralUrl(partnerCode: string) {
-  // These links are customer-facing, including when generated in a preview or locally.
-  const siteUrl = getPublicSiteUrl();
-  const url = publicUrl(process.env.PARTNER_ROUTER_BASE_URL, siteUrl)
-    ?? new URL("/api/partner/route", siteUrl);
-  url.searchParams.set("partner", partnerCode);
+  // Supplier-issued QR format verified from the owner's three original QR links.
+  const url = new URL("https://order.qyjworld.com/Order/12");
+  url.searchParams.set("Referral_Code", partnerCode.trim().toUpperCase());
   return url.toString();
 }
