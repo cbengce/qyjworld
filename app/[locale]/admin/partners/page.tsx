@@ -1,4 +1,4 @@
-import { addPartnerLoginMapping, archivePartner, deactivatePartnerLoginMapping, restorePartner, savePartner, updatePartnerCommercialRates, updatePartnerDetails } from "./actions";
+import { createPartnerLogin, addPartnerLoginMapping, archivePartner, deactivatePartnerLoginMapping, restorePartner, savePartner, updatePartnerCommercialRates, updatePartnerDetails } from "./actions";
 import { PartnerCommercialRateFields } from "@/components/admin/partner-commercial-rate-fields";
 import type { Locale } from "@/lib/constants";
 import { requireAdmin } from "@/lib/data";
@@ -26,6 +26,12 @@ export default async function AdminPartnersPage({
     .from("partners")
     .select("*,partner_users(id,auth_user_id,status),partner_referral_sessions(count),pos_transactions(id,payment_status,gross_amount),partner_commission_ledger(reward_amount)")
     .order("created_at", { ascending: false });
+  const accountEmails = new Map<string, string>();
+  const mappings = (partners ?? []).flatMap((partner) => partner.partner_users ?? []);
+  await Promise.all(mappings.map(async (mapping: { auth_user_id: string }) => {
+    const { data } = await service.auth.admin.getUserById(mapping.auth_user_id);
+    if (data.user?.email) accountEmails.set(mapping.auth_user_id, data.user.email);
+  }));
 
   return (
     <main className="min-h-screen bg-paper px-5 py-12 text-forest md:px-8">
@@ -110,13 +116,23 @@ export default async function AdminPartnersPage({
                       </form>
                       <div className="mt-4 w-72 border-t border-forest/10 pt-4">
                         <p className="font-bold">Partner Login Users</p>
-                        <div className="mt-2 grid gap-2">{(partner.partner_users ?? []).map((mapping: { id: string; auth_user_id: string; status: string }) => <div className="border p-2 text-xs" key={mapping.id}><p className="break-all">{mapping.auth_user_id}</p><p className="mt-1 capitalize text-forest/60">{mapping.status}</p>{mapping.status === "active" ? <form action={deactivatePartnerLoginMapping} className="mt-2"><input name="locale" type="hidden" value={params.locale} /><input name="partnerId" type="hidden" value={partner.id} /><input name="mappingId" type="hidden" value={mapping.id} /><button className="border border-forest/20 px-2 py-1" type="submit">Remove Access</button></form> : null}</div>)}</div>
+                        <div className="mt-2 grid gap-2">{(partner.partner_users ?? []).map((mapping: { id: string; auth_user_id: string; status: string }) => <div className="border p-2 text-xs" key={mapping.id}><p className="break-all">{accountEmails.get(mapping.auth_user_id) ?? "Account email unavailable"}</p><p className="mt-1 capitalize text-forest/60">{mapping.status}</p>{mapping.status === "active" ? <form action={deactivatePartnerLoginMapping} className="mt-2"><input name="locale" type="hidden" value={params.locale} /><input name="partnerId" type="hidden" value={partner.id} /><input name="mappingId" type="hidden" value={mapping.id} /><button className="border border-forest/20 px-2 py-1" type="submit">Remove Access</button></form> : null}</div>)}</div>
+                        {!archived && partner.status === "active" ? <form action={createPartnerLogin} className="mt-3 grid gap-2">
+                          <input name="locale" type="hidden" value={params.locale} />
+                          <input name="partnerId" type="hidden" value={partner.id} />
+                          <label>Login email<input className="mt-1 w-full border p-2" name="email" type="email" autoComplete="off" required /></label>
+                          <label>Temporary password<input className="mt-1 w-full border p-2" name="password" type="password" autoComplete="new-password" minLength={12} maxLength={128} required /></label>
+                          <p className="text-xs text-forest/60">Use a different temporary password for each person. Share it privately; they must change it at first sign-in. This does not send an email or overwrite an existing account.</p>
+                          <button className="bg-forest p-2 text-white" type="submit">Create Email Login</button>
+                          <a className="text-sm underline" href={`/${params.locale}/partner/login`}>Partner sign-in page</a>
+                        </form> : null}
+                        <details className="mt-3"><summary className="cursor-pointer text-sm">Link an existing Auth account</summary>
                         <form action={addPartnerLoginMapping} className="mt-3 grid gap-2">
                           <input name="locale" type="hidden" value={params.locale} />
                           <input name="partnerId" type="hidden" value={partner.id} />
                           <label>Supabase Auth user UUID<input className="mt-1 w-full border p-2" name="authUserId" required /></label>
-                          <button className="bg-forest p-2 text-white" type="submit">Add Login User</button>
-                        </form>
+                          <button className="bg-forest p-2 text-white" type="submit">Link Existing User</button>
+                        </form></details>
                       </div>
                       <div className="mt-4 w-72 border-t border-forest/10 pt-4">
                         {archived ? <form action={restorePartner} className="grid gap-2"><input name="locale" type="hidden" value={params.locale} /><input name="partnerId" type="hidden" value={partner.id} /><p className="text-sm">Restoring keeps this partner inactive. It will not restore operational access automatically.</p><button className="border border-forest/30 p-2 font-bold" type="submit">Restore as Inactive</button></form> : <form action={archivePartner} className="grid gap-2"><input name="locale" type="hidden" value={params.locale} /><input name="partnerId" type="hidden" value={partner.id} /><label className="flex items-start gap-2 text-sm"><input className="mt-1" name="confirmArchive" required type="checkbox" value="yes" />I confirm this partner will become inactive and unable to generate new referrals.</label><button className="border border-red-700/40 p-2 font-bold text-red-800" type="submit">Archive Partner</button></form>}

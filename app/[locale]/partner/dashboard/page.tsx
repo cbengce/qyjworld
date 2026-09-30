@@ -20,6 +20,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
   if (!user) redirect(`/${params.locale}/partner/login`);
   const admin = await getAdminAuthorizationForUser(user.id);
   if (admin?.role === "super_admin") redirect(`/${params.locale}/admin/partner-dashboard`);
+  if (user.app_metadata?.partner_password_change_required) redirect(`/${params.locale}/partner/reset-password`);
   const { data: mappings } = await authClient.from("partner_users").select("partner_id,partners(partner_name,partner_code,status,archived_at)").eq("status", "active").limit(2);
   const mapping = mappings?.length === 1 ? mappings[0] : null;
   if (!mapping) return <main className="min-h-screen bg-paper px-5 py-16"><div className="mx-auto max-w-3xl"><h1 className="font-serif text-5xl text-forest">Partner access unavailable</h1><p className="mt-5 text-ink/65">This account is not linked to one active partner.</p></div></main>;

@@ -8,6 +8,36 @@ import { requireAdminPermission } from "@/lib/admin-permissions";
 import { COMBINED_PARTNER_RATE_ERROR, validatePartnerCommercialRates } from "@/lib/partners/commercial-rates";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { provisionPartnerLogin } from "@/lib/partners/provision-login";
+
+export async function createPartnerLogin(formData: FormData) {
+  const locale = formData.get("locale") === "zh" ? "zh" : "en";
+  const authorization = await requireAdminPermission(locale, "settings.manage");
+  const parsed = z.object({
+    partnerId: z.string().uuid(),
+    email: z.string().trim().toLowerCase().email(),
+    password: z.string().min(12, "Use a temporary password of at least 12 characters.").max(128)
+  }).safeParse(Object.fromEntries(formData));
+  if (!parsed.success) redirectWithRateNotice(locale, "error", parsed.error.issues[0]?.message || "Invalid account details.");
+  const service = createServiceClient();
+  let userId: string;
+  try {
+    userId = await provisionPartnerLogin(service, parsed.data.partnerId, parsed.data.email, parsed.data.password);
+  } catch (error) {
+    redirectWithRateNotice(locale, "error", error instanceof Error ? error.message : "Unable to create partner login.");
+  }
+  const { error: auditError } = await service.from("audit_logs").insert({
+    actor_staff_user_id: authorization.staff.id,
+    action: "partner.login.create", entity_type: "partner_users", entity_id: parsed.data.partnerId,
+    idempotency_key: `partner-login-create:${userId}:${randomUUID()}`,
+    metadata: { partner_id: parsed.data.partnerId, auth_user_id: userId, email: parsed.data.email },
+    created_by: authorization.user.id
+  });
+  revalidatePath(`/${locale}/admin/partners`);
+  redirectWithRateNotice(locale, auditError ? "error" : "notice", auditError
+    ? "Login account created, but the audit entry could not be saved. Do not create the account again."
+    : `Login created for ${parsed.data.email}. Share the temporary password privately. First sign-in requires a new password.`);
+}
 
 const percentageSchema = (label: string) =>
   z.preprocess(
