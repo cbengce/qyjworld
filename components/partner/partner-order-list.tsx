@@ -1,0 +1,21 @@
+import { appzposTransactionId } from "@/lib/pos/appzpos/identity";
+export type PartnerOrder = { id: string; provider_store_id: string; store_id: string; order_reference: string; referral_code: string | null; partner_id: string | null; order_status: string; order_created_at: string; subtotal_minor: number; discount_minor: number; item_discount_minor: number; coupon_discount_minor: number; total_payable_minor: number; cup_quantity: number; item_list: Array<{ itemName?: string; quantity?: number }>; partners?: { partner_name?: string; partner_code?: string } | null; stores?: { name?: string } | null };
+const money = (minor: number) => `S$${(Number(minor) / 100).toFixed(2)}`;
+export function PartnerOrderList({ rows, commission }: { rows: PartnerOrder[]; commission: Map<string, number> }) {
+  const commissionFor = (row: PartnerOrder) => `S$${(commission.get(appzposTransactionId(row.provider_store_id, row.order_reference)) ?? 0).toFixed(2)}`;
+  return <section aria-label="Partner orders">
+        <div className="mt-4 grid gap-3 xl:hidden">{rows.map((row) => (
+          <article className="rounded-2xl border border-forest/10 bg-white p-5 shadow-soft" key={row.id}>
+            <div className="flex items-start justify-between gap-3"><div><p className="text-lg font-bold">{row.order_reference}</p><p className="mt-1 text-sm text-ink/60">{row.partners?.partner_name ?? row.referral_code}</p></div><span className="rounded-full bg-paper px-3 py-1 text-xs font-bold">{row.order_status}</span></div>
+            <p className="mt-3 text-xs leading-5 text-ink/55">{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })} · {row.stores?.name ?? row.provider_store_id}</p>
+            <p className="mt-3 border-t border-forest/10 pt-3 text-sm leading-6">{(row.item_list ?? []).map((item) => `${item.quantity ?? 0}× ${item.itemName ?? "Item"}`).join(", ") || "No product details"}</p>
+            <dl className="mt-4 grid grid-cols-3 gap-3"><div><dt className="text-xs text-ink/55">Cups</dt><dd className="mt-1 font-bold">{row.cup_quantity}</dd></div><div><dt className="text-xs text-ink/55">Paid</dt><dd className="mt-1 font-bold">{money(row.total_payable_minor)}</dd></div><div><dt className="text-xs text-ink/55">Commission</dt><dd className="mt-1 font-bold">{commissionFor(row)}</dd></div></dl>
+            <details className="mt-4 text-sm"><summary className="cursor-pointer text-ink/55">Sales & discounts</summary><dl className="mt-3 grid grid-cols-2 gap-2"><dt>Gross sales</dt><dd>{money(row.subtotal_minor)}</dd><dt>Item discount</dt><dd>{money(row.item_discount_minor)}</dd><dt>Order discount</dt><dd>{money(row.discount_minor)}</dd><dt>Coupon discount</dt><dd>{money(row.coupon_discount_minor)}</dd></dl></details>
+          </article>
+        ))}</div>
+        <div className="mt-4 hidden overflow-x-auto rounded-2xl border border-forest/10 bg-white xl:block">
+          <table className="w-full min-w-[1200px] text-left text-sm"><thead className="bg-forest/5 text-xs text-ink/60"><tr>{["Order", "Date / time (SGT)", "Partner", "Store", "Status", "Cups", "Gross", "Item discount", "Order discount", "Coupon", "Paid", "Commission"].map((label) => <th className="px-3 py-4" key={label}>{label}</th>)}</tr></thead><tbody>{rows.map((row) => <tr className="border-t border-forest/10" key={row.id}><td className="px-3 py-4 font-bold">{row.order_reference}</td><td className="px-3 py-4">{new Date(row.order_created_at).toLocaleString("en-SG", { timeZone: "Asia/Singapore" })}</td><td className="px-3 py-4">{row.partners?.partner_name ?? row.referral_code}</td><td className="px-3 py-4">{row.stores?.name ?? row.provider_store_id}</td><td className="px-3 py-4">{row.order_status}</td><td className="px-3 py-4">{row.cup_quantity}</td><td className="px-3 py-4">{money(row.subtotal_minor)}</td><td className="px-3 py-4">{money(row.item_discount_minor)}</td><td className="px-3 py-4">{money(row.discount_minor)}</td><td className="px-3 py-4">{money(row.coupon_discount_minor)}</td><td className="px-3 py-4">{money(row.total_payable_minor)}</td><td className="px-3 py-4 font-bold">{commissionFor(row)}</td></tr>)}</tbody></table>
+        </div>
+        {!rows.length ? <div className="mt-4 rounded-2xl bg-white p-8 text-center text-ink/55">No partner orders match these filters.</div> : null}
+  </section>;
+}
