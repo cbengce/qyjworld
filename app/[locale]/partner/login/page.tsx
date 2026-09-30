@@ -1,3 +1,4 @@
+import { getActivePartnerForUser } from "@/lib/partners/access";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -18,8 +19,8 @@ export default async function PartnerLoginPage({ params, searchParams }: { param
   if (user) {
     const admin = await getAdminAuthorizationForUser(user.id);
     if (admin?.role === "super_admin") redirect(`/${params.locale}/admin/partner-dashboard`);
-    const { count } = await supabase.from("partner_users").select("id", { count: "exact", head: true }).eq("status", "active");
-    if (count) redirect(`/${params.locale}/partner/dashboard`);
+    const access = await getActivePartnerForUser(supabase, user.id);
+    if (access) redirect(`/${params.locale}/partner/dashboard`);
   }
 
   return (

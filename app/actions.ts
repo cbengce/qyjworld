@@ -8,6 +8,7 @@ import { getAdminAuthorizationForUser } from "@/lib/data";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePartnerForUser } from "@/lib/partners/access";
 import { getPublicSiteUrl } from "@/lib/partners/referral-url";
 import {
   bootstrapSuperAdminSchema,
@@ -191,10 +192,13 @@ export async function logoutAccount(formData: FormData) {
   redirect(`/${locale}/login`);
 }
 
-export async function logoutPartner() {
+export async function logoutPartner(formData: FormData) {
+  const locale = formData.get("locale") === "zh" ? "zh" : "en";
   const supabase = createClient();
-  await supabase.auth.signOut();
-  redirect("/en/partner/login");
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error("Unable to sign out. Please try again.");
+  revalidatePath("/", "layout");
+  redirect(`/${locale}/partner/login`);
 }
 
 export async function requestPartnerPasswordRecovery(_: ActionState, formData: FormData): Promise<ActionState> {
@@ -232,11 +236,8 @@ export async function resetPartnerPassword(_: ActionState, formData: FormData): 
   const { data: { user }, error: userError } = await supabase.auth.getUser();
   if (userError || !user) return { ok: false, message: "This recovery link is invalid or has expired. Request a new recovery email." };
 
-  const { count, error: mappingError } = await supabase
-    .from("partner_users")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "active");
-  if (mappingError || count !== 1) return { ok: false, message: "This account is not linked to one active corporate partner." };
+  const access = await getActivePartnerForUser(supabase, user.id);
+  if (!access) return { ok: false, message: "This account is not linked to one active corporate partner." };
 
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { ok: false, message: error.message };

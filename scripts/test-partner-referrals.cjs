@@ -93,7 +93,8 @@ assert.match(adminActions, /rpc\("archive_partner"/, "Admin archive must use the
 assert.match(adminActions, /rpc\("restore_partner"/, "Admin restore must use the database authorization boundary");
 assert.match(adminPage, /Archive Partner/, "Admin must expose archive lifecycle management");
 assert.match(adminPage, /Restore as Inactive/, "Admin must make restored state explicit");
-assert.match(dashboard, /partner\.status !== "active" \|\| partner\.archived_at/, "archived partners must not access the dashboard");
+assert.match(readFileSync(join(root, "lib", "partners", "access.ts"), "utf8"), /partner\.status !== "active" \|\| partner\.archived_at/, "archived partners must not access the dashboard");
+assert.match(dashboard, /getActivePartnerForUser\(authClient, user.id\)/, "dashboard must enforce the shared active-partner gate");
 assert.match(sqlTest, /partial_refund financial effect detected/i, "SQL tests must prove partial refund events have no financial effect");
 assert.match(sqlTest, /commission reversal entry created/i, "SQL tests must prove reversal entries remain absent");
 assert.match(sqlTest, /duplicate webhook accepted/i, "SQL tests must cover webhook idempotency");

@@ -73,15 +73,19 @@ async function main() {
   let resetError = null;
   let activationError = null;
   let activationCount = 0;
+  let accessAllowed = true;
+  let signOutError = null;
+  let invalidations = 0;
   const validation = load('lib/validation.ts', { '@/lib/partners/commercial-rates': {} });
   const authActions = load('app/actions.ts', {
-    'next/cache': { revalidatePath() {} },
+    'next/cache': { revalidatePath() { invalidations++; } },
     'next/navigation': { redirect(url) { throw new Error('REDIRECT:' + url); } },
     '@/lib/constants': {}, '@/lib/data': {}, '@/lib/rate-limit': {},
+    '@/lib/partners/access': { getActivePartnerForUser: async () => accessAllowed ? ({ partnerId }) : null },
     '@/lib/validation': validation,
     '@/lib/partners/referral-url': { getPublicSiteUrl: () => 'https://www.qyjworld.com' },
     '@/lib/supabase/server': { createClient: () => ({
-      auth: { async getUser() { return { data: { user: { id: 'new-user', app_metadata: { partner_password_change_required: true, retained: 'keep' } } } }; }, async updateUser() { return { error: resetError }; } },
+      auth: { async signOut() { return { error: signOutError }; }, async getUser() { return { data: { user: { id: 'new-user', app_metadata: { partner_password_change_required: true, retained: 'keep' } } } }; }, async updateUser() { return { error: resetError }; } },
       from: () => ({ select() { return this; }, async eq() { return { count: 1, error: null }; } })
     }) },
     '@/lib/supabase/admin': { createServiceClient: () => ({ auth: { admin: { async updateUserById(id, value) {
@@ -97,6 +101,15 @@ async function main() {
   assert.equal((await authActions.resetPartnerPassword({}, resetForm)).ok, false);
   activationError = null;
   await assert.rejects(authActions.resetPartnerPassword({}, resetForm), /REDIRECT:\/zh\/partner\/dashboard/);
+  accessAllowed = false;
+  assert.equal((await authActions.resetPartnerPassword({}, resetForm)).ok, false);
+  const logoutForm = new FormData(); logoutForm.set('locale', 'zh');
+  signOutError = {}; const before = invalidations;
+  await assert.rejects(authActions.logoutPartner(logoutForm), /Unable to sign out/);
+  assert.equal(invalidations, before);
+  signOutError = null;
+  await assert.rejects(authActions.logoutPartner(logoutForm), /REDIRECT:\/zh\/partner\/login/);
+  assert.equal(invalidations, before + 1);
   console.log('Partner login provisioning checks passed: permissions, validation, active partner, duplicate protection, mapping, cleanup and password-free audit.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });
