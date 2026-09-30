@@ -22,7 +22,8 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
     { label: "Membership", href: localizedPath(locale, "/membership") },
     ...(orderingUrl ? [{ label: "Order Online", href: orderingUrl }] : []),
     { label: "Story", href: localizedPath(locale, "/about") },
-    { label: "Visit Us", href: localizedPath(locale, "/contact") }
+    { label: "Visit Us", href: localizedPath(locale, "/contact") },
+    { label: locale === "zh" ? "合作伙伴后台" : "Partner Dashboard", href: localizedPath(locale, "/partner/login") }
   ];
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           <Logo priority />
         </Link>
         <nav
-          className={`hidden items-center gap-8 text-[13px] font-semibold uppercase tracking-[0.12em] transition-colors duration-500 lg:flex ${
+          className={`hidden items-center gap-4 text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors duration-500 lg:flex xl:gap-6 ${
             transparentOnHero ? "text-white/80" : "text-forest/70"
           }`}
         >
@@ -103,6 +104,11 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           </>}
         </div>
       </div>
+      <nav aria-label={locale === "zh" ? "合作伙伴入口" : "Partner access"} className="flex justify-end px-3 pb-3 sm:px-5 lg:hidden">
+        <Link href={localizedPath(locale, "/partner/login")} className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-xs font-bold ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
+          {locale === "zh" ? "合作伙伴后台" : "Partner Dashboard"}<span aria-hidden="true" className="ml-2">→</span>
+        </Link>
+      </nav>
     </header>
   );
 }
