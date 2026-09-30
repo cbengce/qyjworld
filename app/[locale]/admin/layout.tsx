@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireAdmin } from "@/lib/data";
 
 export const metadata: Metadata = {
   robots: {
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   }
 };
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
+  await requireAdmin(params.locale);
   return children;
 }
