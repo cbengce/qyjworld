@@ -8,6 +8,7 @@ import { getAdminAuthorizationForUser } from "@/lib/data";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { getPublicSiteUrl } from "@/lib/partners/referral-url";
 import {
   bootstrapSuperAdminSchema,
   clearLeaderboardSchema,
@@ -206,8 +207,7 @@ export async function requestPartnerPasswordRecovery(_: ActionState, formData: F
   const rate = checkRateLimit(`partner-password-recovery:${parsed.data.email.toLowerCase()}`);
   if (!rate.ok) return { ok: false, message: "Too many attempts. Please try again later." };
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (!siteUrl) return { ok: false, message: "Password recovery is not configured for this environment." };
+  const siteUrl = getPublicSiteUrl();
 
   try {
     const redirectTo = `${siteUrl}/api/auth/callback?next=${encodeURIComponent(`/${parsed.data.locale}/partner/reset-password`)}`;
@@ -240,12 +240,19 @@ export async function resetPartnerPassword(_: ActionState, formData: FormData): 
 
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
   if (error) return { ok: false, message: error.message };
+  if (user.app_metadata?.partner_password_change_required) {
+    const { error: activationError } = await createServiceClient().auth.admin.updateUserById(user.id, {
+      app_metadata: { ...user.app_metadata, partner_password_change_required: false }
+    });
+    if (activationError) return { ok: false, message: "Password changed, but account activation failed. Please try setting your password again." };
+  }
+  revalidatePath("/", "layout");
   redirect(`/${parsed.data.locale}/partner/dashboard`);
 }
 
 export async function bootstrapSuperAdmin(_: ActionState, formData: FormData): Promise<ActionState> {
   const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
-  if (!configuredSiteUrl.startsWith("http://localhost")) {
+  if (process.env.NODE_ENV === "production" || !configuredSiteUrl.startsWith("http://localhost")) {
     return { ok: false, message: "Super Admin bootstrap is available only for local development." };
   }
 
