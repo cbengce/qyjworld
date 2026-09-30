@@ -82,6 +82,7 @@ export default async function AdminPage({
                 <Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/leaderboard`}>
                   Manage Leaderboard
                 </Link>
+                {role === "super_admin" ? <><Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/partner-dashboard`}>All Partner Dashboards</Link><Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/partners`}>Manage Partners</Link></> : null}
               </div>
             </div>
           </div>

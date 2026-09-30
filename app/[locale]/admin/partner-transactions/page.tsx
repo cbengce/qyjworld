@@ -1,13 +1,19 @@
 import type { Locale } from "@/lib/constants";
 import { requireAdmin } from "@/lib/data";
 import { createServiceClient } from "@/lib/supabase/admin";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function PartnerTransactionsPage({ params, searchParams }: { params: { locale: Locale }; searchParams: Record<string, string | undefined> }) {
-  await requireAdmin(params.locale);
+  const { role } = await requireAdmin(params.locale);
+  if (role === "super_admin") {
+    const filters = new URLSearchParams();
+    for (const key of ["partner", "store", "order", "status", "from", "to"]) if (searchParams[key]) filters.set(key, searchParams[key]!);
+    redirect(`/${params.locale}/admin/partner-dashboard${filters.size ? `?${filters.toString()}` : ""}`);
+  }
   const service = createServiceClient();
-  let query = service.from("pos_provider_orders").select("*,partners(partner_name,partner_code),stores(name,store_code)").order("order_created_at", { ascending: false }).limit(1000);
+  let query = service.from("pos_provider_orders").select("*,partners(partner_name,partner_code),stores(name,store_code)").not("partner_id", "is", null).order("order_created_at", { ascending: false }).limit(1000);
   if (searchParams.partner) query = query.eq("partner_id", searchParams.partner);
   if (searchParams.store) query = query.eq("store_id", searchParams.store);
   if (searchParams.order) query = query.ilike("order_reference", `%${searchParams.order}%`);
