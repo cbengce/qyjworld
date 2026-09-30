@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { getPosAdapter } from "@/lib/pos/adapter";
+import { getPartnerReferralUrl } from "@/lib/partners/referral-url";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/admin";
 
@@ -29,14 +29,7 @@ export async function GET(request: NextRequest) {
   if (!partner) return orderingUnavailable();
 
   const reference = referralReference(partner.partner_code);
-  let destination: string;
-  try {
-    const adapter = getPosAdapter();
-    if (process.env.NODE_ENV === "production" && adapter.provider === "mock") return orderingUnavailable();
-    destination = await adapter.buildOrderingUrl({ partnerCode: partner.partner_code, referralReference: reference });
-  } catch {
-    return orderingUnavailable();
-  }
+  const destination = getPartnerReferralUrl(partner.partner_code);
   const userAgent = request.headers.get("user-agent")?.slice(0, 500) || null;
   const forwardedIp = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
   const hashSecret = process.env.PARTNER_IP_HASH_SECRET;
