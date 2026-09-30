@@ -5,6 +5,7 @@ import { LoginForm } from "@/components/auth/login-form";
 import { Section } from "@/components/ui";
 import type { Locale } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
+import { getAdminAuthorizationForUser } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: { absolute: "Corporate Partner Login | QING YUN JIAN" },
@@ -15,6 +16,8 @@ export default async function PartnerLoginPage({ params, searchParams }: { param
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
+    const admin = await getAdminAuthorizationForUser(user.id);
+    if (admin?.role === "super_admin") redirect(`/${params.locale}/admin/partner-dashboard`);
     const { count } = await supabase.from("partner_users").select("id", { count: "exact", head: true }).eq("status", "active");
     if (count) redirect(`/${params.locale}/partner/dashboard`);
   }
