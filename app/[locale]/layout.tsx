@@ -6,6 +6,8 @@ import { Header } from "@/components/header";
 import { getPrimaryStore } from "@/lib/stores";
 import { effectiveStoreHoursForDate, storeAddressLines, storeDirectionsUrl } from "@/lib/store-types";
 import { StructuredData } from "@/components/structured-data";
+import { getCurrentUser, getAdminAuthorizationForUser } from "@/lib/data";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function LocaleLayout({
   children,
@@ -16,6 +18,18 @@ export default async function LocaleLayout({
 }) {
   if (!isLocale(params.locale)) notFound();
   const locale = params.locale as Locale;
+  const user = await getCurrentUser();
+  let account = null;
+  if (user) {
+    const admin = await getAdminAuthorizationForUser(user.id);
+    const { count } = admin ? { count: 0 } : await createClient().from("partner_users")
+      .select("id", { count: "exact", head: true }).eq("auth_user_id", user.id).eq("status", "active");
+    account = {
+      label: admin ? (admin.role === "super_admin" ? "Super Admin" : "Admin") : count === 1 ? "Partner" : (locale === "zh" ? "已登录" : "Signed in"),
+      email: user.email ?? "",
+      href: `/${locale}/${admin ? "admin" : count === 1 ? "partner/dashboard" : "member"}`
+    };
+  }
   const store = await getPrimaryStore();
   const effectiveHours = store ? effectiveStoreHoursForDate(store) : null;
   const effectiveOpeningHours = effectiveHours?.intervals
@@ -42,7 +56,7 @@ export default async function LocaleLayout({
   return (
     <>
       {storeSchema && <StructuredData data={storeSchema} />}
-      <Header locale={locale} orderingUrl={store?.ordering_url} />
+      <Header locale={locale} orderingUrl={store?.ordering_url} account={account} />
       <div lang={locale}>{children}</div>
       <Footer locale={locale} store={store} />
     </>
