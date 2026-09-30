@@ -1,0 +1,10 @@
+const assert = require('node:assert/strict');
+const { syncStart, buildWindows, dateAtSingaporeMidnight } = require('./appzpos-sync.cjs');
+const now = new Date('2026-09-30T06:00:00Z');
+assert.equal(syncStart(null, now).toISOString(), '2026-09-26T16:00:00.000Z');
+assert.equal(syncStart('2026-09-30T05:45:00Z', now).toISOString(), '2026-09-30T05:30:00.000Z');
+assert.equal(syncStart('2026-09-26T15:00:00Z', now).toISOString(), '2026-09-26T16:00:00.000Z');
+assert.equal(buildWindows(dateAtSingaporeMidnight('2026-09-27'), now).length, 1);
+assert.throws(() => syncStart('bad', now));
+assert.throws(() => syncStart('2026-10-01T00:00:00Z', now));
+console.log('Sync checks passed: checkpoint continuation, overlap, initial catch-up, date floor, invalid/future checkpoint.');
