@@ -70,19 +70,17 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
         </div>
       </div>
 
-      <section aria-labelledby="footer-partners" className="mx-auto max-w-7xl border-t border-white/10 px-5 py-10 md:px-8">
-        <h2 id="footer-partners" className="text-sm font-bold tracking-[0.14em] text-white/70">{locale === "zh" ? "我们的合作伙伴" : "Our Partners"}</h2>
-        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <div className="flex min-h-40 flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-            <Image src="/assets/partners/ibis-styles.png" alt="ibis Styles" width={274} height={272} className="h-24 w-auto object-contain" />
-            <p className="text-sm font-semibold text-white/80">ibis Styles</p>
+      <section aria-labelledby="footer-partners" className="mx-auto max-w-7xl border-t border-white/10 px-5 py-6 md:px-8">
+        <h2 id="footer-partners" className="text-xs font-semibold tracking-[0.12em] text-white/60">{locale === "zh" ? "我们的合作伙伴" : "Our Partners"}</h2>
+        <div className="mt-4 grid max-w-[352px] grid-cols-3 items-center gap-5">
+          <div className="flex h-10 min-w-0 items-center justify-center">
+            <Image src="/assets/partners/ibis-styles.png" alt="ibis Styles" width={274} height={272} className="h-10 w-auto object-contain" />
           </div>
-          <div className="flex min-h-40 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-6">
-            <p className="text-center text-2xl font-semibold text-white/90">Anytime Fitness</p>
+          <div className="flex h-10 min-w-0 items-center justify-center">
+            <Image src="/assets/partners/anytime-fitness.png" alt="Anytime Fitness" width={640} height={173} className="h-auto w-24 max-w-full bg-white p-1 object-contain" />
           </div>
-          <div className="flex min-h-40 flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-6">
-            <Image src="/assets/partners/tefuda.png" alt="Tefuda" width={150} height={41} className="h-16 w-auto max-w-full object-contain" />
-            <p className="text-sm font-semibold text-white/80">Tefuda</p>
+          <div className="flex h-10 min-w-0 items-center justify-center">
+            <Image src="/assets/partners/tefuda.png" alt="Tefuda" width={150} height={41} className="h-auto w-24 max-w-full object-contain" />
           </div>
         </div>
       </section>
