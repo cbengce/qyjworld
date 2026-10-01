@@ -1,3 +1,4 @@
+import { StoryDirectory } from "@/components/book/story-directory";
 import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { Section } from "@/components/ui";
@@ -8,7 +9,7 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
   return createPageMetadata({
     locale: params.locale,
     path: "/about",
-    title: "About Qing Yun Jian | Born to Ascend",
+    title: params.locale === "zh" ? "我们的故事 | 青云间" : "Our Story | QINGYUNJIAN",
     description: "Learn the story behind Qing Yun Jian, a Singapore premium sparkling tea brand inspired by Oriental tea culture.",
     keywords: ["about Qing Yun Jian", "Singapore tea brand", "Oriental tea culture", "Born to Ascend"]
   });
@@ -18,11 +19,11 @@ export default function AboutPage({ params }: { params: { locale: Locale } }) {
   const zh = params.locale === "zh";
   return (
     <main>
-      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "About", path: "/about" }])} />
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: zh ? "我们的故事" : "Our Story", path: "/about" }])} />
       <Section>
         <div className="mx-auto max-w-4xl">
           <p className="text-sm font-bold text-gold">{BRAND.company}</p>
-          <h1 className="mt-3 font-serif text-6xl font-semibold">{zh ? "关于青云间" : "About Qing Yun Jian"}</h1>
+          <h1 className="mt-3 font-serif text-6xl font-semibold">{zh ? "我们的故事" : "Our Story"}</h1>
           <div className="mt-8 grid gap-5 text-lg leading-8 text-forest/75">
             <p>
               {zh
@@ -37,6 +38,7 @@ export default function AboutPage({ params }: { params: { locale: Locale } }) {
           </div>
         </div>
       </Section>
+      <StoryDirectory locale={params.locale} />
     </main>
   );
 }

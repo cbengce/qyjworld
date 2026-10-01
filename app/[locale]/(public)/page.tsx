@@ -111,7 +111,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">BRAND STORY</p>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{params.locale === "zh" ? "我们的故事" : "OUR STORY"}</p>
               <h2 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
                 A Lighter Kind of Luxury.
               </h2>
@@ -120,6 +120,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
               Inspired by Oriental tea culture and crafted in Singapore, Qing Yun Jian brings tea into a brighter, more contemporary expression.
             </p>
           </div>
+
+          <ButtonLink href={localizedPath(params.locale, "/about")} className="mt-8">{params.locale === "zh" ? "阅读我们的故事" : "Explore Our Story"} →</ButtonLink>
 
           <div className="mt-14 grid gap-px bg-forest/10 lg:grid-cols-3">
             {storyCards.map((card) => (

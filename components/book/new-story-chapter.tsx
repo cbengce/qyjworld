@@ -33,7 +33,7 @@ export function NewStoryChapter({ story, locale }: { story: NewBookStory; locale
     <article>
       <header className="border-b border-forest/10 px-5 py-14 md:px-8 md:py-20">
         <div className="mx-auto max-w-5xl">
-          <Link className="text-sm font-bold text-forest/55 transition hover:text-forest" href={localizedPath(locale,"/book")}>← The Book of Qing Yun Jian</Link>
+          <Link className="text-sm font-bold text-forest/55 transition hover:text-forest" href={localizedPath(locale,"/about")}>← Our Story</Link>
           {"zh" in story ? <nav aria-label="Language" className="mt-6 flex gap-6"><Link href={localizedPath("en",path)}>English</Link><Link href={localizedPath("zh",path)}>中文</Link></nav> : null}
           <div className="mt-14 grid gap-6 md:grid-cols-[9rem_minmax(0,1fr)]">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">{copy.volume}</p>
@@ -62,9 +62,9 @@ export function NewStoryChapter({ story, locale }: { story: NewBookStory; locale
             {next ? <Link className="group" href={localizedPath(locale,newBookStoryPath(next))}>
               <span className="block text-xs font-bold uppercase tracking-widest text-forest/45">Next Chapter</span>
               <span className="mt-3 block font-serif text-2xl font-semibold text-forest transition group-hover:text-gold">{bookStoryText(next, locale).title} →</span>
-            </Link> : <Link className="group" href={localizedPath(locale,"/book")}>
+            </Link> : <Link className="group" href={localizedPath(locale,"/about")}>
               <span className="block text-xs font-bold uppercase tracking-widest text-forest/45">Return to</span>
-              <span className="mt-3 block font-serif text-2xl font-semibold text-forest transition group-hover:text-gold">The Book →</span>
+              <span className="mt-3 block font-serif text-2xl font-semibold text-forest transition group-hover:text-gold">Our Story →</span>
             </Link>}
           </nav>
         </div>

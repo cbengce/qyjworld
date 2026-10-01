@@ -54,8 +54,8 @@ export default function OriginsChapterOnePage({ params }: { params: { locale: Lo
       <article>
         <header className="px-5 py-14 md:px-8 md:py-20">
           <div className="mx-auto max-w-5xl">
-            <Link className="text-sm font-bold text-forest/55 transition hover:text-forest" href={localizedPath(params.locale, "/book")}>
-              ← The Book of Qing Yun Jian
+            <Link className="text-sm font-bold text-forest/55 transition hover:text-forest" href={localizedPath(params.locale, "/about")}>
+              ← Our Story
             </Link>
             <div className="mt-14 grid gap-5 sm:grid-cols-[9rem_1fr]">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">{BOOK.volume.number}</p>
