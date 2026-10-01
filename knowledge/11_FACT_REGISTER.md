@@ -25,3 +25,7 @@ Status values: `VERIFIED`, `PROVISIONAL`, `DISPUTED`, `RETIRED`.
 
 Conflicts must be reported and resolved by the named owner. Do not silently convert a provisional, disputed, or retired fact into approved copy.
 
+
+## Founding-story approval, 1 October 2026
+
+FS-2026-10 approves four purposes (older people, midlife professionals, young entrepreneurs and everyday wellbeing) and the long-term vision as expressed in the two public manuscripts. This verifies founder intent, not achieved outcomes, investment returns, health effects or an expansion timetable.

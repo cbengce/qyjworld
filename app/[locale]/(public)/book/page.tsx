@@ -14,7 +14,7 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
     locale: params.locale,
     path: "/book",
     title: "The Book of Qing Yun Jian | Born to Ascend",
-    description: "Read the continuing story of QING YUN JIAN: its origins, first address, modern tea direction and Pegasus symbol.",
+    description: "Read the continuing story of QING YUN JIAN: its origins, first address, modern tea direction, Pegasus symbol, founding purposes and long-term vision.",
     keywords: ["Book of Qing Yun Jian", "Born to Ascend", "Qing Yun Jian philosophy", "Modern Oriental tea"],
     includeLanguageAlternates: false
   });
@@ -118,6 +118,22 @@ export default function BookPage({ params }: { params: { locale: Locale } }) {
           </div>
           <div className="grid lg:grid-cols-2">
             {NEW_BOOK_STORIES.filter(story => story.volume === "Expression").map(story => <Link
+              className="group border-b border-forest/15 py-10 transition-colors hover:bg-white/55 sm:px-8 lg:px-10 lg:py-14"
+              href={localizedPath(params.locale,newBookStoryPath(story))} key={story.slug}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Published</p>
+              <p className="mt-8 text-sm font-semibold text-forest/45">{story.number}</p>
+              <h3 className="mt-4 max-w-xl font-serif text-4xl font-semibold leading-tight text-forest md:text-5xl">{story.title}</h3>
+              <p className="mt-5 max-w-xl leading-7 text-forest/60">{story.excerpt}</p>
+              <span className="mt-9 inline-flex items-center gap-3 text-sm font-bold text-forest">Read Chapter <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>)}
+          </div>
+          <div className="grid gap-5 border-b border-forest/15 pb-10 pt-20 md:grid-cols-[12rem_1fr] md:items-end">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-gold">Volume III</p>
+            <h2 className="font-serif text-5xl font-semibold leading-none text-forest md:text-7xl">Purpose &amp; Vision</h2>
+          </div>
+          <div className="grid lg:grid-cols-2">
+            {NEW_BOOK_STORIES.filter(story => story.volume === "Purpose").map(story => <Link
               className="group border-b border-forest/15 py-10 transition-colors hover:bg-white/55 sm:px-8 lg:px-10 lg:py-14"
               href={localizedPath(params.locale,newBookStoryPath(story))} key={story.slug}
             >
