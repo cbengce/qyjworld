@@ -35,7 +35,7 @@ function PromotionCard({ locale, promotion }: { locale: Locale; promotion: Promo
           </span>
         </div>
         <h3 className="mt-6 font-serif text-4xl font-semibold leading-tight text-forest">{promotion.title}</h3>
-        {promotion.description ? (
+        {promotion.description && promotionStatusLabel(promotion) !== "ENDED" ? (
           <p className="mt-5 overflow-hidden leading-7 text-forest/60" style={{ display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2 }}>
             {promotion.description}
           </p>
@@ -59,7 +59,7 @@ function PromotionSection({ title, locale, promotions }: { title: string; locale
           ))}
         </div>
       ) : (
-        <div className="mt-6 border border-forest/10 bg-white p-8 text-forest/60">No campaigns in this section yet.</div>
+        <div className="mt-6 border border-forest/10 bg-white p-8 text-forest/60">{locale === "zh" ? "目前没有正在进行的活动，请稍后再来看看。" : "There are no current promotions. Please check back soon."}</div>
       )}
     </section>
   );
@@ -85,8 +85,8 @@ export default async function PromotionsPage({ params }: { params: { locale: Loc
           </p>
 
           <PromotionSection locale={params.locale} promotions={current} title="Current Promotions" />
-          <PromotionSection locale={params.locale} promotions={comingSoon} title="Coming Soon" />
-          <PromotionSection locale={params.locale} promotions={past} title="Past Promotions" />
+          {comingSoon.length > 0 && <PromotionSection locale={params.locale} promotions={comingSoon} title="Coming Soon" />}
+          {past.length > 0 && <PromotionSection locale={params.locale} promotions={past} title="Past Promotions" />}
         </div>
       </Section>
     </main>

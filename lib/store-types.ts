@@ -204,3 +204,11 @@ export function formatEffectiveStoreHours(hours: EffectiveStoreHours) {
     .map((interval) => `${formatStoreTime(interval.opensAt)} – ${formatStoreTime(interval.closesAt)}`)
     .join(", ");
 }
+
+/** Only offer a direct WhatsApp contact when an international phone is configured. */
+export function storeWhatsAppUrl(store: PublicStore | null) {
+  let phone = store?.phone?.replace(/[^0-9]/g, "");
+  if (phone?.length === 8 && store?.country_code === "SG") phone = `65${phone}`;
+  if (!phone || phone.length < 8 || phone.length > 15) return null;
+  return `https://wa.me/${phone}?text=${encodeURIComponent("Hello Qing Yun Jian, I would like to ask about your tea and membership.")}`;
+}
