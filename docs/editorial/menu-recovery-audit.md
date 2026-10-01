@@ -1,0 +1,7 @@
+# Original menu display recovery — 1 October 2026
+
+Owner requested restoration after the public menu displayed no drinks. Existing approved product catalogue (`lib/final-menu-items.ts`) and Product Bible PB-001–009 are the source for the nine original names, descriptions and matching cup photographs. No new drink, recipe, allergen or health claim is introduced. Historical regular/member prices are omitted from recovery because their current validity has not been established; normal CMS prices remain unchanged.
+
+Recovery is restricted to outlets with zero menu-item records across all statuses, checked using a server-only count. Any configured, inactive or deleted menu item suppresses recovery, preserving deliberate unpublishing and normal CMS control. Existing API failures continue to fail visibly; they do not silently trigger recovery.
+
+Audit dimensions 1–13: restores source wording and source images; no invented history, first-hand experience, health/nutrition/investment claims or rankings; no added SEO copy or cultural claims; no copied new content; English wording unchanged; readable existing category filtering and product cards; practical restoration of missing product artwork; existing brand identity retained. Decision: PUBLISH under the owner's explicit restoration request, with historical prices excluded. Database migration/import is not represented as completed by this display recovery.
