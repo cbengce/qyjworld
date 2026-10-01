@@ -65,44 +65,26 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   return (
     <main className="bg-[#f8f5ed]">
       <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }])} />
-      <section className="relative -mt-[76px] min-h-screen overflow-hidden bg-[#061713] text-white">
-        <Image
-          src="/assets/hero-home-final-v1-final.png"
-          alt="Luna Tide sparkling tea on a wooden terrace overlooking the mountains"
-          title="Qing Yun Jian Luna Tide sparkling tea"
-          fill
-          priority
-          sizes="100vw"
-          className="qyj-hero-parallax object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(102deg,rgba(5,18,15,0.97),rgba(15,47,38,0.84)_46%,rgba(15,47,38,0.20)_78%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_44%,rgba(200,148,66,0.13),transparent_34%),linear-gradient(180deg,rgba(5,18,15,0.08),rgba(5,18,15,0.32))]" />
-        <div className="qyj-grain absolute inset-0 opacity-[0.13]" />
-
-        <div className="relative mx-auto grid min-h-screen max-w-7xl items-center gap-14 px-5 pb-20 pt-36 md:grid-cols-[1.05fr_0.95fr] md:px-8 md:pb-28 md:pt-32">
-          <div className="max-w-3xl">
-            <p className="qyj-reveal text-xs font-bold uppercase tracking-[0.34em] text-gold">Qing Yun Jian</p>
-            <h1 className="qyj-reveal mt-7 max-w-4xl font-serif text-[4.75rem] font-semibold leading-[0.86] text-white sm:text-[6.5rem] md:text-[8.5rem]">
-              Born to Ascend
-            </h1>
-            <p className="qyj-reveal mt-8 text-2xl font-semibold leading-tight text-white/90 md:text-4xl">Sparkling Tea Reimagined</p>
-            <p className="qyj-reveal mt-6 max-w-lg text-lg leading-8 text-white/70 md:text-xl md:leading-9">
-              Modern Oriental Sparkling Tea crafted in Singapore.
-            </p>
-            <div className="qyj-reveal mt-10 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink
-                className="rounded-full bg-gold px-8 text-ink shadow-[0_22px_55px_rgba(200,148,66,0.28)] hover:-translate-y-0.5 hover:bg-[#d6a85f] hover:shadow-[0_26px_65px_rgba(200,148,66,0.36)]"
-                href={localizedPath(params.locale, "/register")}
-              >
-                Become a Member
-              </ButtonLink>
-              <ButtonLink
-                className="rounded-full border border-white/30 bg-white/[0.08] px-8 text-white backdrop-blur hover:-translate-y-0.5 hover:border-white/50 hover:bg-white/[0.16]"
-                href={localizedPath(params.locale, "/menu")}
-              >
-                Explore Menu
-              </ButtonLink>
+      <section className="relative overflow-hidden bg-[#fff8ec] text-forest" aria-label={params.locale === "zh" ? "探索你的茶饮性格" : "Discover your tea personality"}>
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_25%,#d7eee5_0%,transparent_55%),radial-gradient(ellipse_at_10%_80%,#ffe0cd_0%,transparent_50%)]" />
+        <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-5 pb-12 pt-8 md:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10 lg:py-16">
+          <div className="text-center lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-forest/65">Sparkling Tea Reimagined</p>
+            <h1 className="mt-4 font-sans text-4xl font-extrabold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">{params.locale === "zh" ? "找到属于你的茶饮性格。" : "Find your tea personality."}</h1>
+            <p className="mt-5 text-lg leading-7 text-forest/75">{params.locale === "zh" ? "十一只 Pegasus，总有一只像你。" : "Eleven Pegasus. One that feels like you."}</p>
+            <div className="mt-7 hidden lg:block">
+              <ButtonLink className="rounded-full bg-forest px-8 text-white shadow-lg hover:-translate-y-1 hover:bg-ink" href={localizedPath(params.locale, "/ascend")}>{params.locale === "zh" ? "发现我的 Pegasus" : "Discover My Pegasus"} <span aria-hidden="true" className="ml-3">→</span></ButtonLink>
+              <p className="mt-3 text-sm text-forest/65">{params.locale === "zh" ? "五道问题 · 你的专属茶饮分享卡" : "5 questions · Your personalised tea card"}</p>
+              <ButtonLink className="mt-5 rounded-full border border-forest/30 px-8 hover:bg-white" href={localizedPath(params.locale, "/menu")}>{params.locale === "zh" ? "探索菜单" : "Explore the Menu"} →</ButtonLink>
             </div>
+          </div>
+          <div className="qyj-pegasus-float relative overflow-hidden rounded-[2rem] shadow-[0_18px_60px_rgba(67,115,88,0.12)]">
+            <Image src="/assets/hero-pegasus-family-eleven-v1.webp" width={1672} height={941} priority sizes="(min-width: 1024px) 720px, 100vw" alt={params.locale === "zh" ? "青云间十一只彩色 Pegasus 小飞马，在花朵、气泡与云朵间相聚" : "The eleven colourful QingyunJian Pegasus characters together among clouds, flowers and sparkling bubbles"} className="h-auto w-full" />
+          </div>
+          <div className="flex flex-col items-center text-center lg:hidden">
+            <ButtonLink className="w-full max-w-sm rounded-full bg-forest px-8 text-white shadow-lg hover:-translate-y-1 hover:bg-ink" href={localizedPath(params.locale, "/ascend")}>{params.locale === "zh" ? "发现我的 Pegasus" : "Discover My Pegasus"} <span aria-hidden="true" className="ml-3">→</span></ButtonLink>
+            <p className="mt-3 text-sm text-forest/65">{params.locale === "zh" ? "五道问题 · 你的专属茶饮分享卡" : "5 questions · Your personalised tea card"}</p>
+            <ButtonLink className="mt-5 rounded-full border border-forest/30 px-8 hover:bg-white" href={localizedPath(params.locale, "/menu")}>{params.locale === "zh" ? "探索菜单" : "Explore the Menu"} →</ButtonLink>
           </div>
         </div>
       </section>
