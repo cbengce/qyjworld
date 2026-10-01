@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { BRAND, locales } from "@/lib/constants";
+import { NEW_BOOK_STORIES, newBookStoryPath } from "@/lib/book-stories";
 import { getPublicPromotions } from "@/lib/promotions";
 import { allContent, categories } from "@/lib/content/catalog";
 
@@ -79,7 +80,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7
-    }
+    },
+    ...NEW_BOOK_STORIES.map(story => ({
+      url: `${BRAND.domain}/en${newBookStoryPath(story)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7
+    }))
   ];
 
   return [

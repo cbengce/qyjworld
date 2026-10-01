@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { BOOK, BOOK_CHAPTER_PATH, BOOK_CHAPTER_TWO_PATH } from "@/lib/book";
+import { NEW_BOOK_STORIES, newBookStoryPath } from "@/lib/book-stories";
 import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
@@ -13,7 +14,7 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
     locale: params.locale,
     path: "/book",
     title: "The Book of Qing Yun Jian | Born to Ascend",
-    description: "Read Volume I, Origins: the verified philosophy behind QING YUN JIAN and its upward-looking Modern Oriental tea experience.",
+    description: "Read the continuing story of QING YUN JIAN: its origins, first address, modern tea direction and Pegasus symbol.",
     keywords: ["Book of Qing Yun Jian", "Born to Ascend", "Qing Yun Jian philosophy", "Modern Oriental tea"],
     includeLanguageAlternates: false
   });
@@ -41,7 +42,7 @@ export default function BookPage({ params }: { params: { locale: Locale } }) {
               Qing Yun Jian
             </h1>
             <p className="mt-8 max-w-2xl text-lg leading-8 text-forest/65 md:text-xl">
-              A record of the philosophy behind QING YUN JIAN, grounded in verified foundations and written with care.
+              Stories and reflections on the beginning of QING YUN JIAN, its first address and a contemporary way to meet tea.
             </p>
           </div>
 
@@ -98,16 +99,34 @@ export default function BookPage({ params }: { params: { locale: Locale } }) {
             </Link>
           </div>
 
-          <div className="border-b border-forest/15 py-10 sm:px-8 lg:px-10 lg:py-12">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-forest/35">Further Chapters</p>
-                <p className="mt-3 font-serif text-3xl font-semibold text-forest/35">Coming Soon</p>
-              </div>
-              <p className="max-w-lg leading-7 text-forest/45">
-                Future chapters will be released only after their facts and interpretation have completed editorial review.
-              </p>
-            </div>
+          <div className="grid lg:grid-cols-2">
+            {NEW_BOOK_STORIES.filter(story => story.volume === "Origins").map(story => <Link
+              className="group border-b border-forest/15 py-10 transition-colors hover:bg-white/55 sm:px-8 lg:px-10 lg:py-14"
+              href={localizedPath(params.locale,newBookStoryPath(story))} key={story.slug}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Published</p>
+              <p className="mt-8 text-sm font-semibold text-forest/45">{story.number}</p>
+              <h3 className="mt-4 max-w-xl font-serif text-4xl font-semibold leading-tight text-forest md:text-5xl">{story.title}</h3>
+              <p className="mt-5 max-w-xl leading-7 text-forest/60">{story.excerpt}</p>
+              <span className="mt-9 inline-flex items-center gap-3 text-sm font-bold text-forest">Read Chapter <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>)}
+          </div>
+
+          <div className="grid gap-5 border-b border-forest/15 pb-10 pt-20 md:grid-cols-[12rem_1fr] md:items-end">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-gold">Volume II</p>
+            <h2 className="font-serif text-5xl font-semibold leading-none text-forest md:text-7xl">Expression</h2>
+          </div>
+          <div className="grid lg:grid-cols-2">
+            {NEW_BOOK_STORIES.filter(story => story.volume === "Expression").map(story => <Link
+              className="group border-b border-forest/15 py-10 transition-colors hover:bg-white/55 sm:px-8 lg:px-10 lg:py-14"
+              href={localizedPath(params.locale,newBookStoryPath(story))} key={story.slug}
+            >
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Published</p>
+              <p className="mt-8 text-sm font-semibold text-forest/45">{story.number}</p>
+              <h3 className="mt-4 max-w-xl font-serif text-4xl font-semibold leading-tight text-forest md:text-5xl">{story.title}</h3>
+              <p className="mt-5 max-w-xl leading-7 text-forest/60">{story.excerpt}</p>
+              <span className="mt-9 inline-flex items-center gap-3 text-sm font-bold text-forest">Read Chapter <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span></span>
+            </Link>)}
           </div>
         </div>
       </section>
