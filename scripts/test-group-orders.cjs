@@ -12,7 +12,7 @@ const menu = [{ id: 'a', name_en: 'Server name A', availability_status: 'availab
 const store = { id: 'store', name: 'Primary store' }; const now = new Date('2026-10-01T16:00:00Z');
 const make = (changes) => prepareGroupOrder({ ...input, ...changes }, menu, store, now);
 const order = make({}); assert.equal(order.totalCups, 20); assert.equal(order.items[0].name, 'Server name A'); assert.equal(order.quote, null);
-for (const changes of [{ email: 'bad' }, { website: 'bot' }, { date: '2026-10-02' }, { date: '2026-02-30' }, { fulfilment: 'delivery', address: '' }, { items: [{ id: 'no', quantity: 1 }] }, { items: [{ id: 'a', quantity: 2 }, { id: 'a', quantity: 3 }] }, { items: [{ id: 'a', quantity: 0 }] }, { items: [{ id: 'a', quantity: 1.5 }] }, { items: [{ id: 'a', quantity: 300 }, { id: 'b', quantity: 300 }] }, { price: 0 }]) assert.throws(() => make(changes));
+for (const changes of [{ email: 'bad' }, { website: 'bot' }, { date: '2026-10-02' }, { date: '2026-02-30' }, { fulfilment: 'delivery', address: '' }, { items: [{ id: 'no', quantity: 1 }] }, { items: [{ id: 'a', quantity: 2 }, { id: 'a', quantity: 3 }] }, { items: [{ id: 'a', quantity: 0 }] }, { items: [{ id: 'a', quantity: 1.5 }] }, { items: [{ id: 'a', quantity: 300 }, { id: 'b', quantity: 300 }] }, { price: 0 }, { authUserId: "forged-owner-id" }]) assert.throws(() => make(changes));
 assert.throws(() => prepareGroupOrder(input, [{ ...menu[0], availability_status: 'coming_soon' }, menu[1]], store, now));
 assert.throws(() => reviseGroupOrder(order, 'confirmed', 100, 10, 'Accepted', 'actor'));
 assert.throws(() => reviseGroupOrder(order, 'quoted', 0, 0, '', 'actor'));

@@ -24,7 +24,8 @@ export async function GET(request: Request) {
         destination = recoveryDestination;
       } else {
         const authorization = await getAdminAuthorizationForUser(data.user.id);
-        destination = authorization ? "/en/admin/promotions" : "/en/member";
+        const locale = data.user.user_metadata?.locale === "zh" ? "zh" : "en";
+        destination = authorization ? "/en/admin/promotions" : data.user.user_metadata?.account_type === "guest" ? `/${locale}/guest` : "/en/member";
       }
     } else if (recoveryDestination) {
       destination = `/${recoveryDestination.split("/")[1]}/partner/login?error=invalid-recovery-link`;

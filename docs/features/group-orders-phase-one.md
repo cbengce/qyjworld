@@ -13,3 +13,11 @@ Operations: staff contact the customer using the supplied details, agree availab
 Phase two reserved: dedicated order/payment schema when checkout and shared carts are introduced, online payment, customer quote acceptance links, notifications, capacity rules, team shared carts and repeat-order management. Do not present these as implemented.
 
 Validation: `node scripts/test-group-orders.cjs`, `npm run typecheck`, `npm run lint`, Vercel build, live public submission and idempotent retry; anonymous admin redirect. Customer text is bilingual, British English, uses existing authorised catalogue and leaves pricing to quotation.
+
+## WhatsApp quotations and free guest accounts
+
+Saved quotes now have WhatsApp, email-draft and copy actions with a customer-facing preview. Messages include product quantities, amounts, total, reference and requested fulfilment details; internal notes and change history are never included. Draft links do not send anything or mark delivery successful. Unquoted, fulfilled and cancelled requests cannot produce an active quotation draft. Ambiguous WhatsApp numbers are rejected rather than assigned an arbitrary country; 8-digit Singapore numbers receive +65.
+
+Free guest signup uses Supabase Auth signUp and its configured email confirmation flow, not admin auto-confirm. It creates no paid membership, commission or points account. Guest details are stored in user metadata. The public order route attaches authUserId from the verified server session only; client-supplied identity is rejected. Signed-in users can view their own orders and saved quotations in /guest; service queries explicitly match both the order namespace and the authenticated user ID. Anonymous requests are never linked retrospectively by a matching email address. Checkout remains available without registration. No member discounts are conferred by guest status.
+
+The confirmation email depends on the existing Supabase Auth email and redirect configuration. No customer or test email is sent by Codex as part of deployment. Quotation emails open the owner's email app with a draft; server delivery and WhatsApp Business automation are not part of this change.

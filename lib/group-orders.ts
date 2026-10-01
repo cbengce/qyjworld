@@ -14,7 +14,7 @@ export type GroupOrderInput = z.infer<typeof groupOrderSchema>;
 export const orderStatuses = ["requested", "quoted", "confirmed", "fulfilled", "cancelled"] as const;
 export type OrderStatus = typeof orderStatuses[number];
 export type GroupOrderRecord = Omit<GroupOrderInput, "website" | "items"> & {
-  reference: string; storeId: string; storeName: string; createdAt: string; version: number; status: OrderStatus;
+  authUserId?: string | null; reference: string; storeId: string; storeName: string; createdAt: string; version: number; status: OrderStatus;
   items: { id: string; name: string; quantity: number }[]; totalCups: number;
   quote: { drinks: number; delivery: number; total: number; currency: "SGD" } | null;
   internalNotes: string; history: { at: string; actor: string; status: OrderStatus; note: string }[];

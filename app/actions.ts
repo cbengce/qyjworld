@@ -48,13 +48,15 @@ async function assertAdmin() {
 function getSafeLoginDestination({
   locale,
   returnTo,
-  isAdmin
+  isAdmin,
+  isGuest
 }: {
   locale: string;
   returnTo?: FormDataEntryValue | null;
   isAdmin: boolean;
+  isGuest?: boolean;
 }) {
-  const defaultDestination = isAdmin ? `/${locale}/admin/promotions` : `/${locale}/member`;
+  const defaultDestination = isAdmin ? `/${locale}/admin/promotions` : `/${locale}/${isGuest ? "guest" : "member"}`;
   if (typeof returnTo !== "string" || !returnTo) return defaultDestination;
   if (!returnTo.startsWith(`/${locale}/`) || returnTo.startsWith("//") || returnTo.includes("://")) return defaultDestination;
   if (returnTo.startsWith(`/${locale}/admin`) && !isAdmin) return defaultDestination;
@@ -171,7 +173,8 @@ export async function loginMember(_: ActionState, formData: FormData): Promise<A
   const destination = getSafeLoginDestination({
     locale,
     returnTo: formData.get("returnTo"),
-    isAdmin: Boolean(authorization)
+    isAdmin: Boolean(authorization),
+    isGuest: data.user?.user_metadata?.account_type === "guest"
   });
 
   redirect(destination);
