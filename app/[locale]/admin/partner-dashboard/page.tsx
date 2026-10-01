@@ -1,3 +1,4 @@
+import { AppzposSyncStatus } from "@/components/partner/appzpos-sync-status";
 import { PartnerOrderList, type PartnerOrder } from "@/components/partner/partner-order-list";
 import { CopyPartnerLink } from "@/components/partner/copy-partner-link";
 import { PartnerReferralQr } from "@/components/partner/partner-referral-qr";
@@ -75,6 +76,8 @@ export default async function PartnerDashboard({ params, searchParams }: { param
         <section className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {summary.map(([label, value]) => <div className="rounded-2xl border border-forest/5 bg-white p-4 shadow-soft md:p-6" key={label}><p className="text-xs font-semibold text-ink/55">{label}</p><p className="mt-3 text-2xl font-semibold md:text-3xl">{value}</p></div>)}
         </section>
+        <AppzposSyncStatus client={client} />
+        <Link className="mt-4 inline-block text-sm font-bold underline underline-offset-4" href={`/${params.locale}/admin/reconciliation`}>Sync & daily reconciliation →</Link>
         <form className="mt-7 rounded-2xl border border-forest/5 bg-white p-5 shadow-soft">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <label className="text-sm font-bold">Partner<select className={inputClass} defaultValue={selected?.id ?? ""} name="partner"><option value="">All partners</option>{(partners ?? []).map((item) => <option key={item.id} value={item.id}>{item.partner_name} ({item.partner_code}){item.archived_at ? " · Archived" : item.status !== "active" ? " · Inactive" : ""}</option>)}</select></label>

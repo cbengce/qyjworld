@@ -179,3 +179,5 @@ console.log("Ascend card dimensions passed.");
 require("./test-store-menu-cms.cjs");
 require("./test-store-menu-migration-preflight.cjs");
 require("./test-canonical-migration-chain.cjs");
+require("./test-appzpos-sync.cjs");
+require("./test-appzpos-monitoring.cjs");
