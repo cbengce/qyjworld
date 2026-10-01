@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNavigation } from "@/components/admin/admin-navigation";
 import { activateMembership } from "@/app/actions";
 import { PointsForm } from "@/components/admin/points-form";
 import { Locale } from "@/lib/constants";
@@ -60,6 +61,7 @@ export default async function AdminPage({
             ) : null}
           </div>
 
+          <AdminNavigation locale={params.locale} />
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <div className="bg-white p-5 shadow-soft">
               <p className="text-sm font-bold text-gold">Members</p>
