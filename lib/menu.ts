@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/admin";
 import { finalMenuItems } from "@/lib/final-menu-items";
 import type { MenuItem } from "@/lib/menu-types";
 import { getPrimaryStore } from "@/lib/stores";
@@ -59,7 +60,20 @@ export async function getMenuItems({ featuredOnly = false } = {}) {
     console.error(`[QYJ_MENU_FALLBACK_ACTIVE] Menu query failed: ${error.message}`);
     return fallbackItems;
   }
-  if (!data?.length) return [];
+  if (!data?.length) {
+    // Restore the original catalogue only when this outlet has never had CMS items.
+    // Count with a server-only client so inactive/deleted items still suppress recovery:
+    // taking a configured menu off sale must never resurrect the old catalogue.
+    const service = createServiceClient();
+    const { count, error: countError } = await service
+      .from("menu_items")
+      .select("id, menus!inner(store_id)", { count: "exact", head: true })
+      .eq("menus.store_id", primaryStore.id);
+    if (countError) throw new Error(`Menu configuration check failed: ${countError.message}`);
+    if (count !== 0) return [];
+    console.warn("[QYJ_MENU_CATALOGUE_RECOVERY] Outlet has no CMS menu items; displaying original product artwork without historical prices.");
+    return fallbackItems.map((item) => ({ ...item, regular_price: null, member_price: null }));
+  }
 
   const items = data.map((item: any) => {
     const product = Array.isArray(item.products) ? item.products[0] : item.products;
