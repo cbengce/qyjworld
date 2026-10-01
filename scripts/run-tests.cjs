@@ -181,3 +181,5 @@ require("./test-store-menu-migration-preflight.cjs");
 require("./test-canonical-migration-chain.cjs");
 require("./test-appzpos-sync.cjs");
 require("./test-appzpos-monitoring.cjs");
+
+require("./test-partner-report.cjs");

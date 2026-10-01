@@ -1,4 +1,5 @@
 import { AppzposSyncStatus } from "@/components/partner/appzpos-sync-status";
+import { PartnerReportControls } from "@/components/partner/report-controls";
 import { PartnerOrderList, type PartnerOrder } from "@/components/partner/partner-order-list";
 import { CopyPartnerLink } from "@/components/partner/copy-partner-link";
 import { PartnerReferralQr } from "@/components/partner/partner-referral-qr";
@@ -90,6 +91,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
           <div className="mt-5 flex items-center gap-4"><button className="focus-ring min-h-12 rounded-full bg-forest px-7 text-sm font-bold text-white">Apply filters</button><Link className="text-sm font-semibold underline underline-offset-4" href={`/${params.locale}/admin/partner-dashboard`}>Reset</Link></div>
         </form>
         {partner && referralUrl ? <details className="mt-5 rounded-2xl border border-forest/10 bg-white p-5"><summary className="cursor-pointer text-sm font-bold">Partner referral link & QR</summary><div className="mt-4"><CopyPartnerLink url={referralUrl} /><PartnerReferralQr partnerCode={partner.partner_code} url={referralUrl} /></div></details> : null}
+        <PartnerReportControls locale={params.locale} from={from} to={to} partnerId={selected?.id} storeId={searchParams.store}/>
         <div className="mt-8 flex items-baseline justify-between gap-3"><h2 className="font-serif text-2xl font-semibold">Partner orders</h2><p className="text-sm text-ink/55">{rows.length} orders</p></div>
         {rows.length === 1000 ? <p className="mt-3 rounded-xl bg-white p-4 text-sm text-ink/65">Showing the latest 1,000 matching orders. Narrow the date range to see a complete period.</p> : null}
         <p className="mt-2 text-xs text-ink/55">Times shown in Singapore time. Summary includes paid and completed orders.</p>
