@@ -40,6 +40,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
           <div className="mt-5 grid gap-3 text-sm font-semibold text-white/80">
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale)}>Home</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/menu")}>Menu</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/group-orders")}>{locale === "zh" ? "团体订购" : "Group Orders"}</Link>
             {store?.ordering_url && <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={store.ordering_url}>Order Online</Link>}
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/promotions")}>Promotions</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/membership")}>Membership</Link>
