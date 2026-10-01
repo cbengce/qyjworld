@@ -81,12 +81,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7
     },
-    ...NEW_BOOK_STORIES.map(story => ({
-      url: `${BRAND.domain}/en${newBookStoryPath(story)}`,
+    ...NEW_BOOK_STORIES.flatMap(story => ("zh" in story ? locales : ["en"]).map(locale => ({
+      url: `${BRAND.domain}/${locale}${newBookStoryPath(story)}`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.7
-    }))
+    })))
   ];
 
   return [

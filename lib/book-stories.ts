@@ -1,4 +1,6 @@
-/** Editorial drafts: these chapters require founder review before publication. */
+import { FOUNDING_BOOK_STORIES } from "@/lib/book-founding-stories";
+
+/** Published chapters; founder approvals are recorded in docs/editorial. */
 export const NEW_BOOK_STORIES = [
   {
     number: "Chapter Three",
@@ -79,8 +81,11 @@ export const NEW_BOOK_STORIES = [
         ]
       }
     ]
-  }
+  },
+  ...FOUNDING_BOOK_STORIES
 ] as const;
 
 export type NewBookStory = (typeof NEW_BOOK_STORIES)[number];
 export const newBookStoryPath = (story: NewBookStory) => `/book/${story.volume.toLowerCase()}/${story.slug}`;
+
+export const bookStoryText = (story: NewBookStory, locale: "en" | "zh") => locale === "zh" && "zh" in story ? story.zh : story;

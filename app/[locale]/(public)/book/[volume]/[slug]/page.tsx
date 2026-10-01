@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { NEW_BOOK_STORIES, newBookStoryPath } from "@/lib/book-stories";
+import { NEW_BOOK_STORIES, bookStoryText, newBookStoryPath } from "@/lib/book-stories";
 import { type Locale } from "@/lib/constants";
 import { createPageMetadata } from "@/lib/seo";
 import { NewStoryChapter } from "@/components/book/new-story-chapter";
@@ -11,12 +11,13 @@ const findStory = ({ volume, slug }: Params["params"]) => NEW_BOOK_STORIES.find(
 export function generateMetadata({ params }: Params): Metadata {
   const story = findStory(params);
   if (!story) return {};
-  return createPageMetadata({ locale: "en", path: newBookStoryPath(story), title: `${story.title} | The Book of Qing Yun Jian`, description: story.description, includeLanguageAlternates: false });
+  const copy = bookStoryText(story, params.locale);
+  return createPageMetadata({ locale: "zh" in story ? params.locale : "en", path: newBookStoryPath(story), title: `${copy.title} | The Book of Qing Yun Jian`, description: copy.description, includeLanguageAlternates: "zh" in story });
 }
 
 export default function BookStoryPage({ params }: Params) {
   const story = findStory(params);
   if (!story) notFound();
-  if (params.locale !== "en") redirect(`/en${newBookStoryPath(story)}`);
+  if (params.locale !== "en" && !("zh" in story)) redirect(`/en${newBookStoryPath(story)}`);
   return <NewStoryChapter story={story} locale={params.locale}/>;
 }
