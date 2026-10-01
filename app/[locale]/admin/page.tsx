@@ -75,6 +75,7 @@ export default async function AdminPage({
             </div>
             <div className="bg-white p-5 shadow-soft">
               <p className="text-sm font-bold text-gold">Campaigns</p>
+              {canManageMembership && <Link className="mt-3 block font-bold text-forest underline" href={`/${params.locale}/admin/group-orders`}>Manage Group Orders</Link>}
               <div className="mt-3 grid gap-2 text-sm font-bold text-forest">
                 <Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/promotions`}>
                   Manage Promotions

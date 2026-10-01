@@ -19,6 +19,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
   const navItems = [
     { label: "Home", href: localizedPath(locale) },
     { label: "Menu", href: localizedPath(locale, "/menu") },
+    { label: locale === "zh" ? "团体订购" : "Group Orders", href: localizedPath(locale, "/group-orders") },
     { label: "Membership", href: localizedPath(locale, "/membership") },
     ...(orderingUrl ? [{ label: "Order Online", href: orderingUrl }] : []),
     { label: locale === "zh" ? "我们的故事" : "Our Story", href: localizedPath(locale, "/about") },
@@ -48,7 +49,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           <Logo priority />
         </Link>
         <nav
-          className={`hidden items-center gap-4 text-[12px] font-semibold uppercase tracking-[0.08em] transition-colors duration-500 lg:flex xl:gap-6 ${
+          className={`hidden items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors duration-500 lg:flex xl:gap-4 ${
             transparentOnHero ? "text-white/80" : "text-forest/70"
           }`}
         >
@@ -105,6 +106,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
         </div>
       </div>
       <nav aria-label={locale === "zh" ? "快捷导航" : "Quick navigation"} className="flex flex-wrap justify-end gap-2 px-3 pb-3 sm:px-5 lg:hidden">
+        <Link href={localizedPath(locale, "/group-orders")} className="focus-ring inline-flex min-h-11 items-center justify-center rounded-full bg-forest px-4 text-xs font-bold text-white">{locale === "zh" ? "团体订购" : "Group Orders"}</Link>
         <Link href={localizedPath(locale, "/about")} className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-xs font-bold ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
           {locale === "zh" ? "我们的故事" : "Our Story"}
         </Link>

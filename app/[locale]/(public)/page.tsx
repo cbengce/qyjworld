@@ -88,6 +88,13 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           </div>
         </div>
       </section>
+      <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
+        <div className="flex flex-col justify-between gap-6 rounded-[2rem] bg-[#e6edde] p-7 md:flex-row md:items-center md:p-10">
+          <div><p className="text-xs font-bold uppercase tracking-[.2em] text-forest/65">{params.locale === "zh" ? "青云间 · 团体订购" : "Tea, together"}</p><h2 className="mt-3 font-serif text-3xl text-forest md:text-4xl">{params.locale === "zh" ? "好茶，一起分享。" : "Bring a little tea to the whole team."}</h2><p className="mt-3 max-w-xl text-forest/70">{params.locale === "zh" ? "办公室茶歇、朋友聚会与活动。选择茶饮和杯数，提交您的团单需求。" : "Office tea breaks, gatherings and events. Choose your drinks and send us your group order request."}</p></div>
+          <ButtonLink href={localizedPath(params.locale, "/group-orders")}>{params.locale === "zh" ? "团体订购 →" : "Explore group orders →"}</ButtonLink>
+        </div>
+      </section>
+
 
       <section id="story" className="px-5 py-24 md:px-8 md:py-32">
         <div className="mx-auto max-w-7xl">
