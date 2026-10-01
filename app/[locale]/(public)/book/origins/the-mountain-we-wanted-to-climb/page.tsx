@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { BOOK, BOOK_CHAPTER_PATH, BOOK_CHAPTER_TWO_PATH } from "@/lib/book";
+import { NEW_BOOK_STORIES, newBookStoryPath } from "@/lib/book-stories";
 import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { breadcrumbSchema, createPageMetadata, localizedUrl } from "@/lib/seo";
@@ -194,10 +195,10 @@ export default function OriginsChapterTwoPage({ params }: { params: { locale: Lo
                     ← {BOOK.volume.chapter.title}
                   </span>
                 </Link>
-                <div className="border-t border-forest/10 py-4 sm:border-l sm:border-t-0 sm:pl-8">
-                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-forest/30">Next Chapter</span>
-                  <span className="mt-3 block font-serif text-2xl font-semibold text-forest/30">Coming Soon</span>
-                </div>
+                <Link className="group border-t border-forest/10 py-4 sm:border-l sm:border-t-0 sm:pl-8" href={localizedPath(params.locale,newBookStoryPath(NEW_BOOK_STORIES[0]))}>
+                  <span className="text-xs font-bold uppercase tracking-[0.18em] text-forest/40">Next Chapter</span>
+                  <span className="mt-3 block font-serif text-2xl font-semibold text-forest transition group-hover:text-gold">{NEW_BOOK_STORIES[0].title} →</span>
+                </Link>
               </nav>
             </div>
           </div>
