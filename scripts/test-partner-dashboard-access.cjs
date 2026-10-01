@@ -32,6 +32,7 @@ const client = { auth: { getUser: async () => ({ data:{user} }) }, from(table) {
  }};return q;
 }};
 const page=load('app/[locale]/partner/dashboard/page.tsx',{
+ '@/components/partner/report-controls':{PartnerReportControls:()=>null},
  '@/app/actions': {logoutPartner:'/logout'}, '@/components/partner/partner-order-list':{PartnerOrderList}, '@/lib/partners/access':{getActivePartnerForUser},
  '@/components/partner/copy-partner-link':{CopyPartnerLink:()=>null}, '@/components/partner/partner-referral-qr':{PartnerReferralQr:()=>null},
  '@/lib/partners/referral-url':{getPartnerReferralUrl:()=> 'https://order.qyjworld.com/Order/12?Referral_Code=AAA'},
