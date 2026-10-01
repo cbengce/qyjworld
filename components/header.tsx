@@ -14,8 +14,8 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const otherLocale = locale === "en" ? "zh" : "en";
-  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
-  const transparentOnHero = isHome && !scrolled;
+  // The homepage now has a light Pegasus hero; use the existing light header.
+  const transparentOnHero = false;
   const navItems = [
     { label: "Home", href: localizedPath(locale) },
     { label: "Menu", href: localizedPath(locale, "/menu") },
