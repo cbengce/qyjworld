@@ -1,15 +1,16 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
 import { Logo } from "@/components/logo";
 import type { PublicStore } from "@/lib/store-types";
-import { storeAddressLines, storeDirectionsUrl } from "@/lib/store-types";
+import { storeAddressLines, storeDirectionsUrl, storeWhatsAppUrl } from "@/lib/store-types";
 
 function footerLinks(store: PublicStore | null) { return [
   { label: "Instagram", href: "https://www.instagram.com/qyjworld" },
   { label: "TikTok", href: "https://www.tiktok.com/@qingyunjian" },
   { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
-  { label: "WhatsApp", href: "https://wa.me/?text=Hello%20Qing%20Yun%20Jian%2C%20I%20would%20like%20to%20ask%20about%20your%20tea%20and%20membership." },
+  ...(storeWhatsAppUrl(store) ? [{ label: "WhatsApp", href: storeWhatsAppUrl(store)! }] : []),
   { label: "Email", href: "mailto:hello@qyjworld.com" },
   ...(store ? [{ label: "Google Maps", href: storeDirectionsUrl(store) }] : [])
 ]; }
@@ -42,7 +43,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
             {store?.ordering_url && <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={store.ordering_url}>Order Online</Link>}
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/promotions")}>Promotions</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/membership")}>Membership</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/ascend")}>Discover Your Tea Profile</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/ascend")}>{locale === "zh" ? "茶饮性格测试（英文）" : "Discover Your Tea Profile"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/about")}>{locale === "zh" ? "我们的故事" : "Our Story"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/contact")}>Visit Us</Link>
           </div>
@@ -68,6 +69,23 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
           </div>
         </div>
       </div>
+
+      <section aria-labelledby="footer-partners" className="mx-auto max-w-7xl border-t border-white/10 px-5 py-10 md:px-8">
+        <h2 id="footer-partners" className="text-sm font-bold tracking-[0.14em] text-white/70">{locale === "zh" ? "我们的合作伙伴" : "Our Partners"}</h2>
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div className="flex min-h-40 flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+            <Image src="/assets/partners/ibis-styles.png" alt="ibis Styles" width={274} height={272} className="h-24 w-auto object-contain" />
+            <p className="text-sm font-semibold text-white/80">ibis Styles</p>
+          </div>
+          <div className="flex min-h-40 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-6">
+            <p className="text-center text-2xl font-semibold text-white/90">Anytime Fitness</p>
+          </div>
+          <div className="flex min-h-40 flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-6">
+            <Image src="/assets/partners/tefuda.png" alt="Tefuda" width={150} height={41} className="h-16 w-auto max-w-full object-contain" />
+            <p className="text-sm font-semibold text-white/80">Tefuda</p>
+          </div>
+        </div>
+      </section>
 
       <div className="border-t border-white/10 px-5 py-5 md:px-8">
         <p className="mx-auto max-w-7xl text-xs font-semibold text-white/45">

@@ -4,7 +4,7 @@ import { ButtonLink, Section } from "@/components/ui";
 import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 import { StructuredData } from "@/components/structured-data";
 import { getPrimaryStore } from "@/lib/stores";
-import { effectiveStoreHoursForDate, formatEffectiveStoreHours, storeAddressLines, storeDirectionsUrl } from "@/lib/store-types";
+import { effectiveStoreHoursForDate, formatEffectiveStoreHours, storeAddressLines, storeDirectionsUrl, storeWhatsAppUrl } from "@/lib/store-types";
 
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   return createPageMetadata({
@@ -21,8 +21,7 @@ export default async function ContactPage({ params }: { params: { locale: Locale
   const store = await getPrimaryStore();
   const effectiveHours = store ? effectiveStoreHoursForDate(store) : null;
   const hoursDisplay = effectiveHours ? formatEffectiveStoreHours(effectiveHours) : "";
-  const whatsappUrl =
-    "https://wa.me/?text=Hello%20Qing%20Yun%20Jian%2C%20I%20would%20like%20to%20ask%20about%20your%20tea%20and%20membership.";
+  const whatsappUrl = storeWhatsAppUrl(store);
 
   return (
     <main>
@@ -54,8 +53,8 @@ export default async function ContactPage({ params }: { params: { locale: Locale
               {store && <ButtonLink className="rounded-full bg-forest px-8 text-white hover:-translate-y-0.5 hover:bg-ink" href={storeDirectionsUrl(store)}>
                 Get Directions
               </ButtonLink>}
-              <ButtonLink className="rounded-full border border-forest/20 px-8 text-forest hover:-translate-y-0.5 hover:border-forest hover:bg-forest hover:text-white" href={whatsappUrl}>
-                WhatsApp Us
+              <ButtonLink className="rounded-full border border-forest/20 px-8 text-forest hover:-translate-y-0.5 hover:border-forest hover:bg-forest hover:text-white" href={whatsappUrl || `mailto:${store?.public_email || "hello@qyjworld.com"}`}>
+                {whatsappUrl ? (zh ? "WhatsApp 联系我们" : "WhatsApp Us") : (zh ? "邮件联系我们" : "Email Us")}
               </ButtonLink>
             </div>
           </div>
