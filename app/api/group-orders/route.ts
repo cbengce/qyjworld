@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from "node:crypto";
+import { getCurrentUser } from "@/lib/data";
 import { getMenuItems } from "@/lib/menu";
 import { getPrimaryStore } from "@/lib/stores";
 import { createServiceClient } from "@/lib/supabase/admin";
@@ -20,12 +21,14 @@ export async function POST(request: NextRequest) {
     try { record = prepareGroupOrder(input, menu, store); } catch (error) {
       return NextResponse.json({ error: error instanceof Error && error.name !== "ZodError" ? error.message : "Please check your contact details, date and drink quantities." }, { status: 400 });
     }
+    const user = await getCurrentUser();
+    record.authUserId = user?.id ?? null;
     const hash = createHash("sha256").update(JSON.stringify(input)).digest("hex");
     const service = createServiceClient();
     const { error } = await service.from("webhook_events").insert({ provider: GROUP_ORDER_PROVIDER, external_event_id: record.requestId, event_type: "group_order.requested", payload_hash: hash, payload_json: record, processing_status: "processed", processed_at: new Date().toISOString() });
     if (error?.code === "23505") {
       const { data: existing, error: readError } = await service.from("webhook_events").select("payload_hash,payload_json").eq("provider", GROUP_ORDER_PROVIDER).eq("external_event_id", record.requestId).maybeSingle();
-      if (readError || !existing || existing.payload_hash !== hash) return NextResponse.json({ error: "This request has changed. Refresh the page to submit a new request." }, { status: 409 });
+      if (readError || !existing || existing.payload_hash !== hash || (existing.payload_json.authUserId ?? null) !== record.authUserId) return NextResponse.json({ error: "This request has changed. Refresh the page to submit a new request." }, { status: 409 });
       record = existing.payload_json;
     } else if (error) throw error;
     return NextResponse.json({ reference: record.reference, totalCups: record.totalCups, status: record.status }, { status: 201, headers: { "Cache-Control": "no-store" } });

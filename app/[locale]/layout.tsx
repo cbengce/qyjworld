@@ -25,9 +25,9 @@ export default async function LocaleLayout({
     const { count } = admin ? { count: 0 } : await createClient().from("partner_users")
       .select("id", { count: "exact", head: true }).eq("auth_user_id", user.id).eq("status", "active");
     account = {
-      label: admin ? (admin.role === "super_admin" ? "Super Admin" : "Admin") : count === 1 ? "Partner" : (locale === "zh" ? "已登录" : "Signed in"),
+      label: admin ? (admin.role === "super_admin" ? "Super Admin" : "Admin") : count === 1 ? "Partner" : user.user_metadata?.account_type === "guest" ? (locale === "zh" ? "访客账号" : "Guest account") : (locale === "zh" ? "已登录" : "Signed in"),
       email: user.email ?? "",
-      href: `/${locale}/${admin ? "admin" : count === 1 ? "partner/dashboard" : "member"}`
+      href: `/${locale}/${admin ? "admin" : count === 1 ? "partner/dashboard" : user.user_metadata?.account_type === "guest" ? "guest" : "member"}`
     };
   }
   const store = await getPrimaryStore();

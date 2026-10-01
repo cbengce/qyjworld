@@ -1,0 +1,14 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs'); const ts = require('typescript'); const Module = require('node:module');
+const filename = process.cwd() + '/lib/group-order-quotation.ts'; const mod = new Module(filename, module); mod.filename = filename; mod.paths = Module._nodeModulePaths(process.cwd());
+mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { esModuleInterop: true, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText, filename);
+const { whatsappNumber, quotationLinks } = mod.exports;
+assert.equal(whatsappNumber('9123 4567'),'6591234567'); assert.equal(whatsappNumber('+65 9123 4567'),'6591234567'); assert.equal(whatsappNumber('+44 7700 900123'),'447700900123');
+for (const number of ['5551234567','00000000','+65 0000 0000','abc91234567','123','+0123456789']) assert.equal(whatsappNumber(number),null);
+const order = { reference: 'QG-TEST', locale: 'en', name: 'QA customer', email: 'qa@example.com', phone: '91234567', status: 'quoted', totalCups: 16, items: [{ id: 'one', name: 'Luna Tide', quantity: 16 }], quote: { drinks: 100, delivery: 8, total: 108, currency: 'SGD' }, date: '2026-10-03', time: '14:30', fulfilment: 'collection', storeName: 'Primary store', internalNotes: 'PRIVATE_DO_NOT_SEND', history: [{ actor: 'PRIVATE_UUID' }] };
+const links = quotationLinks(order); assert.equal(new URL(links.whatsapp).hostname,'wa.me'); assert.equal(new URL(links.whatsapp).searchParams.get('text'),links.message); assert.match(links.message,/S\$108\.00/); assert.match(links.message,/Luna Tide × 16/); assert.doesNotMatch(links.message,/PRIVATE/); assert.match(links.message,/not a payment receipt/); assert.ok(links.email.startsWith('mailto:'));
+for(const status of ['requested','cancelled','fulfilled']) assert.equal(quotationLinks({...order,status}).message,null);
+assert.equal(quotationLinks({...order,quote:null}).message,null);
+assert.match(quotationLinks({...order,locale:'zh'}).message,/总金额/);
+assert.equal(quotationLinks({...order,phone:'bad'}).whatsapp,null);
+console.log('Quotation formatting, recipient numbers and private-note exclusion tests passed.');
