@@ -43,8 +43,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/promotions")}>Promotions</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/membership")}>Membership</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/ascend")}>Discover Your Tea Profile</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href="/en/book">The Book</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/about")}>Story</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/about")}>{locale === "zh" ? "我们的故事" : "Our Story"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/contact")}>Visit Us</Link>
           </div>
         </div>
