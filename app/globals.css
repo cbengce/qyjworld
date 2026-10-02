@@ -162,3 +162,26 @@ textarea {
 @media (prefers-reduced-motion: reduce) {
   .qyj-pegasus-float { animation: none; }
 }
+
+/* A playful family, using the approved character art throughout. */
+.qyj-character { overflow: hidden; border-radius: 47% 53% 43% 57% / 55% 42% 58% 45%; flex-shrink: 0; }
+.qyj-playful-home section:not(:first-child) { padding-top: 3rem; padding-bottom: 3rem; }
+.qyj-playful-home h2 { font-family: var(--font-sans), Arial, sans-serif; font-size: clamp(1.8rem, 3.6vw, 3.2rem); line-height: 1.15; }
+.qyj-together { border-radius: 3rem 1.5rem 4rem 1.5rem; border: 2px solid #d8e6c9; }
+.qyj-story-card { border-radius: 2.5rem 1rem 2.5rem 1.5rem; }
+.qyj-story-card:nth-child(2) { border-radius: 1rem 3rem 1.5rem 3rem; background: #fff0de; }
+.qyj-story-card:nth-child(3) { background: #f6e8ee; }
+.qyj-drink-card { background: #e2f2ee; border-radius: 3rem 1.5rem 2rem 1.5rem; border: 2px solid #d0e7de; }
+.qyj-drink-card:nth-child(2) { background: #fff0f1; border-color: #f2dbe1; border-radius: 1.5rem 3rem 1.5rem 3rem; }
+.qyj-drink-card:nth-child(3) { background: #fff1da; border-color: #efdfc5; border-radius: 3rem 2rem 3rem 1rem; }
+.qyj-playful-home .qyj-drink-card h3 { color: #344f47; }
+.qyj-playful-home section.bg-forest, .qyj-playful-home .bg-forest { border-radius: 2rem; }
+.qyj-playful-orders > section { border-radius: 0 0 3rem 5rem; }
+.qyj-playful-orders article { border-radius: 2.5rem 1.5rem 3rem 1rem; background: #fffbf2; }
+.qyj-playful-orders article:nth-child(3n+2) { border-radius: 1rem 3rem 1.5rem 3rem; background: #f8eff6; }
+.qyj-playful-orders article:nth-child(3n+3) { background: #eef7ef; }
+.qyj-playful-orders form > section:last-child { border: 2px solid #d9e8db; border-radius: 3rem 1.5rem 3rem 1.5rem; }
+.qyj-playful-cms a.bg-white { border-radius: 2rem 1rem 2rem 1rem; border: 1px solid #dfe8de; transition: background .2s; }
+.qyj-playful-cms a.bg-white:hover { background: #eaf4ed; }
+.qyj-playful-cms a.bg-forest, .qyj-playful-cms a.border-forest { border-radius: 999px; }
+@media (max-width: 640px) { .qyj-playful-home section:not(:first-child) { padding-top: 2rem; padding-bottom: 2rem; } }
