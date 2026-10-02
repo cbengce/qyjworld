@@ -1,3 +1,4 @@
+import { PegasusPortrait } from "@/components/pegasus-portrait";
 import Link from "next/link";
 import { AdminNavigation } from "@/components/admin/admin-navigation";
 import { MenuCatalogueRecovery } from "@/components/admin/menu-catalogue-recovery";
@@ -27,8 +28,8 @@ export default async function MenuAdminPage({ params, searchParams }: { params: 
   const brand = brands?.[0]; const products = productsResult.data ?? [];
   const activeProducts = products.filter((product) => product.status === "active");
   const inactiveProducts = products.filter((product) => product.status === "inactive");
-  const productList = (items: typeof products) => <div className="mt-4 grid gap-3">{items.map((product: any) => <Link className="flex items-center justify-between bg-white p-5 shadow-soft" href={`/${params.locale}/admin/menu/products/${product.id}`} key={product.id}><span><strong>{product.name_en}</strong><span className="ml-3 text-sm text-forest/50">{product.sku}</span></span>{product.is_signature && <span className="text-xs font-bold uppercase text-gold">Signature</span>}</Link>)}</div>;
-  return <main className="min-h-screen bg-paper px-5 py-12"><div className="mx-auto max-w-7xl">
+  const productList = (items: typeof products) => <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((product: any) => <Link className="flex items-center justify-between bg-white p-5 shadow-soft" href={`/${params.locale}/admin/menu/products/${product.id}`} key={product.id}><PegasusPortrait name={product.name_en} className="mr-4 h-24 w-24 shrink-0" /><span className="min-w-0"><strong>{product.name_en}</strong><span className="mt-2 block break-all text-sm text-forest/50">{product.sku}</span></span>{product.is_signature && <span className="text-xs font-bold uppercase text-gold">Signature</span>}</Link>)}</div>;
+  return <main className="qyj-playful-cms min-h-screen bg-paper px-5 py-12"><div className="mx-auto max-w-7xl">
     <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">QYJ Admin</p><h1 className="mt-3 font-serif text-5xl text-forest">Menu CMS</h1><AdminNavigation locale={params.locale as "en" | "zh"} />
     <p className="mt-6 text-forest/70">Manage drinks and images here. Open an outlet below to edit regular and member prices, display order and availability.</p>
     {queryError && <p className="mt-6 rounded-xl bg-white p-5 text-red-700" role="alert">The catalogue could not be loaded. Please reload or check database permissions; an empty list does not mean your products were deleted.</p>}

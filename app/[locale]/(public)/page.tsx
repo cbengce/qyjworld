@@ -1,3 +1,4 @@
+import { PegasusPortrait } from "@/components/pegasus-portrait";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { Locale } from "@/lib/constants";
@@ -63,7 +64,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   const hoursDisplay = effectiveHours ? formatEffectiveStoreHours(effectiveHours) : "";
 
   return (
-    <main className="bg-[#f8f5ed]">
+    <main className="qyj-playful-home bg-[#f8f5ed]">
       <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }])} />
       <section className="relative overflow-hidden bg-[#fff8ec] text-forest" aria-label={params.locale === "zh" ? "探索你的茶饮性格" : "Discover your tea personality"}>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_25%,#d7eee5_0%,transparent_55%),radial-gradient(ellipse_at_10%_80%,#ffe0cd_0%,transparent_50%)]" />
@@ -89,67 +90,12 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         </div>
       </section>
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
-        <div className="flex flex-col justify-between gap-6 rounded-[2rem] bg-[#e6edde] p-7 md:flex-row md:items-center md:p-10">
-          <div><p className="text-xs font-bold uppercase tracking-[.2em] text-forest/65">{params.locale === "zh" ? "青云间 · 团体订购" : "Tea, together"}</p><h2 className="mt-3 font-serif text-3xl text-forest md:text-4xl">{params.locale === "zh" ? "好茶，一起分享。" : "Bring a little tea to the whole team."}</h2><p className="mt-3 max-w-xl text-forest/70">{params.locale === "zh" ? "办公室茶歇、朋友聚会与活动。选择茶饮和杯数，提交您的团单需求。" : "Office tea breaks, gatherings and events. Choose your drinks and send us your group order request."}</p></div>
+        <div className="flex flex-col justify-between gap-6 qyj-together bg-[#e6edde] p-7 md:flex-row md:items-center md:p-10">
+          <PegasusPortrait name="Cloudlift" className="h-36 w-36 shrink-0" /><div><p className="text-xs font-bold uppercase tracking-[.2em] text-forest/65">{params.locale === "zh" ? "青云间 · 团体订购" : "Tea, together"}</p><h2 className="mt-3 font-serif text-3xl text-forest md:text-4xl">{params.locale === "zh" ? "好茶，一起分享。" : "Bring a little tea to the whole team."}</h2><p className="mt-3 max-w-xl text-forest/70">{params.locale === "zh" ? "办公室茶歇、朋友聚会与活动。选择茶饮和杯数，提交您的团单需求。" : "Office tea breaks, gatherings and events. Choose your drinks and send us your group order request."}</p></div>
           <ButtonLink href={localizedPath(params.locale, "/group-orders")}>{params.locale === "zh" ? "团体订购 →" : "Explore group orders →"}</ButtonLink>
         </div>
       </section>
 
-
-      <section id="story" className="px-5 py-24 md:px-8 md:py-32">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{params.locale === "zh" ? "我们的故事" : "OUR STORY"}</p>
-              <h2 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
-                A Lighter Kind of Luxury.
-              </h2>
-            </div>
-            <p className="max-w-2xl text-lg leading-8 text-forest/60 md:justify-self-end">
-              Inspired by Oriental tea culture and crafted in Singapore, Qing Yun Jian brings tea into a brighter, more contemporary expression.
-            </p>
-          </div>
-
-          <ButtonLink href={localizedPath(params.locale, "/about")} className="mt-8">{params.locale === "zh" ? "阅读我们的故事" : "Explore Our Story"} →</ButtonLink>
-
-          <div className="mt-14 grid gap-px bg-forest/10 lg:grid-cols-3">
-            {storyCards.map((card) => (
-              <article key={card.title} className="min-h-[19rem] bg-[#fbfaf6] p-7 md:p-9">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{card.index}</p>
-                <p className="mt-12 font-serif text-4xl font-semibold leading-tight text-forest">{card.title}</p>
-                <p className="mt-6 text-base leading-7 text-forest/60">{card.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-[#e9f0ec] px-5 py-24 md:px-8 md:py-32">
-        <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_18%_22%,rgba(200,148,66,0.14),transparent_24rem),radial-gradient(circle_at_84%_70%,rgba(18,60,47,0.10),transparent_22rem),linear-gradient(90deg,rgba(18,60,47,0.035)_1px,transparent_1px),linear-gradient(rgba(18,60,47,0.025)_1px,transparent_1px)] [background-size:auto,auto,44px_44px,44px_44px]" />
-        <div className="pointer-events-none absolute -right-20 top-16 h-64 w-64 rounded-full border border-forest/10" />
-        <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full border border-gold/20" />
-        <div className="qyj-fade-up relative mx-auto max-w-7xl">
-          <div className="max-w-4xl">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Tea Categories</p>
-            <h2 className="mt-5 font-serif text-4xl font-semibold leading-[0.98] text-forest sm:text-5xl md:text-7xl">
-              THREE EXPRESSIONS. ONE JOURNEY.
-            </h2>
-          </div>
-
-          <div className="mt-14 grid gap-5 lg:grid-cols-3">
-            {teaCategories.map((category) => (
-              <article
-                key={category.title}
-                className="qyj-fade-up relative overflow-hidden border border-forest/10 bg-[#fbfaf6]/90 p-7 transition duration-300 hover:-translate-y-1 md:p-9"
-              >
-                <div className="absolute right-6 top-6 h-20 w-20 rounded-full border border-gold/15" />
-                <p className="font-serif text-4xl font-semibold leading-tight text-forest">{category.title}</p>
-                <p className="mt-6 text-base leading-7 text-forest/60">{category.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section className="bg-[#f8f5ed] px-5 py-24 md:px-8 md:py-32">
         <div className="qyj-fade-up mx-auto max-w-7xl">
@@ -170,17 +116,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
 
           <div className="mt-14 grid gap-5 lg:grid-cols-3">
             {featuredDrinks.map((drink) => (
-              <article key={drink.id} className="qyj-fade-up group overflow-hidden bg-white shadow-[0_28px_75px_rgba(10,24,20,0.08)] transition duration-300 hover:-translate-y-1">
-                <div className="relative aspect-[4/5] overflow-hidden bg-[linear-gradient(180deg,#fbfaf6,#edf3ef)] p-5">
-                  {drink.image_url ? <Image
-                    src={drink.image_url}
-                    alt={`${drink.name_en} Qing Yun Jian product artwork`}
-                    title={`${drink.name_en} sparkling tea by Qing Yun Jian`}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="p-3 object-contain transition duration-500 group-hover:scale-[1.015]"
-                  /> : <div className="grid h-full place-items-center font-serif text-3xl text-forest">{drink.name_en}</div>}
-                </div>
+              <article key={drink.id} className="qyj-fade-up qyj-drink-card group overflow-hidden shadow-[0_18px_45px_rgba(10,24,20,0.07)] transition duration-300 hover:-translate-y-1">
+                <div className="px-6 pt-6"><PegasusPortrait name={drink.name_en} className="mx-auto h-56 w-full max-w-[260px]" /></div>
                 <div className="p-7 md:p-8">
                   <div className="flex items-start justify-between gap-5">
                     <div>
@@ -197,6 +134,61 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                     View Menu
                   </ButtonLink>
                 </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="story" className="px-5 py-24 md:px-8 md:py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{params.locale === "zh" ? "我们的故事" : "OUR STORY"}</p>
+              <h2 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
+                A Lighter Kind of Luxury.
+              </h2>
+            </div>
+            <p className="max-w-2xl text-lg leading-8 text-forest/60 md:justify-self-end">
+              Inspired by Oriental tea culture and crafted in Singapore, Qing Yun Jian brings tea into a brighter, more contemporary expression.
+            </p>
+          </div>
+
+          <ButtonLink href={localizedPath(params.locale, "/about")} className="mt-8">{params.locale === "zh" ? "阅读我们的故事" : "Explore Our Story"} →</ButtonLink>
+
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {storyCards.map((card, index) => (
+              <article key={card.title} className="qyj-story-card bg-[#fbfaf6] p-7 md:p-9">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{card.index}</p>
+                <PegasusPortrait name={["Drift", "Monsoon", "Cloudlift"][index]} className="float-right h-28 w-32" /><p className="mt-6 font-serif text-4xl font-semibold leading-tight text-forest">{card.title}</p>
+                <p className="mt-6 text-base leading-7 text-forest/60">{card.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#e9f0ec] px-5 py-24 md:px-8 md:py-32">
+        <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_18%_22%,rgba(200,148,66,0.14),transparent_24rem),radial-gradient(circle_at_84%_70%,rgba(18,60,47,0.10),transparent_22rem),linear-gradient(90deg,rgba(18,60,47,0.035)_1px,transparent_1px),linear-gradient(rgba(18,60,47,0.025)_1px,transparent_1px)] [background-size:auto,auto,44px_44px,44px_44px]" />
+        <div className="pointer-events-none absolute -right-20 top-16 h-64 w-64 rounded-full border border-forest/10" />
+        <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full border border-gold/20" />
+        <div className="qyj-fade-up relative mx-auto max-w-7xl">
+          <div className="max-w-4xl">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Tea Categories</p>
+            <h2 className="mt-5 font-serif text-4xl font-semibold leading-[0.98] text-forest sm:text-5xl md:text-7xl">
+              THREE EXPRESSIONS. ONE JOURNEY.
+            </h2>
+          </div>
+
+          <div className="mt-14 grid gap-5 lg:grid-cols-3">
+            {teaCategories.map((category, index) => (
+              <article
+                key={category.title}
+                className="qyj-fade-up qyj-story-card relative overflow-hidden border border-forest/10 bg-[#fbfaf6]/90 p-7 transition duration-300 hover:-translate-y-1 md:p-9"
+              >
+                <PegasusPortrait name={["Luna Tide", "Clearsky", "Evenfall"][index]} className="float-right ml-3 h-32 w-28" />
+                <p className="font-serif text-4xl font-semibold leading-tight text-forest">{category.title}</p>
+                <p className="mt-6 text-base leading-7 text-forest/60">{category.text}</p>
               </article>
             ))}
           </div>
