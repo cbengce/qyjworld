@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
+import { requireAdmin } from "@/lib/data";
 import { requireAdminPermission } from "@/lib/admin-permissions";
 import { createClient } from "@/lib/supabase/server";
 import { categorySchema, menuItemSchema, productSchema } from "@/lib/validation/menu";
@@ -118,4 +119,30 @@ export async function addProductToMenu(formData: FormData) {
   const { error } = await supabase.from("menu_items").insert({ menu_id: menuId, product_id: productId, product_brand_id: brandId, status: "active", created_by: user.id, updated_by: user.id });
   if (error) throw new Error(error.message);
   refreshMenu(locale); redirect(`/${locale}/admin/menu/outlets/${storeId}?saved=added`);
+}
+
+export async function recoverOriginalMenu(locale: string): Promise<{ error?: string }> {
+  const { createServiceClient } = await import("@/lib/supabase/admin");
+  const { importOriginalMenu } = await import("@/lib/menu-catalogue-import");
+  // Authenticate before service-role reads; the outlet and brand come from the DB,
+  // never from client-supplied IDs. The existing scoped CMS permission is required.
+  await requireAdmin(locale);
+  const service = createServiceClient();
+  const storeResult = await service.from("stores").select("id, brand_id").eq("is_primary", true).is("deleted_at", null).single();
+  if (storeResult.error || !storeResult.data) return { error: "A single primary outlet must be configured before importing the catalogue." };
+  const store = storeResult.data;
+  const { user } = await requireAdminPermission(locale, "menu.manage", { brandId: store.brand_id, storeId: store.id });
+  try {
+    await importOriginalMenu(service, createClient(), store, user.id);
+    for (const language of ["en", "zh"]) {
+      refreshMenu(language);
+      revalidatePath(`/${language}`);
+      revalidatePath(`/${language}/admin/menu/categories`);
+      revalidatePath(`/${language}/admin/menu/outlets/${store.id}`);
+    }
+    return {};
+  } catch (error) {
+    console.error("[QYJ_CMS_IMPORT_FAILED]", error);
+    return { error: "The catalogue could not be fully connected. Existing records were preserved. Please retry or check the outlet menu configuration." };
+  }
 }
