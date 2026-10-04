@@ -22,6 +22,19 @@ function requireTypeScriptModule(filePath) {
   return mod.exports;
 }
 
+const { getSafeLoginDestination } = requireTypeScriptModule(join(process.cwd(), "lib", "auth", "login-destination.ts"));
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true }), "/en/partner/dashboard");
+assert.equal(getSafeLoginDestination({ locale: "zh", isAdmin: false, isPartner: true, isGuest: true }), "/zh/partner/dashboard");
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: true, isPartner: true }), "/en/admin/promotions");
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false }), "/en/member");
+assert.equal(getSafeLoginDestination({ locale: "zh", isAdmin: false, isGuest: true }), "/zh/guest");
+for (const returnTo of ["/en/member", "/en/member?tab=points", "/en/member/history", "https://example.com", "//example.com", "/en/admin", "/en/\\example.com", "/zh/member"]) {
+  assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true, returnTo }), "/en/partner/dashboard", `Partner routing must reject ${returnTo}`);
+}
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true, returnTo: "/en/partner/report" }), "/en/partner/report");
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true, returnTo: "/en/group-orders" }), "/en/group-orders");
+console.log("Account login destination tests passed.");
+
 Module._extensions[".ts"] = function compileTypeScript(module, filePath) {
   const source = readFileSync(filePath, "utf8");
   const compiled = ts.transpileModule(source, {

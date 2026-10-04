@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
+import { getSafeLoginDestination } from "@/lib/auth/login-destination";
 import { BRAND } from "@/lib/constants";
 import { getAdminAuthorizationForUser } from "@/lib/data";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -43,24 +44,6 @@ async function assertAdmin() {
   const authorization = await getAdminAuthorizationForUser(user.id);
   if (!authorization) throw new Error("Admin permission required.");
   return user;
-}
-
-function getSafeLoginDestination({
-  locale,
-  returnTo,
-  isAdmin,
-  isGuest
-}: {
-  locale: string;
-  returnTo?: FormDataEntryValue | null;
-  isAdmin: boolean;
-  isGuest?: boolean;
-}) {
-  const defaultDestination = isAdmin ? `/${locale}/admin/promotions` : `/${locale}/${isGuest ? "guest" : "member"}`;
-  if (typeof returnTo !== "string" || !returnTo) return defaultDestination;
-  if (!returnTo.startsWith(`/${locale}/`) || returnTo.startsWith("//") || returnTo.includes("://")) return defaultDestination;
-  if (returnTo.startsWith(`/${locale}/admin`) && !isAdmin) return defaultDestination;
-  return returnTo;
 }
 
 function redirectWithAdminNotice(locale: string, path: string, key: "notice" | "error", message: string): never {
@@ -170,10 +153,12 @@ export async function loginMember(_: ActionState, formData: FormData): Promise<A
 
   const locale = String(formData.get("locale") || "en");
   const authorization = data.user ? await getAdminAuthorizationForUser(data.user.id) : null;
+  const partner = data.user ? await getActivePartnerForUser(supabase, data.user.id) : null;
   const destination = getSafeLoginDestination({
     locale,
     returnTo: formData.get("returnTo"),
     isAdmin: Boolean(authorization),
+    isPartner: Boolean(partner),
     isGuest: data.user?.user_metadata?.account_type === "guest"
   });
 

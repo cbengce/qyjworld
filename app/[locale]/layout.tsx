@@ -7,6 +7,7 @@ import { getPrimaryStore } from "@/lib/stores";
 import { effectiveStoreHoursForDate, storeAddressLines, storeDirectionsUrl } from "@/lib/store-types";
 import { StructuredData } from "@/components/structured-data";
 import { getCurrentUser, getAdminAuthorizationForUser } from "@/lib/data";
+import { getActivePartnerForUser } from "@/lib/partners/access";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function LocaleLayout({
@@ -22,12 +23,11 @@ export default async function LocaleLayout({
   let account = null;
   if (user) {
     const admin = await getAdminAuthorizationForUser(user.id);
-    const { count } = admin ? { count: 0 } : await createClient().from("partner_users")
-      .select("id", { count: "exact", head: true }).eq("auth_user_id", user.id).eq("status", "active");
+    const partner = admin ? null : await getActivePartnerForUser(createClient(), user.id);
     account = {
-      label: admin ? (admin.role === "super_admin" ? "Super Admin" : "Admin") : count === 1 ? "Partner" : user.user_metadata?.account_type === "guest" ? (locale === "zh" ? "访客账号" : "Guest account") : (locale === "zh" ? "已登录" : "Signed in"),
+      label: admin ? (admin.role === "super_admin" ? "Super Admin" : "Admin") : partner ? "Partner" : user.user_metadata?.account_type === "guest" ? (locale === "zh" ? "访客账号" : "Guest account") : (locale === "zh" ? "已登录" : "Signed in"),
       email: user.email ?? "",
-      href: `/${locale}/${admin ? "admin" : count === 1 ? "partner/dashboard" : user.user_metadata?.account_type === "guest" ? "guest" : "member"}`
+      href: `/${locale}/${admin ? "admin" : partner ? "partner/dashboard" : user.user_metadata?.account_type === "guest" ? "guest" : "member"}`
     };
   }
   const store = await getPrimaryStore();
