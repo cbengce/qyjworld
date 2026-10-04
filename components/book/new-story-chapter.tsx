@@ -1,3 +1,4 @@
+import { StoryCover } from "@/components/book/story-cover";
 import Image from "next/image";
 import Link from "next/link";
 import { BRAND, type Locale } from "@/lib/constants";
@@ -15,7 +16,7 @@ export function NewStoryChapter({ story, locale }: { story: NewBookStory; locale
   const path = newBookStoryPath(story);
   const body = [copy.lead, ...copy.sections.flatMap(section => [section.heading, ...section.paragraphs])].join(" ");
   const wordCount = locale === "zh" ? body.replace(/\s/g, "").length : body.split(/\s+/).length;
-  return <main className="bg-paper text-ink">
+  return <main className="bg-[radial-gradient(ellipse_at_top_left,#e0f5ed,transparent_65%),linear-gradient(135deg,#f8f5e6,#edf8f0)] text-ink">
     <StructuredData data={breadcrumbSchema(locale, [
       { name: "Home" }, { name: BOOK.title, path: "/book" },
       { name: copy.volume, path: "/book" }, { name: copy.title, path }
@@ -45,12 +46,13 @@ export function NewStoryChapter({ story, locale }: { story: NewBookStory; locale
           </div>
         </div>
       </header>
+      <StoryCover index={index + 2} locale={locale} />
       {story.slug === "a-winged-horse-a-simple-invitation" ? <div className="relative mx-auto my-14 aspect-square w-[min(76vw,20rem)] bg-[#071713] p-7 shadow-[0_24px_55px_rgba(7,23,19,0.16)]"><Image src="/assets/qing-yun-jian-logo-official.png" alt="QING YUN JIAN official Pegasus symbol" fill sizes="320px" className="object-contain p-7"/></div> : null}
       <div className="px-5 py-14 md:px-8 md:py-24"><div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[9rem_minmax(0,1fr)]">
         <aside className="text-xs font-bold uppercase tracking-[0.2em] text-gold">{copy.number}</aside>
-        <div className="max-w-3xl text-lg leading-9 text-forest/80">
+        <div className="max-w-3xl rounded-3xl border border-gold/20 bg-[#fbfcf4]/90 p-6 shadow-[0_12px_40px_rgba(18,60,47,0.04)] sm:p-10 text-lg leading-9 text-forest/80">
           <p className="font-serif text-3xl font-semibold leading-snug text-forest md:text-4xl">{copy.lead}</p>
-          {copy.sections.map(section=><section className="mt-14" key={section.heading}>
+          {copy.sections.map(section=><section className="mt-14 border-t border-gold/25 pt-10" key={section.heading}>
             <h2 className="font-serif text-3xl font-semibold text-forest md:text-4xl">{section.heading}</h2>
             {section.paragraphs.map(paragraph=><p className="mt-6" key={paragraph}>{paragraph}</p>)}
           </section>)}
