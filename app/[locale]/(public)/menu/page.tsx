@@ -1,3 +1,4 @@
+import { DiscoveryLinks } from "@/components/content/discovery-links";
 import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { getMenuItems } from "@/lib/menu";
@@ -42,6 +43,7 @@ function menuSchema(locale: Locale, items: MenuItem[]) {
         return {
           "@type": "MenuItem",
           "@id": `${BRAND.domain}/${locale}/menu#${item.id}`,
+          url: `${BRAND.domain}/${locale}/menu/${encodeURIComponent(item.id)}`,
           name: locale === "zh" ? item.name_zh || item.name_en : item.name_en,
           alternateName: locale === "zh" ? item.name_en : item.name_zh,
           description: locale === "zh" ? item.description_zh || item.description_en : item.description_en,
@@ -59,8 +61,8 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
   return createPageMetadata({
     locale: params.locale,
     path: "/menu",
-    title: "Sparkling Tea Menu Singapore | Qing Yun Jian",
-    description: "Explore premium sparkling tea, fruit tea and milk tea crafted with Oriental tea traditions.",
+    title: params.locale === "zh" ? "青云间新加坡茶饮菜单" : "Sparkling Tea Menu Singapore | QING YUN JIAN",
+    description: params.locale === "zh" ? "查看青云间现行茶饮介绍、价格与售卖状态，探索自己的一杯或办公室团体订购。" : "Explore the current QING YUN JIAN tea menu, drink descriptions, pricing and availability in Singapore. Plan your own cup or an office group order.",
     keywords: ["sparkling tea menu Singapore", "fruit tea Singapore", "milk tea Singapore", "Qing Yun Jian menu"]
   });
 }
@@ -74,6 +76,7 @@ export default async function MenuPage({ params }: { params: { locale: Locale } 
         menuSchema(params.locale, items)
       ]} />
       <MenuCatalogue items={items} locale={params.locale} />
+      <DiscoveryLinks locale={params.locale} />
     </>
   );
 }

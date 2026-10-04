@@ -1,3 +1,4 @@
+import { discoveryEntries } from "./discovery";
 import type { ContentProfile } from "@/lib/content/types";
 import { createContentEntry } from "@/lib/content/generator";
 
@@ -60,8 +61,12 @@ function relatedFor(profiles: ContentProfile[], index: number) {
   return [1, 2, 3].map((offset) => profiles[(index + offset) % profiles.length].slug);
 }
 
-export const articles = articleProfiles.map((profile, index) => createContentEntry(profile, "article", index, relatedFor(articleProfiles, index)));
-export const guides = guideProfiles.map((profile, index) => createContentEntry(profile, "guide", index, relatedFor(guideProfiles, index)));
+export const articles = articleProfiles.map((profile, index) => {
+  const original = createContentEntry(profile, "article", index, relatedFor(articleProfiles, index));
+  const replacement = discoveryEntries.find(entry => entry.kind === "article" && entry.slug === profile.slug);
+  return replacement || original;
+}).sort((a, b) => Number(Boolean(b.discovery)) - Number(Boolean(a.discovery)));
+export const guides = [...discoveryEntries.filter(entry => entry.kind === "guide"), ...guideProfiles.map((profile, index) => createContentEntry(profile, "guide", index, relatedFor(guideProfiles, index)))];
 export const allContent = [...articles, ...guides];
 
 export const categories = Array.from(
@@ -86,7 +91,7 @@ export function getCategory(slug: string) {
 }
 
 export function getRelatedContent(entry: (typeof allContent)[number]) {
-  const pool = entry.kind === "article" ? articles : guides;
+  const pool = allContent;
   return entry.relatedSlugs.map((slug) => pool.find((candidate) => candidate.slug === slug)).filter((candidate): candidate is (typeof pool)[number] => Boolean(candidate));
 }
 
@@ -94,8 +99,8 @@ export function getContentSeoImage(entry: (typeof allContent)[number]) {
   const isHomepageHero = entry.heroImage.includes("hero-home");
   return {
     url: entry.heroImage,
-    width: isHomepageHero ? 1672 : 1536,
-    height: isHomepageHero ? 941 : 1024,
+    width: isHomepageHero ? 1672 : entry.heroImage.includes("portrait") ? 864 : 1536,
+    height: isHomepageHero ? 941 : entry.discovery ? (entry.heroImage.includes("portrait") ? 1536 : 864) : 1024,
     alt: entry.heroAlt
   };
 }

@@ -1,3 +1,4 @@
+import { DiscoveryLinks } from "@/components/content/discovery-links";
 import { PegasusPortrait } from "@/components/pegasus-portrait";
 import Image from "next/image";
 import type { Metadata } from "next";
@@ -352,6 +353,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           </div>
         </div>
       </section>}
+    <DiscoveryLinks locale={params.locale} />
     </main>
   );
 }

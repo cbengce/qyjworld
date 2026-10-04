@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Locale } from "@/lib/constants";
 import type { MenuItem } from "@/lib/menu-types";
@@ -205,7 +206,7 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
                   </div>
 
                   <div className="p-6 md:p-7">
-                    <h3 className="font-serif text-4xl font-semibold leading-none text-forest">{primaryName}</h3>
+                    <h3 className="font-serif text-4xl font-semibold leading-none text-forest"><Link href={`/${locale}/menu/${encodeURIComponent(item.id)}`}>{primaryName}</Link></h3>
                     <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-gold">{secondaryName}</p>
                     <p className="mt-4 min-h-14 text-sm leading-7 text-forest/60">{description || (zh ? "青云间精选茶饮。" : "Qing Yun Jian curated tea expression.")}</p>
 
@@ -220,6 +221,7 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
                       </div>
                     </div>
 
+                    <Link href={`/${locale}/menu/${encodeURIComponent(item.id)}`} className="mt-5 inline-block text-sm font-bold text-forest underline">{zh ? "查看茶品详情 →" : "View drink details →"}</Link>
                     <div className="mt-5 flex items-center justify-between gap-4 text-xs font-bold uppercase tracking-[0.14em]">
                       <span className="text-forest/45">{comingSoon ? (zh ? "季节预告" : "Seasonal preview") : item.is_featured ? (zh ? "精选饮品" : "Curated selection") : (zh ? "青云间产品" : "QYJ catalogue")}</span>
                       {memberHasBenefit && <span className="text-gold">{zh ? "会员优惠" : "Member value"}</span>}

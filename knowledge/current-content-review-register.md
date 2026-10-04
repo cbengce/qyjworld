@@ -6,7 +6,7 @@ This register reflects the current entries in `lib/content/catalog.ts` and the c
 
 | Slug | Title | Editorial status |
 |---|---|---|
-| `sparkling-tea-singapore-guide` | Sparkling Tea in Singapore: A Modern Guide | FULL REWRITE REQUIRED |
+| `sparkling-tea-singapore-guide` | Sparkling Tea in Singapore: A Modern Guide | REWRITTEN — PUBLISH (4 Oct 2026 audit) |
 | `best-tea-singapore-how-to-choose` | How to Choose the Best Tea in Singapore | FULL REWRITE REQUIRED |
 | `oriental-tea-modern-meaning` | What Modern Oriental Tea Means Today | FULL REWRITE REQUIRED |
 | `jasmine-tea-aroma-flavour-guide` | Jasmine Tea: Aroma, Flavour and Quality | FULL REWRITE REQUIRED |
@@ -20,9 +20,9 @@ This register reflects the current entries in `lib/content/catalog.ts` and the c
 | `real-fruit-tea-ingredients` | Real Fruit in Tea: What It Changes | FULL REWRITE REQUIRED |
 | `osmanthus-tea-flavour` | Osmanthus in Tea: A Gentle Floral Guide | FULL REWRITE REQUIRED |
 | `sparkling-tea-vs-soda` | Sparkling Tea vs Soda: What Is the Difference? | FULL REWRITE REQUIRED |
-| `sparkling-tea-vs-bubble-tea` | Sparkling Tea vs Bubble Tea | FULL REWRITE REQUIRED |
+| `sparkling-tea-vs-bubble-tea` | Sparkling Tea vs Bubble Tea | REWRITTEN — PUBLISH (4 Oct 2026 audit) |
 | `milk-tea-without-heavy-sweetness` | How Milk Tea Can Taste Light and Tea-Forward | SUBSTANTIAL REVISION REQUIRED |
-| `macpherson-tea-guide` | A Tea Lover's Guide to MacPherson | FULL REWRITE REQUIRED |
+| `macpherson-tea-guide` | A Tea Lover's Guide to MacPherson | REWRITTEN — PUBLISH (4 Oct 2026 audit) |
 | `tea-cafes-singapore-etiquette` | Tea Café Etiquette and Better Ordering | FULL REWRITE REQUIRED |
 | `tea-sweetness-levels-guide` | A Practical Guide to Tea Sweetness Levels | FULL REWRITE REQUIRED |
 | `iced-tea-singapore-climate` | Why Iced Tea Works in Singapore's Climate | FULL REWRITE REQUIRED |
@@ -59,3 +59,5 @@ This register reflects the current entries in `lib/content/catalog.ts` and the c
 - Status changes require a new documented audit against `13_CONTENT_AUDIT_STANDARD.md`.
 - Application visibility remains unchanged by this register.
 
+
+Three new bilingual discovery guides are reviewed in [discovery-publication-audit-2026-10-04.md](discovery-publication-audit-2026-10-04.md). The same record covers the three rewritten article URLs above; other legacy findings remain unchanged.
