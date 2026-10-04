@@ -17,7 +17,9 @@ export function getSafeLoginDestination({
   if (typeof returnTo !== "string" || !returnTo) return defaultDestination;
   if (!returnTo.startsWith(`/${locale}/`) || returnTo.startsWith("//") || returnTo.includes("://") || returnTo.includes("\\")) return defaultDestination;
   const path = returnTo.split(/[?#]/)[0];
+  if (path === `/${locale}/login`) return defaultDestination;
   if (path.startsWith(`/${locale}/admin`) && !isAdmin) return defaultDestination;
+  if (isGuest && !isPartner && (path === `/${locale}/member` || path.startsWith(`/${locale}/member/`))) return defaultDestination;
   if (isPartner && (path === `/${locale}/member` || path.startsWith(`/${locale}/member/`))) return defaultDestination;
   return returnTo;
 }
