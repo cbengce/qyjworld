@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { StoryCover } from "@/components/book/story-cover";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -99,7 +99,7 @@ export default function OriginsChapterTwoPage({ params }: { params: { locale: Lo
   const canonical = localizedUrl(params.locale, BOOK_CHAPTER_TWO_PATH);
 
   return (
-    <main className="bg-paper text-ink">
+    <main className="bg-[radial-gradient(ellipse_at_top_left,#e0f5ed,transparent_65%),linear-gradient(135deg,#f8f5e6,#edf8f0)] text-ink">
       <StructuredData
         data={breadcrumbSchema(params.locale, [
           { name: "Home" },
@@ -153,17 +153,7 @@ export default function OriginsChapterTwoPage({ params }: { params: { locale: Lo
           </div>
         </header>
 
-        <div className="relative aspect-[16/8] min-h-72 w-full overflow-hidden bg-forest">
-          <Image
-            alt="Luna Tide tea overlooking a mountain landscape at the QING YUN JIAN terrace"
-            className="object-cover"
-            fill
-            priority
-            sizes="100vw"
-            src="/assets/hero-home-final-v1-final.png"
-            title="QING YUN JIAN — Born to Ascend"
-          />
-        </div>
+        <StoryCover index={1} locale={params.locale} />
 
         <div className="px-5 py-16 md:px-8 md:py-24">
           <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-[9rem_minmax(0,1fr)]">
@@ -172,7 +162,7 @@ export default function OriginsChapterTwoPage({ params }: { params: { locale: Lo
               <p className="mt-3 text-sm leading-6 text-forest/45">Chapter Two</p>
             </aside>
 
-            <div className="max-w-3xl text-lg leading-9 text-forest/75">
+            <div className="max-w-3xl rounded-3xl border border-gold/20 bg-[#fbfcf4]/90 p-6 shadow-[0_12px_40px_rgba(18,60,47,0.04)] sm:p-10 text-lg leading-9 text-forest/75">
               {chapterStanzas.map((stanza, stanzaIndex) => (
                 <p className={stanzaIndex === 0 ? "font-serif text-3xl font-semibold leading-snug text-forest md:text-4xl" : "mt-9"} key={`stanza-${stanzaIndex}`}>
                   {stanza.map((line, lineIndex) => (
