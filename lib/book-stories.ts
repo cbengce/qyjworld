@@ -1,4 +1,5 @@
 import { FOUNDING_BOOK_STORIES } from "@/lib/book-founding-stories";
+import { PURPOSE_CONTINUATION_STORIES } from "@/lib/book-purpose-continuation";
 
 /** Published chapters; founder approvals are recorded in docs/editorial. */
 export const NEW_BOOK_STORIES = [
@@ -82,7 +83,8 @@ export const NEW_BOOK_STORIES = [
       }
     ]
   },
-  ...FOUNDING_BOOK_STORIES
+  ...FOUNDING_BOOK_STORIES,
+  ...PURPOSE_CONTINUATION_STORIES
 ] as const;
 
 export type NewBookStory = (typeof NEW_BOOK_STORIES)[number];
