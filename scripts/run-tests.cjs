@@ -33,6 +33,8 @@ for (const returnTo of ["/en/member", "/en/member?tab=points", "/en/member/histo
 }
 assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true, returnTo: "/en/partner/report" }), "/en/partner/report");
 assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isPartner: true, returnTo: "/en/group-orders" }), "/en/group-orders");
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, isGuest: true, returnTo: "/en/member" }), "/en/guest");
+assert.equal(getSafeLoginDestination({ locale: "en", isAdmin: false, returnTo: "/en/login" }), "/en/member");
 console.log("Account login destination tests passed.");
 
 Module._extensions[".ts"] = function compileTypeScript(module, filePath) {

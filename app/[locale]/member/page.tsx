@@ -20,10 +20,14 @@ export default async function MemberPage({ params }: { params: { locale: Locale 
   const user = await requireUser(params.locale);
   const partner = await getActivePartnerForUser(createClient(), user.id);
   if (partner) redirect(`/${params.locale}/partner/dashboard`);
+  if (user.user_metadata?.account_type === "guest") redirect(`/${params.locale}/guest`);
   const dashboard = await getMemberDashboard(user.id);
+  if (!dashboard.customer) {
+    return <main><Section><h1 className="font-serif text-4xl">{params.locale === "zh" ? "会员资料尚未建立" : "Membership profile unavailable"}</h1><p className="mt-5">{params.locale === "zh" ? "此账号没有关联的会员资料，请联系门店核实。" : "This account has no linked membership profile. Please contact the store to check your account."}</p><form action={logoutMember} className="mt-5"><button className="min-h-12 bg-forest px-6 text-white" type="submit">{t.common.logout}</button></form></Section></main>;
+  }
   const profile = dashboard.profile;
-  const referralCode = dashboard.referralCode?.code ?? "Pending";
-  const referralLink = dashboard.referralCode?.referral_url ?? createReferralLink(process.env.NEXT_PUBLIC_SITE_URL ?? BRAND.domain, referralCode);
+  const referralCode = dashboard.referralCode?.code;
+  const referralLink = referralCode ? dashboard.referralCode?.referral_url ?? createReferralLink(process.env.NEXT_PUBLIC_SITE_URL ?? BRAND.domain, referralCode) : null;
   const expired = dashboard.membership?.status === "expired";
 
   return (
@@ -59,13 +63,13 @@ export default async function MemberPage({ params }: { params: { locale: Locale 
             ))}
             <div className="bg-white p-5 shadow-soft transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_30px_80px_rgba(10,24,20,0.16)] md:col-span-2">
               <p className="text-sm font-bold text-gold">QR / Referral</p>
-              <div className="mt-4 flex flex-col gap-4 sm:flex-row">
+              {referralLink ? <div className="mt-4 flex flex-col gap-4 sm:flex-row">
                 <QrCode value={referralLink} />
                 <div>
                   <p className="font-bold">{referralCode}</p>
                   <p className="mt-2 break-all text-sm text-forest/70">{referralLink}</p>
                 </div>
-              </div>
+              </div> : <p className="mt-4 text-forest/70">{params.locale === "zh" ? "推荐码尚未准备好。" : "Your referral code is not available yet."}</p>}
             </div>
           </div>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
