@@ -4,7 +4,7 @@ export type MarkdownBlock =
   | { type: "list"; items: string[] };
 
 export function headingId(text: string) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/(^-|-$)/g, "");
 }
 
 export function parseMarkdown(markdown: string): MarkdownBlock[] {

@@ -28,6 +28,11 @@ export type ContentEntry = {
   markdown: string;
   faq: ContentFaq[];
   relatedSlugs: string[];
+  sources?: { title: string; url: string }[];
+  discovery?: boolean;
+  showMenu?: boolean;
+  showStore?: boolean;
+  zh?: Pick<ContentEntry, "title" | "description" | "heroAlt" | "markdown" | "faq">;
 };
 
 export type ContentProfile = {

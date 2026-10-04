@@ -1,3 +1,4 @@
+import { getMenuItems } from "@/lib/menu";
 import type { MetadataRoute } from "next";
 import { BRAND, locales } from "@/lib/constants";
 import { NEW_BOOK_STORIES, newBookStoryPath } from "@/lib/book-stories";
@@ -7,6 +8,7 @@ import { allContent, categories } from "@/lib/content/catalog";
 const publicPaths = [
   "",
   "/menu",
+  "/group-orders",
   "/membership",
   "/about",
   "/contact",
@@ -22,7 +24,7 @@ const growthPaths = ["/blog", "/guides", "/categories", "/search"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const promotions = await getPublicPromotions();
+  const [promotions, menu] = await Promise.all([getPublicPromotions(), getMenuItems()]);
   const localizedPages: MetadataRoute.Sitemap = locales.flatMap((locale) =>
     publicPaths.map((path) => ({
       url: `${BRAND.domain}/${locale}${path}`,
@@ -41,19 +43,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const growthIndexPages: MetadataRoute.Sitemap = growthPaths.map((path) => ({
-    url: `${BRAND.domain}/en${path}`,
+  const growthIndexPages: MetadataRoute.Sitemap = growthPaths.flatMap((path) => (path === "/blog" || path === "/guides" ? locales : ["en"]).map(locale => ({
+    url: `${BRAND.domain}/${locale}${path}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: path === "/blog" || path === "/guides" ? 0.9 : 0.7
-  }));
+  })));
 
-  const editorialPages: MetadataRoute.Sitemap = allContent.map((entry) => ({
-      url: `${BRAND.domain}/en/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`,
+  const editorialPages: MetadataRoute.Sitemap = allContent.flatMap((entry) => (entry.zh ? locales : ["en"]).map(locale => ({
+      url: `${BRAND.domain}/${locale}/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`,
       lastModified: new Date(entry.updatedAt),
       changeFrequency: "monthly",
       priority: entry.kind === "guide" ? 0.85 : 0.75
-    }));
+    })));
 
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
       url: `${BRAND.domain}/en/categories/${category.slug}`,
@@ -100,6 +102,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...promotionPages,
     ...growthIndexPages,
     ...editorialPages,
+    ...locales.flatMap(locale => menu.map(item => ({ url: `${BRAND.domain}/${locale}/menu/${encodeURIComponent(item.id)}`, changeFrequency: "weekly" as const, priority: 0.8 }))),
     ...categoryPages,
     ...bookPages
   ];
