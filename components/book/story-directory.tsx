@@ -17,7 +17,7 @@ export function StoryDirectory({ locale }: { locale: Locale }) {
     { volume: "Expression", title: zh ? "茶与品牌" : "Tea & Our Identity" },
     { volume: "Purpose", title: zh ? "初心与远景" : "Purpose & Vision" }
   ];
-  const covers = ["drift-ancient-tea-path", "cloudlift-highland-sunrise", "luna-tide-moon-lake", "night-nectar-rain-pavilion", "monsoon-highland-rain", "clearsky-cloud-valley", "evenfall-autumn-forest", "stillearth-winter-path"];
+  const covers = ["bright-tea-terraces-v2", "bright-cloud-path-v2", "bright-cloud-pavilion-v2"];
   return <section id="story-collection" className="scroll-mt-28 px-5 py-16 md:px-8 md:py-20" aria-label={zh ? "我们的故事目录" : "Our story collection"}>
     <div className="mx-auto max-w-6xl">
       <p className="text-sm font-semibold text-gold">{BOOK.title}</p>
@@ -25,8 +25,8 @@ export function StoryDirectory({ locale }: { locale: Locale }) {
       {groups.map(group => <div className="mt-12" key={group.volume}>
         <h2 className="border-b border-forest/15 pb-6 font-serif text-3xl font-semibold text-forest md:text-4xl">{group.title}</h2>
         <div className="grid gap-5 pt-6 md:grid-cols-2">
-          {chapters.filter(chapter => chapter.volume === group.volume).map(chapter => <Link key={chapter.path} href={localizedPath(chapter.locale, chapter.path)} className="group overflow-hidden rounded-2xl border border-forest/10 bg-[#faf7ef] transition hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest">
-            <div className="relative aspect-[16/9] overflow-hidden bg-forest"><Image src={`/assets/ascend/landscapes/${covers[chapters.indexOf(chapter) % covers.length]}.png`} fill sizes="(min-width: 768px) 560px, 100vw" alt="" className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transform-none" /><div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-forest/40 to-transparent" /></div>
+          {chapters.filter(chapter => chapter.volume === group.volume).map(chapter => <Link key={chapter.path} href={localizedPath(chapter.locale, chapter.path)} className="group overflow-hidden rounded-2xl border border-forest/10 bg-[#fbfdf7] transition hover:-translate-y-1 hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-forest">
+            <div className="relative aspect-[16/9] overflow-hidden bg-[#d9f2ef]"><Image src={`/assets/story/${covers[chapters.indexOf(chapter) % covers.length]}.webp`} fill sizes="(min-width: 768px) 560px, 100vw" alt="" className="object-cover transition duration-500 group-hover:scale-105 motion-reduce:transform-none" /></div>
             <div className="p-6 sm:p-7">
             <p className="text-xs font-semibold text-gold">{chapter.number}</p>
             <h3 className="mt-4 font-serif text-3xl font-semibold leading-tight text-forest">{chapter.title}</h3>
