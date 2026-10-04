@@ -1,3 +1,5 @@
+import { getSafeLoginDestination } from "@/lib/auth/login-destination";
+import { getActivePartnerForUser } from "@/lib/partners/access";
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { getAdminAuthorizationForUser } from "@/lib/data";
@@ -25,7 +27,13 @@ export async function GET(request: Request) {
       } else {
         const authorization = await getAdminAuthorizationForUser(data.user.id);
         const locale = data.user.user_metadata?.locale === "zh" ? "zh" : "en";
-        destination = authorization ? "/en/admin/promotions" : data.user.user_metadata?.account_type === "guest" ? `/${locale}/guest` : "/en/member";
+        const partner = await getActivePartnerForUser(supabase, data.user.id);
+        destination = getSafeLoginDestination({
+          locale,
+          isAdmin: Boolean(authorization),
+          isPartner: Boolean(partner),
+          isGuest: data.user.user_metadata?.account_type === "guest"
+        });
       }
     } else if (recoveryDestination) {
       destination = `/${recoveryDestination.split("/")[1]}/partner/login?error=invalid-recovery-link`;

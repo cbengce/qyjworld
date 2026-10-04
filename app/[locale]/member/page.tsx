@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+import { getActivePartnerForUser } from "@/lib/partners/access";
+import { createClient } from "@/lib/supabase/server";
 import type { Metadata } from "next";
 import { BRAND, Locale } from "@/lib/constants";
 import { getMemberDashboard, requireUser } from "@/lib/data";
@@ -15,6 +18,8 @@ export const metadata: Metadata = {
 export default async function MemberPage({ params }: { params: { locale: Locale } }) {
   const t = getDictionary(params.locale);
   const user = await requireUser(params.locale);
+  const partner = await getActivePartnerForUser(createClient(), user.id);
+  if (partner) redirect(`/${params.locale}/partner/dashboard`);
   const dashboard = await getMemberDashboard(user.id);
   const profile = dashboard.profile;
   const referralCode = dashboard.referralCode?.code ?? "Pending";
