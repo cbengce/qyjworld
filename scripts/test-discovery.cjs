@@ -24,6 +24,10 @@ function load(relative, mocks = {}) {
   return mod.exports;
 }
 async function main() {
+  for (const section of ['search', 'categories']) {
+    const { default: Layout } = load(`app/[locale]/(public)/${section}/layout.tsx`);
+    assert.equal(renderToStaticMarkup(React.createElement(Layout, { params: { locale: 'zh' } }, 'Chinese content')), 'Chinese content');
+  }
   const { allContent, articles, guides } = load('lib/content/catalog.ts');
   const { localizeContent, categoryLabel } = load('lib/content/discovery.ts');
   const { parseMarkdown } = load('lib/content/markdown.ts');
