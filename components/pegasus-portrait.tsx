@@ -1,15 +1,17 @@
-/** Windows onto the approved eleven-character artwork; no new characters. */
+import Image from "next/image";
+
+/** Independent renders of the owner's approved eleven-character family. */
 const portraits: Record<string, string> = {
-  lunatide: "390 305 445 510", nightnectar: "810 345 320 460",
-  evenfall: "1135 340 255 320", clearsky: "445 30 350 250",
-  monsoon: "815 25 290 240", glowstate: "1370 295 300 245",
-  stillearth: "15 495 280 300", cloudlift: "175 265 310 230",
-  drift: "1190 20 375 280", goldentide: "15 15 360 275",
-  scarletsky: "1320 555 350 330"
+  lunatide: "luna-tide", nightnectar: "night-nectar",
+  evenfall: "evenfall", clearsky: "clearsky",
+  monsoon: "monsoon", glowstate: "glowstate",
+  stillearth: "stillearth", cloudlift: "cloudlift",
+  drift: "drift", goldentide: "golden-tide",
+  scarletsky: "scarlet-sky"
 };
 export function PegasusPortrait({ name, className = "" }: { name: string; className?: string }) {
   const key = name.toLowerCase().replace(/[^a-z]/g, "").replace(/^qyj/, "");
-  const viewBox = portraits[key];
-  if (!viewBox) return null;
-  return <div aria-hidden="true" className={`qyj-character ${className}`}><svg viewBox={viewBox} className="h-full w-full" focusable="false"><image href="/assets/hero-pegasus-family-eleven-v1.webp" width="1672" height="941" /></svg></div>;
+  const portrait = portraits[key];
+  if (!portrait) return null;
+  return <div aria-hidden="true" className={`shrink-0 ${className}`}><Image src={`/assets/pegasus/individual-v1/${portrait}.webp`} alt="" width={640} height={640} className="h-full w-full object-contain" /></div>;
 }
