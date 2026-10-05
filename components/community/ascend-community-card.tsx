@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { ASCEND_COMMUNITY, getAscendCommunityInviteUrl } from "@/lib/community";
 
-export function AscendCommunityCard({ compact = false }: { compact?: boolean }) {
+export function AscendCommunityCard({ compact = false, locale = "en" }: { compact?: boolean; locale?: string }) {
   const inviteUrl = getAscendCommunityInviteUrl();
-  const lines = ASCEND_COMMUNITY.supportingLines;
+  const zh = locale === "zh";
+  const lines = zh ? ["活动资讯", "新茶饮", "会员礼遇", "相聚时刻"] : ASCEND_COMMUNITY.supportingLines;
 
   return (
     <section className={compact ? "bg-white px-5 py-16 md:px-8 md:py-20" : "bg-[#f8f5ed] px-5 py-20 md:px-8 md:py-28"}>
@@ -15,12 +16,12 @@ export function AscendCommunityCard({ compact = false }: { compact?: boolean }) 
         }
       >
         <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Community</p>
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "青云间社群" : "Community"}</p>
           <h2 className={`${compact ? "mt-4 text-4xl md:text-5xl" : "mt-5 text-5xl md:text-7xl"} break-words font-serif font-semibold leading-[0.98] text-forest`}>
-            {compact ? ASCEND_COMMUNITY.compactHeading : ASCEND_COMMUNITY.heading}
+            {zh ? (compact ? "保持联系" : "加入青云间社群") : compact ? ASCEND_COMMUNITY.compactHeading : ASCEND_COMMUNITY.heading}
           </h2>
           {compact ? (
-            <p className="mt-5 max-w-2xl text-base leading-7 text-forest/65">{ASCEND_COMMUNITY.compactText}</p>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-forest/65">{zh ? "加入社群，了解新茶饮、会员礼遇与活动资讯。" : ASCEND_COMMUNITY.compactText}</p>
           ) : (
             <div className="mt-7 grid gap-3 text-lg font-semibold text-forest/70 sm:grid-cols-2">
               {lines.map((line) => (
@@ -30,7 +31,7 @@ export function AscendCommunityCard({ compact = false }: { compact?: boolean }) 
               ))}
             </div>
           )}
-          <p className="mt-7 text-sm font-semibold text-forest/55">{ASCEND_COMMUNITY.note}</p>
+          <p className="mt-7 text-sm font-semibold text-forest/55">{zh ? "扫描二维码或点击按钮加入。" : ASCEND_COMMUNITY.note}</p>
           {inviteUrl ? (
             <a
               className="focus-ring mt-7 inline-flex min-h-12 items-center justify-center rounded-full bg-forest px-7 text-sm font-bold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-ink"
@@ -38,7 +39,7 @@ export function AscendCommunityCard({ compact = false }: { compact?: boolean }) 
               rel="noopener noreferrer"
               target="_blank"
             >
-              {ASCEND_COMMUNITY.buttonLabel}
+              {zh ? "加入社群" : ASCEND_COMMUNITY.buttonLabel}
             </a>
           ) : (
             <div className="mt-7 grid gap-2">
@@ -47,9 +48,9 @@ export function AscendCommunityCard({ compact = false }: { compact?: boolean }) 
                 disabled
                 type="button"
               >
-                {ASCEND_COMMUNITY.buttonLabel}
+                {zh ? "加入社群" : ASCEND_COMMUNITY.buttonLabel}
               </button>
-              <p className="break-words text-xs font-semibold text-forest/50">Development note: configure NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL to enable this button.</p>
+              <p className="break-words text-xs font-semibold text-forest/50">{zh ? "请扫描二维码加入社群。" : "Scan the QR code to join the community."}</p>
             </div>
           )}
         </div>

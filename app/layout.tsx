@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import "./globals.css";
 import { BRAND } from "@/lib/constants";
@@ -53,6 +54,7 @@ export const metadata: Metadata = {
   publisher: BRAND.nameEn,
   applicationName: BRAND.nameEn,
   category: "Food & Drink",
+  verification: { google: process.env.GOOGLE_SITE_VERIFICATION || undefined },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -141,7 +143,7 @@ function resourceHints() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang={headers().get("x-qyj-locale") === "zh" ? "zh-SG" : "en-SG"}>
       <head>
         {resourceHints().map((origin) => <link key={`dns-${origin}`} href={origin} rel="dns-prefetch" />)}
         {resourceHints().map((origin) => <link key={`preconnect-${origin}`} crossOrigin="anonymous" href={origin} rel="preconnect" />)}

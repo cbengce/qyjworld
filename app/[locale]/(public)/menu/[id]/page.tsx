@@ -8,6 +8,8 @@ import { getMenuItems } from "@/lib/menu";
 import { getPrimaryStore } from "@/lib/stores";
 import { breadcrumbSchema, createPageMetadata, localizedUrl } from "@/lib/seo";
 import { StructuredData } from "@/components/structured-data";
+import { CurrentTeaSelection } from "@/components/content/current-tea-selection";
+import { FAQSection } from "@/components/content/faq-section";
 import { DiscoveryLinks } from "@/components/content/discovery-links";
 
 export const dynamic = "force-dynamic";
@@ -39,6 +41,12 @@ export default async function DrinkPage({ params }: { params: { locale: Locale; 
       <dl className="mt-6 grid grid-cols-2 gap-4"><div className="rounded-xl bg-white p-5"><dt className="text-sm">{zh ? "普通价格" : "Regular price"}</dt><dd className="mt-2 text-2xl font-bold">{item.regular_price !== null ? `S$${item.regular_price.toFixed(2)}` : zh ? "询问门店" : "Enquire in store"}</dd></div><div className="rounded-xl bg-forest p-5 text-white"><dt className="text-sm">{zh ? "会员价格" : "Member price"}</dt><dd className="mt-2 text-2xl font-bold text-gold">{item.member_price !== null ? `S$${item.member_price.toFixed(2)}` : zh ? "询问门店" : "Enquire in store"}</dd><Link href={`/${params.locale}/membership`} className="mt-2 block text-xs underline">{zh ? "查看会员条件" : "See membership terms"}</Link></div></dl>
       <div className="mt-7 flex flex-wrap gap-3">{available && item.online_ordering_enabled && store?.ordering_url && <a href={store.ordering_url} className="rounded-full bg-forest px-6 py-3 font-bold text-white">{zh ? "在线订购" : "Order online"}</a>}{available && <Link href={`/${params.locale}/group-orders`} className="rounded-full border border-forest/25 px-6 py-3 font-bold">{zh ? "团体订购申请" : "Plan a group order"}</Link>}<Link href={`/${params.locale}/contact`} className="rounded-full border border-forest/25 px-6 py-3 font-bold">{zh ? "到店与询问" : "Visit & enquire"}</Link></div><p className="mt-6 text-sm leading-6 text-forest/65">{zh ? "需要确认原料或调整选项时，请在订购前询问门店。团单的茶品、价格与执行安排须经确认。" : "Ask the store before ordering if you need ingredient or customisation details. Drinks, pricing and fulfilment for group requests require confirmation."}</p>
       </div>
-    </article><DiscoveryLinks locale={params.locale} />
+    </article><section className="mx-auto max-w-6xl px-5 pb-12 md:px-8">
+      <FAQSection locale={params.locale} faq={[
+        { question: zh ? `${name}的现行价格怎么看？` : `Where can I check the current price of ${name}?`, answer: item.regular_price !== null ? (zh ? `普通价格为 S$${item.regular_price.toFixed(2)}。会员价另行标示，须符合会员条件。` : `The regular price is S$${item.regular_price.toFixed(2)}. Member pricing is shown separately and is subject to membership conditions.`) : (zh ? "当前页面未列普通价格，请向门店确认后订购。" : "A regular price is not listed here. Confirm with the store before ordering.") },
+        { question: zh ? `${name}可以申请团单吗？` : `Can I request ${name} for a group?`, answer: available ? (zh ? "这款在现行菜单中。团体订购页面可提交申请，具体数量、报价与执行仍须团队确认。" : "This drink is on the current menu. Use Group Orders to submit a request; quantities, quotation and fulfilment still require confirmation.") : (zh ? "这款当前不可订购。请查看现行菜单选择可售茶品。" : "This drink is not currently orderable. Check the current menu for available choices.") }
+      ]} />
+      <CurrentTeaSelection locale={params.locale} showStore />
+    </section><DiscoveryLinks locale={params.locale} />
   </main>;
 }

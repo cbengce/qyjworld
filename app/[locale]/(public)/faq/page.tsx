@@ -8,8 +8,8 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
   return createPageMetadata({
     locale: params.locale,
     path: "/faq",
-    title: "Tea Membership FAQ | Qing Yun Jian Singapore",
-    description: "Find answers about Qing Yun Jian membership activation, fees, points and member account security.",
+    title: params.locale === "zh" ? "青云间常见问题 | 菜单、到店与会员" : "Tea Membership FAQ | Qing Yun Jian Singapore",
+    description: params.locale === "zh" ? "了解青云间菜单、到店、团购申请与会员激活的常见问题。" : "Find answers about Qing Yun Jian membership activation, fees, points and member account security.",
     keywords: ["Qing Yun Jian FAQ", "tea membership FAQ", "membership points Singapore"]
   });
 }
@@ -17,6 +17,9 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
 export default function FAQPage({ params }: { params: { locale: Locale } }) {
   const zh = params.locale === "zh";
   const faqs = [
+    { q: zh ? "在哪里查看现行茶饮？" : "Where can I find the current drinks?", a: zh ? "菜单与茶品详情页列出当前介绍、可提供的价格及供应状态。" : "The menu and drink detail pages show current descriptions, prices where available and availability." },
+    { q: zh ? "团单需要付费会员吗？" : "Do group requests require paid membership?", a: zh ? "不需要。团体订购表格可直接填写联系方式；免费访客账号为可选。" : "No. Complete the group form with contact details; a free guest account is optional." },
+    { q: zh ? "提交团单就确认了吗？" : "Does submitting a group request confirm the order?", a: zh ? "没有。团队仍须确认茶品、数量、报价及领取或配送安排，表格不会收款。" : "No. Drinks, quantities, quotation and collection or delivery arrangements require team confirmation. The form does not take payment." },
     {
       q: zh ? "会员如何激活？" : "How is membership activated?",
       a: zh
@@ -44,7 +47,7 @@ export default function FAQPage({ params }: { params: { locale: Locale } }) {
 
   return (
     <main>
-      <StructuredData data={[breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "FAQ", path: "/faq" }]), faqSchema]} />
+      <StructuredData data={[breadcrumbSchema(params.locale, [{ name: params.locale === "zh" ? "首页" : "Home" }, { name: params.locale === "zh" ? "常见问题" : "FAQ", path: "/faq" }]), faqSchema]} />
       <Section>
         <div className="mx-auto max-w-4xl">
           <h1 className="font-serif text-6xl font-semibold">{zh ? "常见问题" : "Frequently Asked Questions"}</h1>

@@ -43,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  const growthIndexPages: MetadataRoute.Sitemap = growthPaths.flatMap((path) => (path === "/blog" || path === "/guides" ? locales : ["en"]).map(locale => ({
+  const growthIndexPages: MetadataRoute.Sitemap = growthPaths.flatMap((path) => locales.map(locale => ({
     url: `${BRAND.domain}/${locale}${path}`,
     lastModified: now,
     changeFrequency: "weekly",
@@ -54,15 +54,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${BRAND.domain}/${locale}/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`,
       lastModified: new Date(entry.updatedAt),
       changeFrequency: "monthly",
-      priority: entry.kind === "guide" ? 0.85 : 0.75
+      priority: entry.kind === "guide" ? 0.85 : 0.75,
+      alternates: entry.zh ? { languages: { "en-SG": `${BRAND.domain}/en/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`, "zh-SG": `${BRAND.domain}/zh/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}` } } : undefined
     })));
 
-  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
-      url: `${BRAND.domain}/en/categories/${category.slug}`,
+  const categoryPages: MetadataRoute.Sitemap = locales.flatMap(locale => categories.map((category) => ({
+      url: `${BRAND.domain}/${locale}/categories/${category.slug}`,
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.7
-    }));
+    })));
 
   const bookPages: MetadataRoute.Sitemap = [
     {

@@ -44,7 +44,7 @@ export async function getMenuItems({ featuredOnly = false } = {}) {
   }
   let query = supabase
     .from("menu_items")
-    .select("id, regular_price, member_price, is_featured, availability_status, online_ordering_enabled, products!inner(name_en, name_zh, description_en, description_zh, status, is_signature, product_images(image_url, is_primary, display_order, status), product_categories(name_en, name_zh)), menus!inner(status)")
+    .select("id, product_id, regular_price, member_price, is_featured, availability_status, online_ordering_enabled, products!inner(name_en, name_zh, description_en, description_zh, status, is_signature, product_images(image_url, is_primary, display_order, status), product_categories(name_en, name_zh)), menus!inner(status)")
     .eq("status", "active")
     .eq("menus.status", "active")
     .eq("menus.store_id", primaryStore.id)
@@ -82,8 +82,9 @@ export async function getMenuItems({ featuredOnly = false } = {}) {
     const category = Array.isArray(product?.product_categories) ? product.product_categories[0] : product?.product_categories;
     return {
       id: item.id,
+      product_id: item.product_id,
       name_en: product?.name_en ?? "Unnamed item",
-      name_zh: product?.name_zh ?? product?.name_en ?? "未命名饮品",
+      name_zh: product?.name_zh ?? "",
       description_en: product?.description_en ?? null,
       description_zh: product?.description_zh ?? null,
       regular_price: item.regular_price,

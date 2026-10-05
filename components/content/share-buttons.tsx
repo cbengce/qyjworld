@@ -1,4 +1,4 @@
-export function ShareButtons({ title, url }: { title: string; url: string }) {
+export function ShareButtons({ title, url, locale = "en" }: { title: string; url: string; locale?: string }) {
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
   const links = [
@@ -8,7 +8,7 @@ export function ShareButtons({ title, url }: { title: string; url: string }) {
   ];
   return (
     <div aria-label="Share this article" className="flex flex-wrap items-center gap-3">
-      <span className="text-xs font-bold uppercase tracking-[0.18em] text-forest/45">Share</span>
+      <span className="text-xs font-bold uppercase tracking-[0.18em] text-forest/45">{locale === "zh" ? "分享" : "Share"}</span>
       {links.map((link) => <a key={link.label} className="focus-ring rounded-full border border-forest/15 px-4 py-2 text-sm font-semibold text-forest hover:border-forest" href={link.href} rel="noopener noreferrer" target={link.label === "Email" ? undefined : "_blank"}>{link.label}</a>)}
     </div>
   );

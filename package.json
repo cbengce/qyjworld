@@ -8,7 +8,8 @@
     "start": "node scripts/next-with-system-ca.mjs start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/run-tests.cjs"
+    "test": "node scripts/run-tests.cjs",
+    "test:discovery": "node scripts/test-discovery.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

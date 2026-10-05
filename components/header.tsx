@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BRAND, Locale } from "@/lib/constants";
 import { localizedPath } from "@/lib/i18n/routing";
+import { LanguageSwitch } from "@/components/language-switch";
 import { Logo } from "@/components/logo";
 import { logoutAccount } from "@/app/actions";
 
@@ -13,17 +14,16 @@ export type HeaderAccount = { label: string; email: string; href: string };
 export function Header({ locale, orderingUrl, account }: { locale: Locale; orderingUrl?: string | null; account?: HeaderAccount | null }) {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const otherLocale = locale === "en" ? "zh" : "en";
   // The homepage now has a light Pegasus hero; use the existing light header.
   const transparentOnHero = false;
   const navItems = [
-    { label: "Home", href: localizedPath(locale) },
-    { label: "Menu", href: localizedPath(locale, "/menu") },
+    { label: locale === "zh" ? "首页" : "Home", href: localizedPath(locale) },
+    { label: locale === "zh" ? "菜单" : "Menu", href: localizedPath(locale, "/menu") },
     { label: locale === "zh" ? "团体订购" : "Group Orders", href: localizedPath(locale, "/group-orders") },
-    { label: "Membership", href: localizedPath(locale, "/membership") },
-    ...(orderingUrl ? [{ label: "Order Online", href: orderingUrl }] : []),
+    { label: locale === "zh" ? "会员" : "Membership", href: localizedPath(locale, "/membership") },
+    ...(orderingUrl ? [{ label: locale === "zh" ? "在线订购" : "Order Online", href: orderingUrl }] : []),
     { label: locale === "zh" ? "我们的故事" : "Our Story", href: localizedPath(locale, "/about") },
-    { label: "Visit Us", href: localizedPath(locale, "/contact") },
+    { label: locale === "zh" ? "到店指南" : "Visit Us", href: localizedPath(locale, "/contact") },
     { label: locale === "zh" ? "合作伙伴后台" : "Partner Dashboard", href: localizedPath(locale, "/partner/login") }
   ];
 
@@ -67,6 +67,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
+          <span className="hidden lg:inline-flex"><LanguageSwitch locale={locale} /></span>
           {account ? <>
             <Link href={account.href} title={account.email} className={`focus-ring flex min-h-11 max-w-[150px] flex-col justify-center px-2 text-xs font-semibold sm:max-w-[200px] ${transparentOnHero ? "text-white" : "text-forest"}`}>
               <span>{account.label}</span>
@@ -76,21 +77,14 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
               <input name="locale" type="hidden" value={locale} />
               <button className={`focus-ring min-h-11 rounded-full border px-3 text-xs font-bold sm:px-5 sm:text-sm ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`} type="submit">{locale === "zh" ? "退出登录" : "Logout"}</button>
             </form>
-          </> : <><Link
-            className={`hidden text-xs font-bold uppercase tracking-[0.14em] transition duration-300 hover:-translate-y-px sm:inline ${
-              transparentOnHero ? "text-white/60 hover:text-white" : "text-forest/50 hover:text-forest"
-            }`}
-            href={`/${otherLocale}`}
-          >
-            {otherLocale.toUpperCase()}
-          </Link>
+          </> : <>
           <Link
             className={`focus-ring inline-flex min-h-11 items-center px-2 text-xs font-semibold transition duration-300 hover:-translate-y-px sm:px-3 sm:text-sm ${
               transparentOnHero ? "text-white/75 hover:text-white" : "text-forest/80 hover:text-forest"
             }`}
             href={localizedPath(locale, "/login")}
           >
-            Login
+            {locale === "zh" ? "登录" : "Login"}
           </Link>
           <Link
             className={`focus-ring inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-3 text-xs font-bold shadow-[0_14px_35px_rgba(18,60,47,0.18)] transition duration-300 hover:-translate-y-0.5 sm:px-5 sm:text-sm ${
@@ -100,12 +94,14 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
             }`}
             href={localizedPath(locale, "/register")}
           >
-            Join Now
+            {locale === "zh" ? "加入会员" : "Join Now"}
           </Link>
           </>}
         </div>
       </div>
       <nav aria-label={locale === "zh" ? "快捷导航" : "Quick navigation"} className="flex flex-wrap justify-end gap-2 px-3 pb-3 sm:px-5 lg:hidden">
+        <LanguageSwitch locale={locale} />
+        <Link href={localizedPath(locale, "/menu")} className="focus-ring inline-flex min-h-11 items-center rounded-full border border-forest/20 px-4 text-xs font-bold">{locale === "zh" ? "菜单" : "Menu"}</Link>
         <Link href={localizedPath(locale, "/group-orders")} className="focus-ring inline-flex min-h-11 items-center justify-center rounded-full bg-forest px-4 text-xs font-bold text-white">{locale === "zh" ? "团体订购" : "Group Orders"}</Link>
         <Link href={localizedPath(locale, "/about")} className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-xs font-bold ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
           {locale === "zh" ? "我们的故事" : "Our Story"}

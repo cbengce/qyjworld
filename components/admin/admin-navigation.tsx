@@ -14,6 +14,7 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
         {(role === "super_admin" || role === "manager") && <Link className="focus-ring rounded-full bg-forest px-5 py-3 text-sm font-bold text-white transition duration-300 hover:bg-ink" href={`/${locale}/admin/group-orders`}>
           {locale === "zh" ? "团单管理" : "Group Orders · 团单管理"}
         </Link>}
+        {(role === "super_admin" || role === "manager") && <Link className="focus-ring rounded-full border border-forest/20 px-5 py-3 text-sm font-bold" href={`/${locale}/admin/discovery`}>{locale === "zh" ? "SEO / GEO 检查" : "SEO / GEO checks"}</Link>}
         <Link className="focus-ring rounded-full border border-forest/20 px-5 py-3 text-sm font-bold text-forest transition duration-300 hover:-translate-y-0.5 hover:border-forest/40" href={`/${locale}/admin/stores`}>
           Stores
         </Link>
