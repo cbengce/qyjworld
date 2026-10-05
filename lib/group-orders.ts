@@ -1,7 +1,9 @@
 import { z } from "zod";
+import { groupOrderSources } from "@/lib/group-order-source";
 import type { MenuItem } from "@/lib/menu-types";
 export const GROUP_ORDER_PROVIDER = "qyj_group_orders_v1";
 export const groupOrderSchema = z.object({
+  source: z.enum(groupOrderSources).optional().default("unknown"),
   requestId: z.string().uuid(), locale: z.enum(["en", "zh"]), intent: z.enum(["order", "quote"]),
   name: z.string().trim().min(2).max(100), email: z.string().trim().email().max(200),
   phone: z.string().trim().min(7).max(30).regex(/^[+\d\s()-]+$/), organisation: z.string().trim().max(150),

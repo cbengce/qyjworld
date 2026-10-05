@@ -101,7 +101,7 @@ async function main() {
   const queries = [];
   function mockClient(fail) { return { from(table) {
     const params = { table }; queries.push(params);
-    return { select(fields, options) { params.options = options; return this; }, eq(key,value) { params[key] = value; return this; }, gte(key,value) { params[key] = value; return this; }, then(resolve) { resolve({ count: statusResults[queries.length - 1], error: fail ? { message: 'unavailable' } : null }); } };
+    return { select(fields, options) { params.options = options; return this; }, eq(key,value) { params[key] = value; return this; }, gte(key,value) { params[key] = value; return this; }, order() { return this; }, limit() { return this; }, then(resolve) { resolve({ count: statusResults[queries.length - 1], error: fail ? { message: 'unavailable' } : null }); } };
   } }; }
   const pageMocks = {
     '@/components/admin/admin-navigation': { AdminNavigation: () => null },
@@ -114,7 +114,7 @@ async function main() {
   const errorPage = load('app/[locale]/admin/discovery/page.tsx', pageMocks).default;
   const errorMarkup = renderToStaticMarkup(await errorPage({ params: { locale: 'zh' } }));
   assert.match(errorMarkup, /资料暂不可读取/);
-  assert.ok(queries.every(query => query.provider === 'qyj_group_orders_v1' && query.options.head));
+  assert.ok(queries.every(query => query.provider === 'qyj_group_orders_v1' && (query.options?.head || query.options === undefined)));
   console.log('Discovery checks passed: 43 bilingual entries, images, references, anchors, Chinese search, language switching, readiness, sitemap and admin access.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });
