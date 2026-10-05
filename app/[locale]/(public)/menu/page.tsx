@@ -25,21 +25,6 @@ function menuSchema(locale: Locale, items: MenuItem[]) {
       "@type": "MenuSection",
       name: category,
       hasMenuItem: sectionItems.map((item) => {
-        const offers = [
-          item.regular_price === null ? null : {
-            "@type": "Offer",
-            name: "Regular price",
-            price: item.regular_price.toFixed(2),
-            priceCurrency: "SGD"
-          },
-          item.member_price === null ? null : {
-            "@type": "Offer",
-            name: "Member price",
-            price: item.member_price.toFixed(2),
-            priceCurrency: "SGD"
-          }
-        ].filter((offer): offer is NonNullable<typeof offer> => offer !== null);
-
         return {
           "@type": "MenuItem",
           "@id": `${BRAND.domain}/${locale}/menu#${item.id}`,
@@ -49,8 +34,7 @@ function menuSchema(locale: Locale, items: MenuItem[]) {
           description: locale === "zh" ? item.description_zh || item.description_en : item.description_en,
           image: item.image_url
             ? item.image_url.startsWith("http") ? item.image_url : `${BRAND.domain}${item.image_url}`
-            : undefined,
-          offers: offers.length ? offers : undefined
+            : undefined
         };
       })
     }))

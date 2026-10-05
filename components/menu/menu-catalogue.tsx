@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Locale } from "@/lib/constants";
 import type { MenuItem } from "@/lib/menu-types";
+import { PriceOverview } from "@/components/menu/price-overview";
 
 function displayPrimaryName(item: MenuItem, locale: Locale) {
   return locale === "zh" ? item.name_zh || item.name_en : item.name_en;
@@ -26,19 +27,6 @@ function displayCategory(item: MenuItem, locale: Locale) {
 
 function isComingSoon(item: MenuItem) {
   return item.availability_status === "coming_soon";
-}
-
-function formatPrice(price: number | null, item: MenuItem, locale: Locale) {
-  if (price === null) {
-    if (isComingSoon(item)) return locale === "zh" ? "即将推出" : "Coming Soon";
-    return locale === "zh" ? "店内公布" : "In Store";
-  }
-
-  return new Intl.NumberFormat("en-SG", {
-    style: "currency",
-    currency: "SGD",
-    minimumFractionDigits: 2
-  }).format(price);
 }
 
 function ProductArtwork({ context = "catalogue", item }: { context?: "catalogue" | "featured"; item: MenuItem }) {
@@ -116,12 +104,14 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-white/70 md:justify-self-end">
               {zh
-                ? "以产品目录的方式探索青云间气泡茶，清晰区分原价与会员价。"
-                : "Explore Qing Yun Jian as a curated product catalogue, with signature drinks, member privileges, and clear pricing at a glance."}
+                ? "探索青云间的茶饮系列，查看一般价格区间，找到喜欢的那一杯。"
+                : "Explore Qing Yun Jian’s tea collections and general price ranges to find your next cup."}
             </p>
           </div>
         </div>
       </section>
+
+      <div className="bg-[#f8f5ed] px-5 pt-10 md:px-8"><div className="mx-auto max-w-7xl"><PriceOverview locale={locale} /></div></div>
 
       <section className="bg-[#f8f5ed] px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto max-w-7xl">
@@ -180,7 +170,6 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
               const primaryName = displayPrimaryName(item, locale);
               const secondaryName = displaySecondaryName(item, locale);
               const description = displayDescription(item, locale);
-              const memberHasBenefit = item.regular_price !== null && item.member_price !== null && item.member_price < item.regular_price;
               const signature = item.is_signature;
               const comingSoon = isComingSoon(item);
 
@@ -210,21 +199,9 @@ export function MenuCatalogue({ items, locale }: { items: MenuItem[]; locale: Lo
                     <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-gold">{secondaryName}</p>
                     <p className="mt-4 min-h-14 text-sm leading-7 text-forest/60">{description || (zh ? "青云间精选茶饮。" : "Qing Yun Jian curated tea expression.")}</p>
 
-                    <div className="mt-7 grid grid-cols-2 gap-px bg-forest/10">
-                      <div className="bg-white p-4">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-forest/45">{zh ? "原价" : "Regular"}</p>
-                        <p className="mt-2 text-xl font-bold text-forest">{formatPrice(item.regular_price, item, locale)}</p>
-                      </div>
-                      <div className="bg-forest p-4 text-white">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-white/50">{zh ? "会员价" : "Member"}</p>
-                        <p className="mt-2 text-xl font-bold text-gold">{formatPrice(item.member_price, item, locale)}</p>
-                      </div>
-                    </div>
-
                     <Link href={`/${locale}/menu/${encodeURIComponent(item.id)}`} className="mt-5 inline-block text-sm font-bold text-forest underline">{zh ? "查看茶品详情 →" : "View drink details →"}</Link>
                     <div className="mt-5 flex items-center justify-between gap-4 text-xs font-bold uppercase tracking-[0.14em]">
                       <span className="text-forest/45">{comingSoon ? (zh ? "季节预告" : "Seasonal preview") : item.is_featured ? (zh ? "精选饮品" : "Curated selection") : (zh ? "青云间产品" : "QYJ catalogue")}</span>
-                      {memberHasBenefit && <span className="text-gold">{zh ? "会员优惠" : "Member value"}</span>}
                     </div>
                   </div>
                 </article>
