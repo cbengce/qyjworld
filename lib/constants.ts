@@ -4,7 +4,7 @@ export const BRAND = {
   nameZh: "青云间",
   tagline: "Born to Ascend",
   line: "Sparkling Tea Reimagined",
-  domain: "https://qyjworld.com",
+  domain: "https://www.qyjworld.com",
   membershipFee: "SGD 39.90",
   membershipDays: 60
 } as const;
