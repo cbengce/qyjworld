@@ -17,8 +17,8 @@ import { getMenuItems } from "@/lib/menu";
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   return createPageMetadata({
     locale: params.locale,
-    title: "Premium Sparkling Tea Singapore | Qing Yun Jian",
-    description: "Discover Singapore's modern Oriental sparkling tea experience. Premium tea crafted with real tea leaves, fruits and botanicals.",
+    title: params.locale === "zh" ? "青云间 | 新加坡气泡茶与团体订购" : "Premium Sparkling Tea Singapore | Qing Yun Jian",
+    description: params.locale === "zh" ? "探索青云间现行茶饮菜单，计划到 MacPherson Mall 门店，并申请办公室或活动团体订茶。" : "Explore QING YUN JIAN sparkling tea, visit MacPherson Mall and plan office or event group orders in Singapore.",
     keywords: ["premium sparkling tea Singapore", "Oriental tea Singapore", "Qing Yun Jian", "MacPherson Mall tea"]
   });
 }
@@ -59,6 +59,7 @@ const teaCategories = [
 const benefits = ["Daily Member Drink (24–30% OFF)", "Points", "Referral Rewards"];
 
 export default async function HomePage({ params }: { params: { locale: Locale } }) {
+  const zh = params.locale === "zh";
   const [homepagePromotions, store, featuredDrinks] = await Promise.all([getHomepagePromotions(), getPrimaryStore(), getMenuItems({ featuredOnly: true })]);
   const addressLines = store ? storeAddressLines(store) : [];
   const effectiveHours = store ? effectiveStoreHoursForDate(store) : null;
@@ -102,16 +103,16 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         <div className="qyj-fade-up mx-auto max-w-7xl">
           <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Featured Collection</p>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "精选茶饮" : "Featured Collection"}</p>
               <h2 className="mt-5 max-w-4xl font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
-                Signature sparkling tea, composed for lift.
+                {zh ? "精选气泡茶，开启明亮茶时刻。" : "Signature sparkling tea, composed for lift."}
               </h2>
             </div>
             <ButtonLink
               className="w-fit rounded-full border border-forest/20 bg-white px-7 text-forest shadow-[0_18px_45px_rgba(10,24,20,0.07)] hover:-translate-y-0.5"
               href={localizedPath(params.locale, "/menu")}
             >
-              Explore Menu
+              {zh ? "探索菜单" : "Explore Menu"}
             </ButtonLink>
           </div>
 
@@ -127,12 +128,12 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                     </div>
                     <span className="mt-1 h-px min-w-12 flex-1 bg-forest/10" />
                   </div>
-                  <p className="mt-5 leading-7 text-forest/60">{drink.description_en}</p>
+                  <p className="mt-5 leading-7 text-forest/60">{zh ? drink.description_zh || drink.description_en : drink.description_en}</p>
                   <ButtonLink
                     className="mt-7 rounded-full border border-forest/20 px-6 text-forest hover:-translate-y-0.5 hover:border-forest"
                     href={localizedPath(params.locale, "/menu")}
                   >
-                    View Menu
+                    {zh ? "查看菜单" : "View Menu"}
                   </ButtonLink>
                 </div>
               </article>
@@ -147,11 +148,11 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{params.locale === "zh" ? "我们的故事" : "OUR STORY"}</p>
               <h2 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
-                A Lighter Kind of Luxury.
+                {zh ? "让日常茶饮，更有自己的格调。" : "A Lighter Kind of Luxury."}
               </h2>
             </div>
             <p className="max-w-2xl text-lg leading-8 text-forest/60 md:justify-self-end">
-              Inspired by Oriental tea culture and crafted in Singapore, Qing Yun Jian brings tea into a brighter, more contemporary expression.
+              {zh ? "受东方茶文化启发，源自新加坡，青云间以更明亮、现代的方式表达茶。" : "Inspired by Oriental tea culture and crafted in Singapore, Qing Yun Jian brings tea into a brighter, more contemporary expression."}
             </p>
           </div>
 
@@ -161,8 +162,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
             {storyCards.map((card, index) => (
               <article key={card.title} className="qyj-story-card bg-[#fbfaf6] p-7 md:p-9">
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{card.index}</p>
-                <PegasusPortrait name={["Drift", "Monsoon", "Cloudlift"][index]} className="float-right h-28 w-32" /><p className="mt-6 font-serif text-4xl font-semibold leading-tight text-forest">{card.title}</p>
-                <p className="mt-6 text-base leading-7 text-forest/60">{card.text}</p>
+                <PegasusPortrait name={["Drift", "Monsoon", "Cloudlift"][index]} className="float-right h-28 w-32" /><p className="mt-6 font-serif text-4xl font-semibold leading-tight text-forest">{zh ? ["源自新加坡", "向上而生", "重新想象气泡茶"][index] : card.title}</p>
+                <p className="mt-6 text-base leading-7 text-forest/60">{zh ? ["为日常相聚与分享，带来现代的茶饮表达。", "飞马与云间意象，表达志向与向上升腾。", "从现行菜单探索茶饮与气泡的搭配。"][index] : card.text}</p>
               </article>
             ))}
           </div>
@@ -175,9 +176,9 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         <div className="pointer-events-none absolute -bottom-24 left-10 h-72 w-72 rounded-full border border-gold/20" />
         <div className="qyj-fade-up relative mx-auto max-w-7xl">
           <div className="max-w-4xl">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Tea Categories</p>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "茶饮系列" : "Tea Categories"}</p>
             <h2 className="mt-5 font-serif text-4xl font-semibold leading-[0.98] text-forest sm:text-5xl md:text-7xl">
-              THREE EXPRESSIONS. ONE JOURNEY.
+              {zh ? "三种表达，一段茶饮旅程。" : "THREE EXPRESSIONS. ONE JOURNEY."}
             </h2>
           </div>
 
@@ -188,8 +189,8 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                 className="qyj-fade-up qyj-story-card relative overflow-hidden border border-forest/10 bg-[#fbfaf6]/90 p-7 transition duration-300 hover:-translate-y-1 md:p-9"
               >
                 <PegasusPortrait name={["Luna Tide", "Clearsky", "Evenfall"][index]} className="float-right ml-3 h-32 w-28" />
-                <p className="font-serif text-4xl font-semibold leading-tight text-forest">{category.title}</p>
-                <p className="mt-6 text-base leading-7 text-forest/60">{category.text}</p>
+                <p className="font-serif text-4xl font-semibold leading-tight text-forest">{zh ? ["气泡茶", "水果茶", "鲜奶茶"][index] : category.title}</p>
+                <p className="mt-6 text-base leading-7 text-forest/60">{zh ? ["茶与气泡的组合，按具体介绍选一杯。", "从列出的水果风味与茶饮搭配探索。", "查看茶与奶的搭配，并确认需要的细节。"][index] : category.text}</p>
               </article>
             ))}
           </div>
@@ -201,9 +202,9 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           <div className="qyj-fade-up mx-auto max-w-7xl">
             <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">WHAT&apos;S ON</p>
+                <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "活动资讯" : "WHAT’S ON"}</p>
                 <h2 className="mt-5 max-w-4xl font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
-                  Something New Is Rising.
+                  {zh ? "新意，正在升起。" : "Something New Is Rising."}
                 </h2>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row md:justify-self-end">
@@ -211,13 +212,13 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
                   className="rounded-full border border-forest/20 bg-white px-7 text-forest shadow-[0_18px_45px_rgba(10,24,20,0.07)] hover:-translate-y-0.5"
                   href={localizedPath(params.locale, "/promotions")}
                 >
-                  View All Promotions
+                  {zh ? "查看所有活动" : "View All Promotions"}
                 </ButtonLink>
                 <ButtonLink
                   className="rounded-full bg-forest px-7 text-white shadow-[0_18px_45px_rgba(10,24,20,0.10)] hover:-translate-y-0.5 hover:bg-ink"
                   href={localizedPath(params.locale, "/ascend/leaderboard")}
                 >
-                  View Community Leaderboard
+                  {zh ? "查看社群榜单" : "View Community Leaderboard"}
                 </ButtonLink>
               </div>
             </div>
@@ -269,44 +270,44 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
         </section>
       ) : null}
 
-      <AscendCommunityCard />
+      <AscendCommunityCard locale={params.locale} />
 
       <section className="px-5 py-24 md:px-8 md:py-32">
         <div className="mx-auto grid max-w-7xl gap-12 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:items-center">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">Membership</p>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "会员" : "Membership"}</p>
             <h2 className="mt-5 max-w-2xl font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">
-              Membership That Rewards Every Visit.
+              {zh ? "把会员礼遇，带进日常茶时刻。" : "Membership That Rewards Every Visit."}
             </h2>
             <p className="mt-7 max-w-lg text-lg leading-8 text-forest/60">
-              Join Qing Yun Jian for daily member drink privileges, points, and referral rewards across the soft launch period.
+              {zh ? "加入青云间，了解每日指定饮品礼遇、积分及推荐奖励，具体条件请查看会员资料。" : "Join Qing Yun Jian for daily member drink privileges, points, and referral rewards across the soft launch period."}
             </p>
           </div>
 
           <div className="min-w-0 bg-forest p-6 text-white shadow-[0_35px_110px_rgba(18,60,47,0.22)] md:p-10">
             <div className="grid gap-px bg-white/12 md:grid-cols-[1.25fr_0.75fr]">
               <div className="bg-forest p-6 md:p-8 md:pr-10">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Membership</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">{zh ? "会员" : "Membership"}</p>
                 <p className="mt-5 whitespace-nowrap font-serif text-6xl font-semibold md:text-[4.3rem]">S$39.90</p>
               </div>
               <div className="bg-forest p-6 md:p-8 md:justify-self-end md:pl-10">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">Validity</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/50">{zh ? "有效期" : "Validity"}</p>
                 <p className="mt-5 font-serif text-6xl font-semibold md:text-7xl">60</p>
-                <p className="mt-2 text-lg font-semibold text-white/70">Days</p>
+                <p className="mt-2 text-lg font-semibold text-white/70">{zh ? "天" : "Days"}</p>
               </div>
             </div>
 
             <div className="mt-7 grid gap-1">
-              {benefits.map((benefit) => (
+              {benefits.map((benefit, index) => (
                 <div key={benefit} className="flex items-center justify-between gap-5 border-b border-white/12 py-4 text-base font-semibold md:text-lg">
-                  <span>{benefit}</span>
-                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-gold">Included</span>
+                  <span>{zh ? ["每日指定会员饮品（优惠条件见会员资料）", "积分", "推荐奖励"][index] : benefit}</span>
+                  <span className="text-sm font-bold uppercase tracking-[0.12em] text-gold">{zh ? "包含" : "Included"}</span>
                 </div>
               ))}
             </div>
 
             <ButtonLink className="mt-9 w-full rounded-full bg-gold text-ink hover:-translate-y-0.5 hover:bg-[#d4a559]" href={localizedPath(params.locale, "/register")}>
-              Join Now
+              {zh ? "加入会员" : "Join Now"}
             </ButtonLink>
           </div>
         </div>
@@ -315,25 +316,25 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
       {store && <section className="bg-white px-5 py-24 md:px-8 md:py-32">
         <div className="qyj-fade-up mx-auto grid max-w-7xl gap-12 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] xl:items-stretch">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">VISIT US</p>
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-gold">{zh ? "到店指南" : "VISIT US"}</p>
             <h2 className="mt-5 font-serif text-[2.4rem] font-semibold leading-[0.98] text-forest md:text-[3.6rem]">
-              Visit Qing Yun Jian
+              {zh ? "欢迎到青云间" : "Visit Qing Yun Jian"}
               <br />
-              at {store.name}
+              {zh ? "门店：" : "at "}{store.name}
             </h2>
           </div>
 
           <div className="grid min-w-0 gap-8 overflow-hidden bg-[#f8f5ed] p-7 md:p-12">
             <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(10rem,0.72fr)]">
               <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Address</p>
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{zh ? "地址" : "Address"}</p>
                 <p className="mt-4 font-serif text-4xl font-semibold leading-[1.22] text-forest md:text-[2.5rem]">
                   {addressLines.map((line, index) => <span className={index ? "block md:text-[2.125rem]" : "block"} key={line}>{line}</span>)}
                 </p>
               </div>
               {hoursDisplay && <div className="min-w-0 text-sm font-semibold leading-7 text-forest/65 lg:justify-self-end lg:text-right">
-                <p className="text-xs uppercase tracking-[0.18em] text-gold">Opening Hours</p>
-                <p className="mt-4">Today: {hoursDisplay}</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-gold">{zh ? "营业时间" : "Opening Hours"}</p>
+                <p className="mt-4">{zh ? "今日" : "Today"}: {hoursDisplay}</p>
               </div>}
             </div>
             <div className="relative aspect-[16/10] min-h-[18rem] w-full min-w-0 overflow-hidden">
@@ -347,7 +348,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <ButtonLink className="rounded-full bg-forest px-8 text-white hover:-translate-y-0.5 hover:bg-ink" href={storeDirectionsUrl(store)}>
-                Plan Your Visit
+                {zh ? "规划到店" : "Plan Your Visit"}
               </ButtonLink>
             </div>
           </div>

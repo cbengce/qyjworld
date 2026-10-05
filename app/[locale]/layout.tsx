@@ -49,7 +49,11 @@ export default async function LocaleLayout({
     logo: `${BRAND.domain}/assets/qing-yun-jian-logo-official.png`,
     brand: { "@id": `${BRAND.domain}/#organization` },
     address: { "@type": "PostalAddress", streetAddress: storeAddressLines(store).slice(0, 2).join(", "), addressLocality: store.city, postalCode: store.postal_code, addressCountry: store.country_code },
-    servesCuisine: "Tea", priceRange: "$$", hasMap: storeDirectionsUrl(store),
+    servesCuisine: "Tea", hasMap: storeDirectionsUrl(store),
+    hasMenu: `${BRAND.domain}/${locale}/menu`,
+    image: `${BRAND.domain}/assets/story/store-welcome-v5.webp`,
+    telephone: store.phone || undefined, email: store.public_email || undefined,
+    geo: store.latitude !== null && store.longitude !== null ? { "@type": "GeoCoordinates", latitude: store.latitude, longitude: store.longitude } : undefined,
     openingHoursSpecification: effectiveOpeningHours.length ? effectiveOpeningHours : undefined
   } : null;
 

@@ -11,7 +11,7 @@ function footerLinks(store: PublicStore | null) { return [
   { label: "TikTok", href: "https://www.tiktok.com/@qingyunjian" },
   { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
   ...(storeWhatsAppUrl(store) ? [{ label: "WhatsApp", href: storeWhatsAppUrl(store)! }] : []),
-  { label: "Email", href: "mailto:hello@qyjworld.com" },
+  { label: "Email", href: `mailto:${store?.public_email || "hello@qyjworld.com"}` },
   ...(store ? [{ label: "Google Maps", href: storeDirectionsUrl(store) }] : [])
 ]; }
 
@@ -22,9 +22,9 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
         <div className="max-w-xl">
           <Logo size="footer" />
           <p className="mt-7 max-w-md text-2xl font-semibold leading-snug text-white/90">
-            Modern Oriental Sparkling Tea
+            {locale === "zh" ? "现代东方气泡茶" : "Modern Oriental Sparkling Tea"}
             <br />
-            Crafted in Singapore.
+            {locale === "zh" ? "源自新加坡。" : "Crafted in Singapore."}
           </p>
           <p className="mt-5 text-sm font-semibold tracking-[0.18em] text-gold">
             <span>青云间</span>
@@ -36,32 +36,33 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
         </div>
 
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Explore</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">{locale === "zh" ? "探索青云间" : "Explore"}</p>
           <div className="mt-5 grid gap-3 text-sm font-semibold text-white/80">
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale)}>Home</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/menu")}>Menu</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale)}>{locale === "zh" ? "首页" : "Home"}</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/menu")}>{locale === "zh" ? "菜单" : "Menu"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/group-orders")}>{locale === "zh" ? "团体订购" : "Group Orders"}</Link>
-            {store?.ordering_url && <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={store.ordering_url}>Order Online</Link>}
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/promotions")}>Promotions</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/membership")}>Membership</Link>
+            {store?.ordering_url && <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={store.ordering_url}>{locale === "zh" ? "在线订购" : "Order Online"}</Link>}
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/promotions")}>{locale === "zh" ? "活动资讯" : "Promotions"}</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/membership")}>{locale === "zh" ? "会员" : "Membership"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/ascend")}>{locale === "zh" ? "茶饮性格测试（英文）" : "Discover Your Tea Profile"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/guides")}>{locale === "zh" ? "选茶与团购指南" : "Tea & group-order guides"}</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/blog")}>{locale === "zh" ? "茶饮文章" : "Tea articles"}</Link>
             <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/about")}>{locale === "zh" ? "我们的故事" : "Our Story"}</Link>
-            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/contact")}>Visit Us</Link>
+            <Link className="transition duration-300 hover:translate-x-1 hover:text-white" href={localizedPath(locale, "/contact")}>{locale === "zh" ? "到店指南" : "Visit Us"}</Link>
           </div>
         </div>
 
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Visit Us</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">{locale === "zh" ? "到店指南" : "Visit Us"}</p>
           {store && <p className="mt-5 text-sm font-semibold leading-7 text-white/80">{storeAddressLines(store).map((line) => <span className="block" key={line}>{line}</span>)}</p>}
           <div className="mt-6 grid gap-3 text-sm font-semibold text-white/65">
-            <Link className="transition duration-300 hover:text-white" href={localizedPath(locale, "/privacy")}>Privacy Policy</Link>
-            <Link className="transition duration-300 hover:text-white" href={localizedPath(locale, "/terms")}>Membership Terms</Link>
+            <Link className="transition duration-300 hover:text-white" href={localizedPath(locale, "/privacy")}>{locale === "zh" ? "隐私政策" : "Privacy Policy"}</Link>
+            <Link className="transition duration-300 hover:text-white" href={localizedPath(locale, "/terms")}>{locale === "zh" ? "会员条款" : "Membership Terms"}</Link>
           </div>
         </div>
 
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">Connect</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">{locale === "zh" ? "联系我们" : "Connect"}</p>
           <div className="mt-5 grid gap-3 text-sm font-semibold text-white/80">
             {footerLinks(store).map((link) => (
               <Link key={link.label} className="transition duration-300 hover:translate-x-1 hover:text-white" href={link.href}>
@@ -89,7 +90,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
 
       <div className="border-t border-white/10 px-5 py-5 md:px-8">
         <p className="mx-auto max-w-7xl text-xs font-semibold text-white/45">
-          (c) {new Date().getFullYear()} {BRAND.nameEn}. All rights reserved.
+          (c) {new Date().getFullYear()} {BRAND.nameEn}. {locale === "zh" ? "版权所有。" : "All rights reserved."}
         </p>
       </div>
     </footer>

@@ -33,6 +33,9 @@ function createNextConfig(phase) {
     images: {
       remotePatterns: getSupabaseImagePatterns()
     },
+    async redirects() {
+      return ["healthy-beverages", "tea-benefits"].map(slug => ({ source: `/:locale(en|zh)/categories/${slug}`, destination: "/:locale/categories/tea-ingredients", permanent: true }));
+    },
     async headers() {
       return [
         {

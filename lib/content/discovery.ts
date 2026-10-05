@@ -362,5 +362,18 @@ export const discoveryEntries: ContentEntry[] = [
 ];
 
 export function localizeContent(entry: ContentEntry, locale: string): ContentEntry {
-  return locale === "zh" && entry.zh ? { ...entry, ...entry.zh } : entry;
+  if (locale !== "zh") return entry;
+  const translated = entry.zh ? { ...entry, ...entry.zh } : entry;
+  return { ...translated, category: categoryLabel(entry.category, locale),
+    author: { name: "青云间编辑团队", role: "品牌内容编辑", bio: "青云间编辑团队整理选茶、到店与团体订购的实用资料，帮助您了解新加坡的青云间。" } };
+}
+
+export function categoryLabel(category: string, locale: string) {
+  const labels: Record<string, string> = {
+    "Singapore Tea": "新加坡选茶", "Sparkling Tea": "气泡茶", "Tea Culture": "茶与文化",
+    "Jasmine Tea": "茉莉茶饮", "Oolong Tea": "乌龙茶饮", "Tea Lifestyle": "日常茶时刻",
+    "Tea Ingredients": "茶饮原料与资料", "Premium Tea": "茶饮选择与价值", "Chinese Tea": "中国茶入门",
+    "Tea Pairing": "茶与食物搭配", "Milk Tea": "奶茶", "Group Orders": "团体订购"
+  };
+  return locale === "zh" ? labels[category] || category : category;
 }

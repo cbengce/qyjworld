@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/constants";
+import { localizeContent } from "./discovery";
 import { allContent } from "@/lib/content/catalog";
 import type { Promotion } from "@/lib/promotions";
 
@@ -11,8 +12,8 @@ const faqRecords = [
 ];
 
 export function buildSearchIndex(locale: Locale, promotions: Promotion[]): SearchRecord[] {
-  const contentRecords: SearchRecord[] = allContent.map((entry) => ({ id: `${entry.kind}-${entry.slug}`, type: entry.kind === "guide" ? "Guide" : "Article", title: entry.title, description: entry.description, href: `/${locale}/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`, keywords: [entry.category, ...entry.keywords] }));
-  const faq: SearchRecord[] = faqRecords.map((item) => ({ ...item, type: "FAQ", href: `/${locale}/faq`, keywords: ["membership", "help", "Qing Yun Jian"] }));
+  const contentRecords: SearchRecord[] = allContent.map(entry => localizeContent(entry, locale)).map((entry) => ({ id: `${entry.kind}-${entry.slug}`, type: entry.kind === "guide" ? "Guide" : "Article", title: entry.title, description: entry.description, href: `/${locale}/${entry.kind === "guide" ? "guides" : "blog"}/${entry.slug}`, keywords: [entry.title, entry.description, entry.category, ...entry.keywords] }));
+  const faq: SearchRecord[] = faqRecords.map((item, index) => ({ ...item, ...(locale === "zh" ? [{ title: "会员如何激活？", description: "确认付款后由管理员激活会员。" }, { title: "会员费是多少？", description: "会员费 S$39.90，自激活起 60 天。" }, { title: "积分可以自行修改吗？", description: "积分由后台交易记录管理。" }][index] : {}), type: "FAQ", href: `/${locale}/faq`, keywords: ["membership", "会员", "积分", "帮助", "help", "Qing Yun Jian"] }));
   const promotionRecords: SearchRecord[] = promotions.map((promotion) => ({ id: `promotion-${promotion.id}`, type: "Promotion", title: promotion.title, description: promotion.subtitle || promotion.description || "Qing Yun Jian promotion", href: `/${locale}/promotions/${promotion.slug}`, keywords: ["promotion", "campaign", "Qing Yun Jian"] }));
   return [...contentRecords, ...faq, ...promotionRecords];
 }

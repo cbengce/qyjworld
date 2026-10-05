@@ -17,7 +17,7 @@ export function BlogCard({ entry, locale }: { entry: ContentEntry; locale: Local
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{entry.category}</p>
           <h2 className="mt-4 font-serif text-3xl font-semibold leading-tight text-forest">{entry.title}</h2>
           <p className="mt-4 line-clamp-3 leading-7 text-forest/60">{entry.description}</p>
-          <p className="mt-5 text-sm font-semibold text-forest/45">{entry.readingTime} min read</p>
+          <p className="mt-5 text-sm font-semibold text-forest/45">{entry.readingTime} {locale === "zh" ? "分钟阅读" : "min read"}</p>
         </div>
       </Link>
     </article>

@@ -12,3 +12,8 @@ export function localizedPath(locale: Locale, path = "") {
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return `/${locale}${cleanPath === "/" ? "" : cleanPath}`;
 }
+
+export function switchLocalePath(pathname: string, locale: Locale) {
+  const path = pathname.replace(/^\/(en|zh)(?=\/|$)/, "");
+  return localizedPath(locale, path);
+}

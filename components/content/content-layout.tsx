@@ -45,7 +45,7 @@ export async function ContentLayout({ entry, locale, related }: { entry: Content
       <article className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
         <Breadcrumb locale={locale} items={[{ name: zh ? "首页" : "Home" }, { name: zh ? "茶饮指南" : entry.kind === "guide" ? "Guides" : "Blog", path: `/${base}` }, { name: entry.title, path: `/${base}/${entry.slug}` }]} />
         <header className="mt-10 max-w-5xl">
-          <Link className="text-xs font-bold uppercase tracking-[0.2em] text-gold" href={`/en/categories/${entry.categorySlug}`}>{entry.category}</Link>
+          <Link className="text-xs font-bold uppercase tracking-[0.2em] text-gold" href={`/${locale}/categories/${entry.categorySlug}`}>{entry.category}</Link>
           <h1 className="mt-5 font-serif text-5xl font-semibold leading-[0.98] text-forest md:text-7xl">{entry.title}</h1>
           <p className="mt-7 max-w-3xl text-xl leading-8 text-forest/65">{entry.description}</p>
           <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-forest/45">
@@ -80,10 +80,10 @@ export async function ContentLayout({ entry, locale, related }: { entry: Content
 
             {entry.sources?.length ? <section className="mt-10 border-t border-forest/10 pt-6"><h2 className="font-serif text-2xl text-forest">{zh ? "参考资料" : "References"}</h2><p className="mt-3 text-sm leading-6 text-forest/65">{zh ? "资料用于一般茶饮分类说明，不代表青云间的配方。具体茶品以现行资料及门店确认为准。" : "These sources support general drink-category context. They do not describe QING YUN JIAN recipes; use our current drink information and store confirmation for those details."}</p><ul className="mt-3 grid gap-2 text-sm text-forest underline">{entry.sources.map(source => <li key={source.url}><a href={source.url}>{source.title}</a></li>)}</ul></section> : null}
             <FAQSection faq={entry.faq} locale={locale} />
-            <div className="mt-12"><ShareButtons title={entry.title} url={canonical} /></div>
-            <div className="mt-12"><AuthorCard author={entry.author} /></div>
+            <div className="mt-12"><ShareButtons title={entry.title} url={canonical} locale={locale} /></div>
+            <div className="mt-12"><AuthorCard author={entry.author} locale={locale} /></div>
           </div>
-          <div className="lg:sticky lg:top-28"><TableOfContents blocks={blocks} /></div>
+          <div className="lg:sticky lg:top-28"><TableOfContents blocks={blocks} locale={locale} /></div>
         </div>
         <RelatedArticles entries={related} locale={locale} title={zh ? "继续探索" : "Continue exploring"} />
       </article>

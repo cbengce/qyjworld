@@ -44,6 +44,7 @@ async function main() {
     "@/lib/constants": { BRAND: { nameEn: "QINGYUNJIAN" } },
     "@/lib/i18n/routing": { localizedPath: (locale, suffix = "") => `/${locale}${suffix}` },
     "@/components/logo": { Logo: () => null },
+    "@/components/language-switch": { LanguageSwitch: () => null },
     "@/app/actions": { logoutAccount: "/test-logout" }
   });
   const guest = renderToStaticMarkup(React.createElement(Header, { locale: "en" }));

@@ -11,8 +11,8 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
   return createPageMetadata({
     locale: params.locale,
     path: "/membership",
-    title: "Tea Membership Singapore | Qing Yun Jian",
-    description: "Join Qing Yun Jian Membership for exclusive member pricing and rewards.",
+    title: params.locale === "zh" ? "青云间会员 | 新加坡茶饮礼遇" : "Tea Membership Singapore | Qing Yun Jian",
+    description: params.locale === "zh" ? "了解青云间会员价格、积分与注册激活方式。" : "Join Qing Yun Jian Membership for exclusive member pricing and rewards.",
     keywords: ["tea membership Singapore", "Qing Yun Jian membership", "tea rewards", "member drink pricing"]
   });
 }
@@ -21,7 +21,7 @@ export default function MembershipPage({ params }: { params: { locale: Locale } 
   const t = getDictionary(params.locale);
   return (
     <main className="overflow-hidden">
-      <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Membership", path: "/membership" }])} />
+      <StructuredData data={breadcrumbSchema(params.locale, [{ name: params.locale === "zh" ? "首页" : "Home" }, { name: params.locale === "zh" ? "会员" : "Membership", path: "/membership" }])} />
       <Section>
         <div className="mx-auto grid min-w-0 max-w-7xl gap-10 md:grid-cols-[1fr_0.8fr]">
           <div className="min-w-0">
@@ -46,7 +46,7 @@ export default function MembershipPage({ params }: { params: { locale: Locale } 
           </aside>
         </div>
       </Section>
-      <AscendCommunityCard compact />
+      <AscendCommunityCard compact locale={params.locale} />
     </main>
   );
 }
