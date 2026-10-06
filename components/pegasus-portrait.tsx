@@ -13,5 +13,5 @@ export function PegasusPortrait({ name, className = "" }: { name: string; classN
   const key = name.toLowerCase().replace(/[^a-z]/g, "").replace(/^qyj/, "");
   const portrait = portraits[key];
   if (!portrait) return null;
-  return <div aria-hidden="true" className={`shrink-0 ${className}`}><Image src={`/assets/pegasus/individual-v1/${portrait}.webp`} alt="" width={640} height={640} className="h-full w-full object-contain" /></div>;
+  return <div aria-hidden="true" className={`shrink-0 ${className}`}><Image src={`/assets/pegasus/named-v2/${portrait}.webp`} alt="" width={640} height={640} className="h-full w-full object-contain" /></div>;
 }
