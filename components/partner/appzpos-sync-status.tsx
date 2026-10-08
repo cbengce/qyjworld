@@ -4,14 +4,14 @@ type Mapping = { id: string; enabled: boolean; stores: { name: string } | null; 
 const time = (value: string | null) => value && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("en-SG", { timeZone: "Asia/Singapore" }) : "—";
 
 // Only render beneath the calling page's Super Admin gate. Never expose raw error text or credentials.
-export async function AppzposSyncStatus({ client }: { client: SupabaseClient }) {
+export async function AppzposSyncStatus({ client, className = "mt-6" }: { client: SupabaseClient; className?: string }) {
   const [mappings, unmatched] = await Promise.all([
     client.from("pos_provider_store_mappings").select("id,enabled,stores(name),pos_poll_state(last_success_at,last_successful_to,last_attempt_at,last_error,lease_expires_at)").eq("provider", "appzpos"),
     client.from("pos_provider_orders").select("id", { count: "exact", head: true }).eq("provider", "appzpos").in("referral_match_status", ["unknown", "inactive"]).gte("order_created_at", APPZPOS_REPORT_FLOOR + "T00:00:00+08:00")
   ]);
-  if (mappings.error || unmatched.error) return <section className="mt-6 rounded-2xl border border-forest/10 bg-white p-5"><h2 className="font-bold">POS sync status unavailable</h2><p className="mt-2 text-sm text-ink/60">Unable to read sync records. Order totals do not confirm sync health.</p></section>;
+  if (mappings.error || unmatched.error) return <section className={`${className} rounded-2xl border border-forest/10 bg-white p-5`}><h2 className="font-bold">POS sync status unavailable</h2><p className="mt-2 text-sm text-ink/60">Unable to read sync records. Order totals do not confirm sync health.</p></section>;
   const rows = (mappings.data ?? []) as unknown as Mapping[];
-  return <section className="mt-6 rounded-2xl border border-forest/10 bg-white p-5">
+  return <section className={`${className} rounded-2xl border border-forest/10 bg-white p-5`}>
     <h2 className="font-bold">Automatic POS sync · All stores</h2>
     <p className="mt-2 text-sm text-ink/60">Scheduled every 15 minutes. Refresh this page to check. Times shown in Singapore time.</p>
     {!rows.length ? <p className="mt-3 text-sm">No APPZPOS store mapping configured.</p> : null}
@@ -23,3 +23,4 @@ export async function AppzposSyncStatus({ client }: { client: SupabaseClient }) 
     <p className="mt-4 text-sm"><strong>{unmatched.count ?? "Unknown"}</strong> orders with an unknown or inactive Partner Code since 27 September 2026. Ordinary orders without a Partner Code are excluded from this count.</p>
   </section>;
 }
+

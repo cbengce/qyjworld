@@ -1,4 +1,6 @@
 import { AppzposSyncStatus } from "@/components/partner/appzpos-sync-status";
+import { PartnerPerformanceSummary } from "@/components/partner/partner-performance";
+import { summarisePartnerPerformance } from "@/lib/partners/performance";
 import { PartnerReportControls } from "@/components/partner/report-controls";
 import { PartnerOrderList, type PartnerOrder } from "@/components/partner/partner-order-list";
 import { CopyPartnerLink } from "@/components/partner/copy-partner-link";
@@ -56,6 +58,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
   for (const transaction of transactions ?? []) commission.set(transaction.pos_transaction_id ?? "", (transaction.partner_commission_ledger ?? []).reduce((sum: number, entry: { reward_amount: number }) => sum + Number(entry.reward_amount), 0));
   const total = (key: keyof Pick<Order, "cup_quantity" | "subtotal_minor" | "discount_minor" | "item_discount_minor" | "coupon_discount_minor" | "total_payable_minor">) => completed.reduce((sum, row) => sum + Number(row[key]), 0);
   const commissionTotal = completed.reduce((sum, row) => sum + (commission.get(appzposTransactionId(row.provider_store_id, row.order_reference)) ?? 0), 0);
+  const performance = summarisePartnerPerformance(rows, selected ? [selected] : partners ?? [], commission);
   const referralUrl = partner ? getPartnerReferralUrl(partner.partner_code) : null;
 
   const inputClass = "focus-ring mt-2 min-h-12 w-full rounded-xl border border-forest/15 bg-paper/40 px-3 py-2 text-base font-normal text-forest";
@@ -77,7 +80,10 @@ export default async function PartnerDashboard({ params, searchParams }: { param
         <section className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {summary.map(([label, value]) => <div className="rounded-2xl border border-forest/5 bg-white p-4 shadow-soft md:p-6" key={label}><p className="text-xs font-semibold text-ink/55">{label}</p><p className="mt-3 text-2xl font-semibold md:text-3xl">{value}</p></div>)}
         </section>
-        <AppzposSyncStatus client={client} />
+        <div className="mt-6 grid items-start gap-4 xl:grid-cols-2">
+          <AppzposSyncStatus client={client} className="" />
+          <PartnerPerformanceSummary partners={performance} from={from} to={to} locale={params.locale} truncated={rows.length === 1000} />
+        </div>
         <Link className="mt-4 inline-block text-sm font-bold underline underline-offset-4" href={`/${params.locale}/admin/reconciliation`}>Sync & daily reconciliation →</Link>
         <form className="mt-7 rounded-2xl border border-forest/5 bg-white p-5 shadow-soft">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,3 +106,4 @@ export default async function PartnerDashboard({ params, searchParams }: { param
     </main>
   );
 }
+
