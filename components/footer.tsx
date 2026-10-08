@@ -6,10 +6,11 @@ import { Logo } from "@/components/logo";
 import type { PublicStore } from "@/lib/store-types";
 import { storeAddressLines, storeDirectionsUrl, storeWhatsAppUrl } from "@/lib/store-types";
 
-function footerLinks(store: PublicStore | null) { return [
+function footerLinks(store: PublicStore | null, locale: Locale) { return [
   { label: "Instagram", href: "https://www.instagram.com/qyjworld" },
   { label: "TikTok", href: "https://www.tiktok.com/@qingyunjian" },
   { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
+  { label: locale === "zh" ? "Take App · 在线点单" : "Take App · Order Online", href: "https://take.app/qingyunjian" },
   ...(storeWhatsAppUrl(store) ? [{ label: "WhatsApp", href: storeWhatsAppUrl(store)! }] : []),
   { label: "Email", href: `mailto:${store?.public_email || "hello@qyjworld.com"}` },
   ...(store ? [{ label: "Google Maps", href: storeDirectionsUrl(store) }] : [])
@@ -64,7 +65,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/45">{locale === "zh" ? "联系我们" : "Connect"}</p>
           <div className="mt-5 grid gap-3 text-sm font-semibold text-white/80">
-            {footerLinks(store).map((link) => (
+            {footerLinks(store, locale).map((link) => (
               <Link key={link.label} className="transition duration-300 hover:translate-x-1 hover:text-white" href={link.href}>
                 {link.label}
               </Link>
