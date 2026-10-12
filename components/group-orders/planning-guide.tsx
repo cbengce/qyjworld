@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { deliverySummary } from "./delivery-terms";
 import type { Locale } from "@/lib/constants";
 import { FAQSection } from "@/components/content/faq-section";
 import { StructuredData } from "@/components/structured-data";
@@ -10,12 +11,12 @@ export function GroupPlanningGuide({ locale }: { locale: Locale }) {
   const faq = zh ? [
     { question: "团体订购需要付费会员吗？", answer: "不需要。填写联系方式即可提交，免费访客账号为可选。" },
     { question: "填表后订单就确认了吗？", answer: "不是。申请表不会收取付款或自动预留订单，茶品、报价、时间与执行安排仍须团队确认。" },
-    { question: "可以申请配送吗？", answer: "可以在表格中提出配送申请，并填写地址。是否能安排、时间及适用配送费须另行确认。" },
+    { question: "可以申请配送吗？", answer: deliverySummary.zh + "请选择配送并填写地址；日期和时间须由团队确认。" },
     { question: "需要准备什么资料？", answer: "准备负责人姓名、电话、邮箱、各款茶品数量、申请日期与新加坡时间，以及自取或配送申请。活动或场地的额外说明可以填写备注。" }
   ] : [
     { question: "Do group orders require paid membership?", answer: "No. Submit with your contact details. A free guest account is optional." },
     { question: "Is the order confirmed when I submit the form?", answer: "No. The form does not collect payment or reserve the order automatically. Drinks, quotation, timing and fulfilment must be confirmed by the team." },
-    { question: "Can I request delivery?", answer: "Yes. Select a delivery request and provide the address. Availability, timing and any applicable delivery fee require separate confirmation." },
+    { question: "Can I request delivery?", answer: deliverySummary.en + " Select delivery and provide your address; dates and times require confirmation by our team." },
     { question: "What should I prepare?", answer: "Prepare the organiser's name, phone, email, drink quantities, requested date and Singapore time, and a collection or delivery request. Use the notes for additional event or access details." }
   ];
   return <section className="mx-auto max-w-6xl px-5 pt-12 md:px-8" aria-labelledby="group-planning-title">
