@@ -7,6 +7,12 @@ const React = require('react');
 const {renderToStaticMarkup} = require('react-dom/server');
 function load(file,mocks={}) { const filename=path.resolve(file), mod=new Module(filename,module);mod.filename=filename;mod.paths=Module._nodeModulePaths(process.cwd());mod.require=name=>name in mocks?mocks[name]:require(name);mod._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,filename);return mod.exports; }
 const sales=load('lib/pos/sales-overview.ts');
+const medianDays = [22,16,13,22,0,11,26,11,15,20,19,0,6].map(cups=>({cups,paidMinor:cups*690}));
+assert.deepEqual(sales.dailySalesMedians(medianDays),{days:13,cups:15,paidMinor:10350});
+assert.deepEqual(sales.dailySalesMedians([{cups:1,paidMinor:690},{cups:2,paidMinor:691}]),{days:2,cups:1.5,paidMinor:690.5});
+assert.deepEqual(sales.dailySalesMedians([]),{days:0,cups:0,paidMinor:0});
+assert.equal(sales.dailySalesMedians([{cups:0,paidMinor:0},{cups:1,paidMinor:100},{cups:100,paidMinor:99999}]).cups,1);
+assert.equal(medianDays[0].cups,22);
 const now=new Date('2026-10-13T10:35:00Z');
 assert.deepEqual(sales.salesDateRange({},now),{from:'2026-10-01',to:'2026-10-13',start:'2026-10-01T00:00:00+08:00',end:'2026-10-14T00:00:00+08:00'});
 assert.equal(sales.salesDateRange({},new Date('2026-10-31T16:01:00Z')).from,'2026-11-01');
@@ -29,7 +35,7 @@ async function main(){
  failure=true;await assert.rejects(sales.loadSalesOrders(client,range),e=>e.message==='load');failure=false;
  role='manager';let html=renderToStaticMarkup(await page({params:{locale:'en'},searchParams:{}}));assert.match(html,/Access unavailable/);assert.equal(serviceCalls,0);
  role='super_admin';records=[row('partner',{partner_id:'p1',referral_match_status:'matched',cup_quantity:2,total_payable_minor:1200}),row('normal')];
- html=renderToStaticMarkup(await page({params:{locale:'en'},searchParams:{from:range.from,to:range.to}}));assert.match(html,/S\$18.90/);assert.match(html,/Non-partner orders/);assert.match(html,/Daily cups sold/);assert.match(html,/2026-10-02/);assert.match(html,/not a separate Grab\/Foodpanda/);assert.match(html,/from=2026-10-01&amp;to=2026-10-03/);
+ html=renderToStaticMarkup(await page({params:{locale:'en'},searchParams:{from:range.from,to:range.to}}));assert.match(html,/S\$18.90/);assert.match(html,/Non-partner orders/);assert.match(html,/Daily cups sold/);assert.match(html,/Median daily cups/);assert.match(html,/Median daily takings/);assert.match(html,/Based on 3 calendar days/);assert.match(html,/2026-10-02/);assert.match(html,/not a separate Grab\/Foodpanda/);assert.match(html,/from=2026-10-01&amp;to=2026-10-03/);
  html=renderToStaticMarkup(await page({params:{locale:'zh'},searchParams:{from:range.from,to:range.to,store:'store2'}}));assert.match(html,/全店业绩总览/);assert.match(html,/S\$0.00/);assert.match(html,/暂无已同步/);
  for(const search of [{from:'2026-09-31'},{store:'missing'}]){calls.length=0;html=renderToStaticMarkup(await page({params:{locale:'en'},searchParams:search}));assert.match(html,/role="alert"/);assert.ok(!calls.some(c=>c.table==='pos_provider_orders'));assert.doesNotMatch(html,/Store sales totals/);}
  failure=true;html=renderToStaticMarkup(await page({params:{locale:'en'},searchParams:{}}));assert.match(html,/Unable to load sales/);assert.doesNotMatch(html,/private database secret|Store sales totals/);failure=false;
