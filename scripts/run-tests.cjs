@@ -199,6 +199,8 @@ require("./test-appzpos-monitoring.cjs");
 
 require("./test-partner-report.cjs");
 require("./test-partner-performance.cjs");
+require("./test-sales-overview.cjs");
 
 require("./test-menu-catalogue-import.cjs");
+
 

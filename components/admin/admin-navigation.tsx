@@ -8,6 +8,10 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
   return (
     <div className="mt-8 flex flex-col justify-between gap-3 bg-white p-4 shadow-soft sm:flex-row sm:items-center">
       <nav aria-label="Admin navigation" className="flex flex-wrap gap-3">
+        {role === "super_admin" && <>
+          <Link className="focus-ring rounded-full bg-forest px-5 py-3 text-sm font-bold text-white" href={`/${locale}/admin/sales`}>{locale === "zh" ? "全店业绩" : "Store Sales · 全店业绩"}</Link>
+          <Link className="focus-ring rounded-full border border-forest/20 px-5 py-3 text-sm font-bold" href={`/${locale}/admin/partner-dashboard`}>{locale === "zh" ? "合作伙伴业绩" : "Partner Dashboard"}</Link>
+        </>}
         <Link className="focus-ring rounded-full border border-forest/20 px-5 py-3 text-sm font-bold text-forest transition duration-300 hover:border-forest/40" href={`/${locale}/admin`}>
           {locale === "zh" ? "后台首页" : "Admin Home"}
         </Link>
@@ -39,3 +43,4 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
     </div>
   );
 }
+

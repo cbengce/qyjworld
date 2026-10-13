@@ -77,6 +77,7 @@ export default async function PartnerDashboard({ params, searchParams }: { param
           </div>
           <Link className="focus-ring rounded-full border border-forest/20 px-5 py-3 text-sm font-bold" href={`/${params.locale}/admin`}>Admin Portal</Link>
         </div>
+        <Link className="focus-ring mt-5 inline-block rounded-full bg-forest px-5 py-3 text-sm font-bold text-white" href={`/${params.locale}/admin/sales?${new URLSearchParams({ ...(from ? { from } : {}), ...(to ? { to } : {}), ...(searchParams.store ? { store: searchParams.store } : {}) }).toString()}`}>{params.locale === "zh" ? "查看全店业绩（含非伙伴订单） →" : "View Store Sales (including non-partner orders) →"}</Link>
         <section className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4">
           {summary.map(([label, value]) => <div className="rounded-2xl border border-forest/5 bg-white p-4 shadow-soft md:p-6" key={label}><p className="text-xs font-semibold text-ink/55">{label}</p><p className="mt-3 text-2xl font-semibold md:text-3xl">{value}</p></div>)}
         </section>
@@ -106,4 +107,5 @@ export default async function PartnerDashboard({ params, searchParams }: { param
     </main>
   );
 }
+
 

@@ -62,6 +62,7 @@ export default async function AdminPage({
           </div>
 
           <AdminNavigation locale={params.locale} />
+          {role === "super_admin" ? <Link className="mt-6 block rounded-2xl border border-forest/10 bg-emerald-50 p-5 shadow-soft" href={`/${params.locale}/admin/sales`}><h2 className="text-lg font-bold">{params.locale === "zh" ? "全店业绩总览 →" : "Store Sales Overview →"}</h2><p className="mt-2 text-sm text-ink/65">{params.locale === "zh" ? "查看总订单、总杯数、销售额，以及伙伴与非伙伴业绩。" : "Total orders, cups and sales, with partner and non-partner breakdowns."}</p></Link> : null}
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             <div className="bg-white p-5 shadow-soft">
               <p className="text-sm font-bold text-gold">Members</p>
@@ -140,3 +141,4 @@ export default async function AdminPage({
     </main>
   );
 }
+
