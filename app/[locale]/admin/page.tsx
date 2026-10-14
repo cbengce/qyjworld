@@ -47,7 +47,8 @@ export default async function AdminPage({
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-bold text-gold">Role: {role}</p>
-              <h1 className="mt-3 font-serif text-6xl font-semibold">{t.admin.title}</h1>
+              <h1 className="mt-3 font-serif text-6xl font-semibold">{params.locale === "zh" ? "后台首页与会员管理" : "Admin Home & Members"}</h1>
+              <p className="mt-3 text-sm text-forest/65">{params.locale === "zh" ? "会员查询、开通与积分管理；业绩、团单和设置请使用下方入口。" : "Member search, activation and points. Use the navigation below for sales, group orders and settings."}</p>
             </div>
             {canExport ? (
               <div className="flex flex-wrap gap-2">
@@ -63,32 +64,16 @@ export default async function AdminPage({
 
           <AdminNavigation locale={params.locale} />
           {role === "super_admin" ? <Link className="mt-6 block rounded-2xl border border-forest/10 bg-emerald-50 p-5 shadow-soft" href={`/${params.locale}/admin/sales`}><h2 className="text-lg font-bold">{params.locale === "zh" ? "全店业绩总览 →" : "Store Sales Overview →"}</h2><p className="mt-2 text-sm text-ink/65">{params.locale === "zh" ? "查看总订单、总杯数、销售额，以及伙伴与非伙伴业绩。" : "Total orders, cups and sales, with partner and non-partner breakdowns."}</p></Link> : null}
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
             <div className="bg-white p-5 shadow-soft">
-              <p className="text-sm font-bold text-gold">Members</p>
+              <p className="text-sm font-bold text-gold">{params.locale === "zh" ? "会员" : "Members"}</p>
               <p className="mt-2 text-4xl font-bold">{memberCount ?? 0}</p>
             </div>
             <div className="bg-white p-5 shadow-soft">
-              <p className="text-sm font-bold text-gold">Pending memberships</p>
+              <p className="text-sm font-bold text-gold">{params.locale === "zh" ? "待开通会员" : "Pending memberships"}</p>
               <p className="mt-2 text-4xl font-bold">{pendingCount ?? 0}</p>
             </div>
-            <div className="bg-white p-5 shadow-soft">
-              <p className="text-sm font-bold text-gold">Exports</p>
-              <p className="mt-2 text-forest/70">CSV routes are protected by admin role checks.</p>
-            </div>
-            <div className="bg-white p-5 shadow-soft">
-              <p className="text-sm font-bold text-gold">Campaigns</p>
-              {canManageMembership && <Link className="mt-3 block font-bold text-forest underline" href={`/${params.locale}/admin/group-orders`}>Manage Group Orders</Link>}
-              <div className="mt-3 grid gap-2 text-sm font-bold text-forest">
-                <Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/promotions`}>
-                  Manage Promotions
-                </Link>
-                <Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/leaderboard`}>
-                  Manage Leaderboard
-                </Link>
-                {role === "super_admin" ? <><Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/partner-dashboard`}>All Partner Dashboards</Link><Link className="transition duration-300 hover:text-gold" href={`/${params.locale}/admin/partners`}>Manage Partners</Link></> : null}
-              </div>
-            </div>
+
           </div>
 
           <form className="mt-8 flex flex-col gap-3 bg-white p-5 shadow-soft sm:flex-row">

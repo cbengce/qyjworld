@@ -138,6 +138,7 @@ export default async function AdminPromotionsPage({
           </div>
           <AdminNavigation locale={params.locale} />
           <Message error={searchParams.error} notice={searchParams.notice} />
+          <details className="mt-6 rounded-xl border border-forest/10 bg-white p-4"><summary className="cursor-pointer text-sm font-bold">{params.locale === "zh" ? "历史活动工具" : "Historical campaign tools"}</summary><p className="mt-3 text-sm text-forest/65">{params.locale === "zh" ? "学生月排行榜已移出常用导航；如需查阅旧活动，可从这里进入。" : "The Student Month leaderboard is no longer in the main navigation. Access the older campaign tool here if needed."}</p><Link className="mt-3 inline-block text-sm font-bold underline" href={`/${params.locale}/admin/leaderboard`}>{params.locale === "zh" ? "学生月排行榜（旧活动）" : "Student Month leaderboard (legacy)"}</Link></details>
 
           <form action={savePromotion} className="mt-8 grid gap-5 bg-white p-6 shadow-soft">
             <h2 className="font-serif text-3xl font-semibold text-forest">Create Promotion</h2>
