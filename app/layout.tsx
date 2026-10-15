@@ -4,6 +4,7 @@ import "./globals.css";
 import { BRAND } from "@/lib/constants";
 import { SEO_IMAGE } from "@/lib/seo";
 import { StructuredData } from "@/components/structured-data";
+import { SiteTrafficRecorder } from "@/components/site-traffic-recorder";
 
 const seoDescription =
   "Modern Oriental Sparkling Tea crafted in Singapore. Experience premium tea, fresh ingredients and exclusive member privileges.";
@@ -149,7 +150,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {resourceHints().map((origin) => <link key={`preconnect-${origin}`} crossOrigin="anonymous" href={origin} rel="preconnect" />)}
         <StructuredData data={structuredData} />
       </head>
-      <body>{children}</body>
+      <body>{children}<SiteTrafficRecorder /></body>
     </html>
   );
 }
+

@@ -204,3 +204,6 @@ require("./test-sales-overview.cjs");
 require("./test-menu-catalogue-import.cjs");
 
 
+
+require("./test-site-traffic.cjs");
+

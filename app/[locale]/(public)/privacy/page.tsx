@@ -35,9 +35,11 @@ export default function PrivacyPage({ params }: { params: { locale: Locale } }) 
             <p>
               The service does not store payment card information. Administrative access is role controlled and audited.
             </p>
+            <p>{params.locale === "zh" ? "网站使用第一方匿名浏览统计，记录公开页面路径、来源类别、粗略设备类别及入口点击。统计记录不包含姓名、邮箱、账号标识、完整来源网址或查询参数，不使用统计 Cookie 或持久浏览器标识；IP 地址不写入统计记录。账号页和后台页不记录，记录器会尊重浏览器提供的 Do Not Track 或 Global Privacy Control 信号。" : "The website uses first-party anonymous traffic counts for public page paths, source categories, broad device categories and entry-link clicks. Analytics records do not include names, email addresses, account identifiers, full referrer URLs or query parameters. This recorder uses no analytics cookies or persistent browser identifiers and does not save IP addresses in analytics records. Account and admin pages are excluded, and the recorder respects browser Do Not Track and Global Privacy Control signals."}</p>
           </div>
         </div>
       </Section>
     </main>
   );
 }
+

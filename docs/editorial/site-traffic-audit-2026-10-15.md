@@ -1,0 +1,11 @@
+# First-party traffic recording audit
+
+Content ID: site-traffic-privacy-v1. Version: 1. Auditor: Codex. Date: 2026-10-15. Remediation owner: digital owner.
+
+Authority: owner explicitly requested normal recording of website statistics after the GSC Wizard trial blocked retrieval. Scope is a first-party anonymous browser-event counter and protected Super Admin report; no promise of historical recovery or independent visitor identification.
+
+Evidence: strict event schema, public-route allowlist, cookie-free recorder with credentials omitted, coarse device/source categories, existing in-memory rate limiter, server-only database writes and role-gated report. Storage reuses webhook_events with its own provider label; no POS, commission, membership or campaign records are modified.
+
+Findings by audit dimension: (1) privacy copy describes the implementation; (2) no invented brand/history/performance; (3) implementation and regression checks are sources; (4) functional tests are technical evidence, not visitor evidence; (5) no legal-compliance guarantee or new legal advice, existing legal-review wording remains; (6) one explanatory paragraph per locale; (7) no SEO keywords added; (8) plain explanations distinguish views, people and clicks; (9) British English; (10) no cultural/history changes; (11) public counts, source categories and conversion-entry clicks have operational value; (12) brand identity preserved; (13) publish after production build and live persistence check.
+
+Required reviewers: owner authorises the feature in this conversation; no invented external counsel review. Existing policy remains labelled for legal review. Decision: PUBLISH factual technical disclosure, subject to validation. Known limits: records begin after launch, blocked/opted-out browsers are excluded, recognised bots are excluded but cannot all be detected, repeated and staff views count, missing referrers are ambiguous, tagged/referrer AI traffic does not prove citation or purchase, reports warn if truncated. No analytics cookies, persistent browser ID, email, account ID, full referrer, query parameters or IP address are stored in analytics events. Network headers still reach hosting infrastructure and transient rate limiting; the policy does not claim otherwise.

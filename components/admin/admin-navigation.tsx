@@ -24,6 +24,7 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
           <Link className={tool} href={`/${locale}/admin/stores`}><strong>{zh ? "门店管理" : "Stores · 门店管理"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "门店资料、营业时间与临时休息。" : "Store details, opening hours and exceptions."}</span></Link>
           <Link className={tool} href={`/${locale}/admin/menu`}><strong>{zh ? "菜单与价格" : "Menu & prices"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "饮品、图片、门店价格与供应状态。" : "Drinks, images, outlet prices and availability."}</span></Link>
           <Link className={tool} href={`/${locale}/admin/promotions`}><strong>{zh ? "活动管理" : "Promotions · 活动管理"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "网站活动海报、排期与发布状态。" : "Website campaign posters, schedules and publication."}</span></Link>
+          {role === "super_admin" && <Link className={tool} href={`/${locale}/admin/traffic`}><strong>{zh ? "网站访问统计" : "Website traffic"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "浏览量、热门页面与搜索／AI 来源。" : "Recorded views, popular pages and search / AI sources."}</span></Link>}
           {role === "super_admin" && <Link className={tool} href={`/${locale}/admin/partners`}><strong>{zh ? "合作伙伴设置" : "Partner settings"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "管理伙伴资料与合作条件。" : "Manage partner details and commercial terms."}</span></Link>}
           {(role === "super_admin" || role === "manager") && <Link className={tool} href={`/${locale}/admin/discovery`}><strong>{zh ? "SEO / GEO 检查" : "SEO / GEO checks"}</strong><span className="mt-1 block text-xs leading-5 text-ink/65">{zh ? "内容资料、收录准备及团单来源检查。" : "Content completeness, indexing readiness and request sources."}</span></Link>}
         </div>
@@ -32,3 +33,4 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
     <form action={logoutMember}><button className="focus-ring min-h-12 rounded-full bg-forest px-6 text-sm font-bold text-white" type="submit">{zh ? "退出" : "Logout"}</button></form>
   </div>;
 }
+
