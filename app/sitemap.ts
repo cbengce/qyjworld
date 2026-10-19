@@ -1,3 +1,4 @@
+import { getPublicGallery } from "@/lib/gallery";
 import { getMenuItems } from "@/lib/menu";
 import type { MetadataRoute } from "next";
 import { BRAND, locales } from "@/lib/constants";
@@ -15,6 +16,7 @@ const publicPaths = [
   "/faq",
   "/ascend/leaderboard",
   "/promotions",
+  "/gallery",
   "/privacy",
   "/terms",
   "/ascend"
@@ -24,7 +26,7 @@ const growthPaths = ["/blog", "/guides", "/categories", "/search"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const [promotions, menu] = await Promise.all([getPublicPromotions(), getMenuItems()]);
+  const [promotions, menu, gallery] = await Promise.all([getPublicPromotions(), getMenuItems(), getPublicGallery()]);
   const localizedPages: MetadataRoute.Sitemap = locales.flatMap((locale) =>
     publicPaths.map((path) => ({
       url: `${BRAND.domain}/${locale}${path}`,
@@ -101,6 +103,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...localizedPages,
     ...promotionPages,
+    ...locales.flatMap(locale => gallery.map(entry => ({ url: `${BRAND.domain}/${locale}/gallery/${entry.slug}`, lastModified: new Date(entry.updatedAt), changeFrequency: "monthly" as const, priority: 0.6, alternates: { languages: { "en-SG": `${BRAND.domain}/en/gallery/${entry.slug}`, "zh-SG": `${BRAND.domain}/zh/gallery/${entry.slug}` } } }))),
     ...growthIndexPages,
     ...editorialPages,
     ...locales.flatMap(locale => menu.map(item => ({ url: `${BRAND.domain}/${locale}/menu/${encodeURIComponent(item.id)}`, changeFrequency: "weekly" as const, priority: 0.8 }))),

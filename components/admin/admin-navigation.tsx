@@ -17,6 +17,7 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
           <Link className={button} href={`/${locale}/admin/partner-dashboard`}>{zh ? "合作伙伴业绩" : "Partner Dashboard"}</Link>
         </>}
         {(role === "super_admin" || role === "manager") && <Link className={button} href={`/${locale}/admin/group-orders`}>{zh ? "团单管理" : "Group Orders · 团单管理"}</Link>}
+        {(role === "super_admin" || role === "manager") && <Link className={button} href={`/${locale}/admin/gallery`}>{zh ? "画廊管理" : "Art Gallery"}</Link>}
       </div>
       <details className="mt-3 rounded-xl border border-forest/10">
         <summary className="focus-ring cursor-pointer px-4 py-3 text-sm font-bold text-forest">{zh ? "设置与工具" : "Settings & tools"}</summary>

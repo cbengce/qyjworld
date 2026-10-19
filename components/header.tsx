@@ -23,6 +23,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
     { label: locale === "zh" ? "会员" : "Membership", href: localizedPath(locale, "/membership") },
     ...(orderingUrl ? [{ label: locale === "zh" ? "在线订购" : "Order Online", href: orderingUrl }] : []),
     { label: locale === "zh" ? "我们的故事" : "Our Story", href: localizedPath(locale, "/about") },
+    { label: locale === "zh" ? "青云间画廊" : "Art Gallery", href: localizedPath(locale, "/gallery") },
     { label: locale === "zh" ? "到店指南" : "Visit Us", href: localizedPath(locale, "/contact") },
     { label: locale === "zh" ? "合作伙伴后台" : "Partner Dashboard", href: localizedPath(locale, "/partner/login") }
   ];
@@ -49,7 +50,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           <Logo priority />
         </Link>
         <nav
-          className={`hidden items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.08em] transition-colors duration-500 lg:flex xl:gap-4 ${
+          className={`hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] transition-colors duration-500 xl:flex xl:gap-3 ${
             transparentOnHero ? "text-white/80" : "text-forest/70"
           }`}
         >
@@ -67,7 +68,7 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           ))}
         </nav>
         <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-          <span className="hidden lg:inline-flex"><LanguageSwitch locale={locale} /></span>
+          <span className="hidden xl:inline-flex"><LanguageSwitch locale={locale} /></span>
           {account ? <>
             <Link href={account.href} title={account.email} className={`focus-ring flex min-h-11 max-w-[150px] flex-col justify-center px-2 text-xs font-semibold sm:max-w-[200px] ${transparentOnHero ? "text-white" : "text-forest"}`}>
               <span>{account.label}</span>
@@ -99,13 +100,14 @@ export function Header({ locale, orderingUrl, account }: { locale: Locale; order
           </>}
         </div>
       </div>
-      <nav aria-label={locale === "zh" ? "快捷导航" : "Quick navigation"} className="flex flex-wrap justify-end gap-2 px-3 pb-3 sm:px-5 lg:hidden">
+      <nav aria-label={locale === "zh" ? "快捷导航" : "Quick navigation"} className="flex flex-wrap justify-end gap-2 px-3 pb-3 sm:px-5 xl:hidden">
         <LanguageSwitch locale={locale} />
         <Link href={localizedPath(locale, "/menu")} className="focus-ring inline-flex min-h-11 items-center rounded-full border border-forest/20 px-4 text-xs font-bold">{locale === "zh" ? "菜单" : "Menu"}</Link>
         <Link href={localizedPath(locale, "/group-orders")} className="focus-ring inline-flex min-h-11 items-center justify-center rounded-full bg-forest px-4 text-xs font-bold text-white">{locale === "zh" ? "团体订购" : "Group Orders"}</Link>
         <Link href={localizedPath(locale, "/about")} className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-xs font-bold ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
           {locale === "zh" ? "我们的故事" : "Our Story"}
         </Link>
+        <Link href={localizedPath(locale, "/gallery")} className="focus-ring inline-flex min-h-11 items-center rounded-full border border-forest/20 px-4 text-xs font-bold">{locale === "zh" ? "青云间画廊" : "Art Gallery"}</Link>
         <Link href={localizedPath(locale, "/partner/login")} className={`focus-ring inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-xs font-bold ${transparentOnHero ? "border-white/40 text-white" : "border-forest/20 text-forest"}`}>
           {locale === "zh" ? "合作伙伴后台" : "Partner Dashboard"}<span aria-hidden="true" className="ml-2">→</span>
         </Link>

@@ -4,7 +4,7 @@ export const trafficSources = ["direct", "internal", "google", "bing", "chatgpt"
 export const trafficSchema = z.object({ eventId: z.string().uuid(), event: z.enum(["page_view", "order_click", "group_click"]), path: z.string().max(160), source: z.enum(trafficSources), device: z.enum(["mobile", "desktop"]) }).strict().refine(value => isPublicTrafficPath(value.path), { message: "Public pages only" });
 export type TrafficEvent = z.infer<typeof trafficSchema>;
 export function isPublicTrafficPath(path: string) {
-  return /^\/(en|zh)(?:\/(?:menu|blog|guides|about|promotions)(?:\/[a-z0-9-]{1,80})?|\/(?:group-orders|membership|contact|faq|privacy|terms|ascend))?\/?$/.test(path);
+  return /^\/(en|zh)(?:\/(?:menu|blog|guides|about|promotions|gallery)(?:\/[a-z0-9-]{1,80})?|\/(?:group-orders|membership|contact|faq|privacy|terms|ascend))?\/?$/.test(path);
 }
 export function trafficSource(referrer: string, search: string) {
   const tagged = new URLSearchParams(search).get("utm_source")?.toLowerCase();
