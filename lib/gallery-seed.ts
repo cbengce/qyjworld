@@ -634,5 +634,358 @@ export const gallerySeed: GalleryEntry[] = [
     "source": "Store photograph / 门店实拍",
     "updatedAt": "2026-10-19T00:00:00.000Z",
     "version": 0
+  },
+  {
+    "slug": "video-2633",
+    "title": {
+      "en": "A quiet page. A little sparkle.",
+      "zh": "翻一页书，一口茶"
+    },
+    "caption": {
+      "en": "An AI-created tea-break short, showing a book and a branded cup.",
+      "zh": "以书本与品牌茶杯为场景的 AI 创意茶歇短片。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/2633.mp4",
+    "thumbnail": "/assets/gallery/videos/2633.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Tea break",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": false,
+    "order": 220,
+    "source": "Owner-supplied 2633.mp4; original retained",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-2634",
+    "title": {
+      "en": "Night Nectar · Creative short",
+      "zh": "星津 · 创意短片"
+    },
+    "caption": {
+      "en": "A Night Nectar creative video supplied by the owner. Prices and membership wording within the artwork are retained as an archive and do not establish current offers.",
+      "zh": "用户提供的星津创意视频。画面内价格与会员文字作为原作品存档，不代表现行优惠。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/2634.mp4",
+    "thumbnail": "/assets/gallery/videos/2634.jpg",
+    "topics": [
+      "tea-series",
+      "promotions"
+    ],
+    "tags": [
+      "Night Nectar",
+      "Sparkling Tea",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 230,
+    "source": "Owner-supplied 2634.mp4; original retained",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-a-little-magic",
+    "title": {
+      "en": "A Little Magic",
+      "zh": "一点小魔法"
+    },
+    "caption": {
+      "en": "An AI-created red-cup tea-break advert.",
+      "zh": "以红杯为主角的 AI 创意茶歇广告。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/a-little-magic.mp4",
+    "thumbnail": "/assets/gallery/videos/a-little-magic.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Video archive",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 240,
+    "source": "Owner-supplied QYJ_2554_Full_Sound.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-a-playful-surprise",
+    "title": {
+      "en": "A Playful Surprise",
+      "zh": "茶歇小惊喜"
+    },
+    "caption": {
+      "en": "An AI-created advert with a playful cup reveal.",
+      "zh": "以茶杯惊喜出现为情节的 AI 创意广告。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/a-playful-surprise.mp4",
+    "thumbnail": "/assets/gallery/videos/a-playful-surprise.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Video archive",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 250,
+    "source": "Owner-supplied QYJ_2546_Female_Captions_v2.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-beyond-the-frame",
+    "title": {
+      "en": "Beyond the Frame",
+      "zh": "画框之外"
+    },
+    "caption": {
+      "en": "An AI-created red-cup scene set within a picture frame.",
+      "zh": "以画框与红杯为场景的 AI 创意短片。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/beyond-the-frame.mp4",
+    "thumbnail": "/assets/gallery/videos/beyond-the-frame.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Video archive",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 260,
+    "source": "Owner-supplied QYJ_Employee_Red_Cup_Frame_With_Audio.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-city-daydream",
+    "title": {
+      "en": "A City-sized Daydream",
+      "zh": "城市里的想象"
+    },
+    "caption": {
+      "en": "An AI-created billboard fantasy featuring a red cup; not a real outdoor installation.",
+      "zh": "以红杯为主角的 AI 城市广告牌想象，并非真实户外装置。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/city-daydream.mp4",
+    "thumbnail": "/assets/gallery/videos/city-daydream.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Video archive",
+      "AI creative"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 270,
+    "source": "Owner-supplied QYJ_Red_Cup_Billboard_With_Audio.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-find-us",
+    "title": {
+      "en": "Find Us at MacPherson Mall",
+      "zh": "到麦波申商场找我们"
+    },
+    "caption": {
+      "en": "A short route and shopfront video from our media archive.",
+      "zh": "记录商场路线与门店外观的短片。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/find-us.mp4",
+    "thumbnail": "/assets/gallery/videos/find-us.jpg",
+    "topics": [
+      "brand-store"
+    ],
+    "tags": [
+      "Video archive",
+      "Store"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 280,
+    "source": "Owner-supplied QYJ_Find_Us_Luna_Tide_Extra_Loud.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-bubbly-pour",
+    "title": {
+      "en": "The Bubbly Pour",
+      "zh": "倒入气泡的一刻"
+    },
+    "caption": {
+      "en": "A close look at pouring and preparing a sparkling tea.",
+      "zh": "近看气泡茶的倒入与制作过程。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/bubbly-pour.mp4",
+    "thumbnail": "/assets/gallery/videos/bubbly-pour.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 290,
+    "source": "Owner-supplied QYJ_Sparkling_Tea_04_The_Bubbly_Pour_Clean_Stereo.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-tea-close-up",
+    "title": {
+      "en": "Tea, Close Up",
+      "zh": "近看一杯茶"
+    },
+    "caption": {
+      "en": "A sparkling-tea close-up from our video collection.",
+      "zh": "气泡茶的近景展示。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/tea-close-up.mp4",
+    "thumbnail": "/assets/gallery/videos/tea-close-up.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 300,
+    "source": "Owner-supplied QYJ_Sparkling_Tea_03_Product_Close_Up_Clean_Stereo.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-quick-sparkle",
+    "title": {
+      "en": "A Quick Sparkle",
+      "zh": "一刻气泡"
+    },
+    "caption": {
+      "en": "A short sparkling-tea preparation montage.",
+      "zh": "记录气泡茶制作片刻的短剪辑。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/quick-sparkle.mp4",
+    "thumbnail": "/assets/gallery/videos/quick-sparkle.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 310,
+    "source": "Owner-supplied QYJ_Sparkling_Tea_02_Quick_Sparkle_Clean_Stereo.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-frosted-fruit-process",
+    "title": {
+      "en": "Frosted Fruit · The Process",
+      "zh": "鲜果沙冰 · 制作过程"
+    },
+    "caption": {
+      "en": "An archived fruit-drink preparation video. Original recipe wording is preserved as part of the video, not a current menu specification.",
+      "zh": "鲜果饮品制作存档短片。原片配方文字保留作作品记录，不作为现行菜单规格。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/frosted-fruit-process.mp4",
+    "thumbnail": "/assets/gallery/videos/frosted-fruit-process.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 320,
+    "source": "Owner-supplied QYJ_Honeydew_Guava_01_Process.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-frosted-fruit-moment",
+    "title": {
+      "en": "A Frosted Fruit Moment",
+      "zh": "鲜果沙冰的一刻"
+    },
+    "caption": {
+      "en": "An archived short montage of a fruit drink.",
+      "zh": "鲜果饮品的短剪辑存档。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/frosted-fruit-moment.mp4",
+    "thumbnail": "/assets/gallery/videos/frosted-fruit-moment.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 330,
+    "source": "Owner-supplied QYJ_Honeydew_Guava_02_Quick_Reel.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
+  },
+  {
+    "slug": "video-frosted-fruit-close-up",
+    "title": {
+      "en": "Frosted Fruit · Close Up",
+      "zh": "鲜果沙冰 · 近景"
+    },
+    "caption": {
+      "en": "An archived fruit-drink close-up, showing pouring and the finished cup.",
+      "zh": "记录倒入过程与完成杯的鲜果饮品近景存档。"
+    },
+    "media": "video",
+    "asset": "/assets/gallery/videos/frosted-fruit-close-up.mp4",
+    "thumbnail": "/assets/gallery/videos/frosted-fruit-close-up.jpg",
+    "topics": [
+      "tea-series"
+    ],
+    "tags": [
+      "Video archive",
+      "Tea preparation"
+    ],
+    "state": "published",
+    "archived": true,
+    "order": 340,
+    "source": "Owner-supplied QYJ_Honeydew_Guava_03_Product_Focus.mp4; inspected and web-optimised",
+    "updatedAt": "2026-10-27T00:00:00.000Z",
+    "version": 0
   }
 ];

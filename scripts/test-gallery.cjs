@@ -2,11 +2,11 @@ const assert = require('node:assert/strict'), fs = require('node:fs'), path = re
 function load(file, mocks = {}) { const filename = path.resolve(file), m = new Module(filename, module); m.filename = filename; m.paths = Module._nodeModulePaths(process.cwd()); m.require = n => n in mocks ? mocks[n] : require(n); m._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText, filename); return m.exports; }
 const model = load('lib/gallery-model.ts'), { gallerySeed: seed } = load('lib/gallery-seed.ts');
 for (const e of seed) { assert.equal(model.gallerySchema.safeParse(e).success, true, e.slug); for (const url of [e.asset, e.thumbnail]) assert.ok(fs.existsSync(path.join('public', url)), url); }
-assert.equal(seed.length, 22); assert.equal(new Set(seed.map(e => e.slug)).size, seed.length);
+assert.equal(seed.length, 35); assert.equal(new Set(seed.map(e => e.slug)).size, seed.length);
 assert.equal(model.filterGallery(seed, 'photo').length, 3);
 assert.equal(model.filterGallery(seed, 'poster', 'partners', 'tefuda').length, 2);
 assert.equal(model.filterGallery(seed, 'poster', 'pegasus', '', 'Luna Tide').length, 1);
-assert.equal(model.filterGallery(seed, 'video').length, 0);
+assert.equal(model.filterGallery(seed, 'video').length, 13);
 const hidden = { ...seed[0], state: 'draft', version: 1 };
 assert.ok(!model.filterGallery(model.mergeGallery(seed, [hidden])).find(e => e.slug === hidden.slug));
 assert.equal(model.gallerySchema.safeParse({ ...seed[0], media: 'video' }).success, false);
@@ -31,6 +31,6 @@ async function main() {
  affected = 0; await assert.rejects(actions.saveGallery(form(existing[0])), /Someone%20else/);
  role = 'staff'; assert.deepEqual(await actions.prepareGalleryUpload({ locale: 'en', type: 'image/png', size: 123 }), { error: 'You do not have permission to upload.' });
  role = 'manager'; assert.ok((await actions.prepareGalleryUpload({ locale: 'en', type: 'image/svg+xml', size: 123 })).error); assert.ok((await actions.prepareGalleryUpload({ locale: 'en', type: 'video/mp4', size: 51*1024*1024 })).error);
- console.log('Gallery tests passed: 22 valid works and files, bilingual search and independent filters, unpublished overrides, media/URL validation, public traffic paths, role protection, reviewed publication, collision and concurrency guards.');
+ console.log('Gallery tests passed: 35 valid works and files, including 13 videos, bilingual search and independent filters, unpublished overrides, media/URL validation, public traffic paths, role protection, reviewed publication, collision and concurrency guards.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });
