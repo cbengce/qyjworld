@@ -7,6 +7,7 @@ import type { PublicStore } from "@/lib/store-types";
 import { storeAddressLines, storeDirectionsUrl, storeWhatsAppUrl } from "@/lib/store-types";
 
 function footerLinks(store: PublicStore | null, locale: Locale) { return [
+  { label: "Facebook", href: "https://www.facebook.com/qyjworld" },
   { label: "Instagram", href: "https://www.instagram.com/qyjworld" },
   { label: "TikTok", href: "https://www.tiktok.com/@qingyunjian" },
   { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
