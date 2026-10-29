@@ -59,6 +59,31 @@ Quantity is not money. Currency conversion, freight allocation, landed valuation
 cost history belong to the next purchasing phase. No estimated costs or owner data are
 invented. Colour can be stored as an optional attribute without per-sale colour tracking.
 
+## Admin entry added in the next increment
+
+The bilingual route `/en/admin/inventory` or `/zh/admin/inventory` now provides material
+creation, outlet/warehouse location creation, packaging conversions, opening/receipt/use/
+wastage entry, physical counts, quantity history and reorder settings. Writes use the
+logged-in staff session and the database permission boundary, never a service key.
+The existing administrator navigation adds one inventory link for Super Admin.
+
+Migration `0034_inventory_stocktake.sql` adds immutable counted-stock records and an
+atomic stocktake RPC. It validates the displayed expected balance under a row lock; if
+stock changed while the form was open it rejects the stale count. Both changed and
+matching counts are recorded. Only a changed count posts an adjustment. Full expected/
+counted values, actor and reason are retained for exact retry validation.
+
+Form submission IDs survive errors, and successful submissions receive a fresh ID.
+Database errors map to short bilingual messages without exposing raw database details.
+Quantity inputs are exact decimal strings, with no exponent notation or implicit package
+conversion. History displays the latest 50 records in Singapore time. Catalogue/balance
+reads paginate and fail explicitly at their safety limit rather than silently truncating.
+When the module cannot load, write forms are hidden and the page says it is unavailable;
+missing stock is never presented as a completed count.
+
+This increment does not include purchasing costs, receipt document upload, transfers,
+recipe deductions or notification delivery. Receiving here records quantity only.
+
 ## Explicitly deferred business workflows
 
 - Supplier/purchase documents, CNY payments, actual SGD payments, transport batches,
@@ -70,7 +95,7 @@ invented. Colour can be stored as an optional attribute without per-sale colour 
   dates. This foundation has location-level quantity, not batch-level traceability.
 - POS/online product mapping, modifiers, cup-bearing merchandise flags, automated
   deductions and refund/consumption treatment. No cup colour inference.
-- Admin forms/imports, notifications, valuation reports and user training.
+- Bulk imports, notifications, valuation reports and user training.
 
 ## Validation and release
 
@@ -90,14 +115,14 @@ an ephemeral real Supabase/PostgreSQL instance; no Production secrets are refere
 
 Before any live application: establish the exact target project and applied migration
 state, take a restorable backup, snapshot existing tables, run the SQL tests in staging,
-review migration 0033 and apply that exact additive migration. Do not run a blanket
+review migrations 0033 and 0034 and apply only those exact additive migrations. Do not run a blanket
 database reset or replay older migrations against Production. No Production connection
 was available/used in this work. Safe rollback is to leave the additive tables dormant;
-no public feature imports them. Do not drop tables once real inventory has been posted.
+the inventory route is isolated from existing sales and public pages. Do not drop tables once real inventory has been posted.
 
 ## Verification recorded for this branch
 
-- Existing `npm test`, TypeScript check, ESLint and the production build passed locally.
+- Existing `npm test`, TypeScript check, ESLint and the production build passed locally for the foundation. Subsequent admin changes have their own checks.
 - The complete canonical migration chain, seed, new inventory SQL assertions and existing
   APPZPOS/partner SQL assertions passed in disposable PGlite PostgreSQL with local
   Supabase auth/storage schema stand-ins. This validates database behaviour, not live
@@ -107,3 +132,6 @@ no public feature imports them. Do not drop tables once real inventory has been 
   commission ledger and provider orders. All fingerprints were unchanged after 0033.
 - A real Supabase/PostgreSQL GitHub Actions rehearsal is configured separately. Its
   outcome must be checked before deployment; this document does not predeclare a pass.
+
+The admin increment adds automated action tests and EN/ZH server rendering tests via
+`scripts/test-inventory-admin.cjs`, included in `npm test`.

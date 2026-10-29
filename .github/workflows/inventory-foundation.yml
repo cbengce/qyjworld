@@ -6,6 +6,9 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/0033_inventory_foundation.sql'
+      - 'supabase/migrations/0034_inventory_stocktake.sql'
+      - 'app/**/admin/inventory/**'
+      - 'components/admin/inventory-form.tsx'
       - 'supabase/tests/inventory_foundation.sql'
       - 'lib/inventory/**'
       - '.github/workflows/inventory-foundation.yml'

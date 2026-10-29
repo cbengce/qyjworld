@@ -121,6 +121,14 @@ select pg_temp.inventory_assert((select count(*) = 0 from public.inventory_mater
 select pg_temp.inventory_assert((select count(*) = 0 from public.inventory_movements), 'non-staff cannot see ledger');
 select pg_temp.inventory_expect_error($q$select public.post_inventory_movement('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 'receipt', 5, 'Forbidden', 'inv-customer')$q$, 'Insufficient inventory permission');
 
+-- Counted stock uses a locked snapshot, not an unconditional balance overwrite.
+select set_config('request.jwt.claim.sub', '33000000-0000-0000-0000-000000000022', true);
+select public.post_inventory_stocktake('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 896, 897, 'Physical count', 'inv-stocktake-a');
+select public.post_inventory_stocktake('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 896, 897, 'Physical count', 'inv-stocktake-a');
+select pg_temp.inventory_expect_error($q$select public.post_inventory_stocktake('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 895, 897, 'Stale count', 'inv-stocktake-stale')$q$, 'Inventory changed since%');
+select pg_temp.inventory_expect_error($q$select public.post_inventory_stocktake('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 896.5, 896, 'Half cup', 'inv-stocktake-half')$q$, 'Counted materials require whole units');
+select pg_temp.inventory_expect_error($q$select public.post_inventory_stocktake('33000000-0000-0000-0000-000000000052', '33000000-0000-0000-0000-000000000061', 49, 50, 'Other store', 'inv-stocktake-other')$q$, 'Insufficient inventory permission');
+select pg_temp.inventory_assert(public.post_inventory_stocktake('33000000-0000-0000-0000-000000000051', '33000000-0000-0000-0000-000000000061', 896, 896, 'Matching count', 'inv-stocktake-same') is null, 'matching stocktake does not create a movement');
 reset role;
 update public.staff_role_assignments set deleted_at = now() where staff_user_id = '33000000-0000-0000-0000-000000000032';
 select set_config('request.jwt.claim.sub', '33000000-0000-0000-0000-000000000022', true);
@@ -128,8 +136,8 @@ set local role authenticated;
 select pg_temp.inventory_assert((select count(*) = 0 from public.inventory_balances), 'soft-deleted assignment grants no rights');
 reset role;
 select pg_temp.inventory_expect_error($q$update public.inventory_movements set reason = 'Rewritten'$q$, 'Inventory movements are immutable%');
-select pg_temp.inventory_assert((select count(*) = 8 from public.audit_logs where action = 'inventory.post' and entity_id in (select id from public.inventory_movements)), 'one audit record per posted movement');
-select pg_temp.inventory_assert((select quantity = 897 from public.inventory_balances where location_id = '33000000-0000-0000-0000-000000000051' and material_id = '33000000-0000-0000-0000-000000000061'), 'failed operations leave balance unchanged');
+select pg_temp.inventory_assert((select count(*) = 9 from public.audit_logs where action = 'inventory.post' and entity_id in (select id from public.inventory_movements)), 'one audit record per posted movement');
+select pg_temp.inventory_assert((select quantity = 896 from public.inventory_balances where location_id = '33000000-0000-0000-0000-000000000051' and material_id = '33000000-0000-0000-0000-000000000061'), 'failed operations leave balance unchanged');
 select pg_temp.inventory_assert(not has_table_privilege('anon', 'public.inventory_materials', 'SELECT'), 'anonymous table access denied');
 select pg_temp.inventory_assert(not has_function_privilege('anon', 'public.post_inventory_movement(uuid,uuid,text,numeric,text,text,timestamptz)', 'EXECUTE'), 'anonymous RPC denied');
 select pg_temp.inventory_assert(not has_table_privilege('service_role', 'public.inventory_balances', 'UPDATE'), 'service role cannot bypass ledger with direct writes');
