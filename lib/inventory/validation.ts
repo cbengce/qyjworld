@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { supplierInput, paymentInput, purchaseInput } from "./purchase-validation";
 
 const id = z.string().uuid();
 // Decimal strings are kept exact. Reject exponent notation, NaN, negatives and excess precision.
@@ -32,7 +33,7 @@ export const reorderInput = z.object({
   minimum: inventoryQuantity, leadDays: z.string().regex(/^\d{1,4}$/)
 });
 export const inventoryInput = z.discriminatedUnion("operation", [
-  materialInput, locationInput, unitInput, movementInput, stocktakeInput, reorderInput
+  materialInput, locationInput, unitInput, movementInput, stocktakeInput, reorderInput, supplierInput, paymentInput, purchaseInput
 ]);
 
 export function inventoryErrorCode(message: string): "stale" | "stock" | "permission" | "whole" | "duplicate" | "unavailable" | "save" {

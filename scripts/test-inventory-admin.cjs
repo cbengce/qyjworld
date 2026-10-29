@@ -16,7 +16,19 @@ function load(file, mocks = {}) {
   return mod.exports;
 }
 
-const validation = load('lib/inventory/validation.ts');
+const purchasing = load('lib/inventory/purchasing.ts');
+assert.deepEqual(purchasing.PURCHASE_PLATFORMS, {pinduoduo:'拼多多',douyin:'抖音',taobao:'淘宝',wechat:'微信'});
+assert.equal(purchasing.moneyMinor('265.05'),26505n);
+assert.equal(purchasing.actualSgdCost([{actualSgd:'265.05',feeSgd:'1.20'}]),26625n);
+assert.throws(()=>purchasing.moneyMinor('1.001'));
+assert.throws(()=>purchasing.allocateFreight(100n,[{id:'a',weight:'0'}]));
+for(let cents=0n;cents<200n;cents++) {
+ const shares=purchasing.allocateFreight(cents,[{id:'c',weight:'1'},{id:'a',weight:'1'},{id:'b',weight:'1'}]);
+ assert.equal(shares.reduce((sum,r)=>sum+BigInt(r.minor),0n),cents);
+}
+assert.equal(purchasing.allocateFreight(1n,[{id:'b',weight:'1'},{id:'a',weight:'1'}]).find(r=>r.id==='a').minor,'1');
+console.log('Purchasing: four platforms, exact SGD fees and 200 freight-cent conservation cases passed.');
+const validation = load('lib/inventory/validation.ts', { './purchase-validation': load('lib/inventory/purchase-validation.ts') });
 for (const q of ['0', '1', '500', '0.000001', '99999999999999.999999']) assert.equal(validation.inventoryQuantity.safeParse(q).success, true, q);
 for (const q of ['-1', 'NaN', 'Infinity', '1e3', '01', '1.0000001', '100000000000000', '']) assert.equal(validation.inventoryQuantity.safeParse(q).success, false, q);
 
@@ -44,6 +56,7 @@ const { saveInventory } = load('app/[locale]/admin/inventory/actions.ts', {
   '@/lib/data': { async requireAdmin() { authCalls++; if (failAuth) throw new Error('denied'); } },
   '@/lib/supabase/server': { createClient: () => db },
   '@/lib/inventory/validation': validation,
+  '@/lib/inventory/purchasing': load('lib/inventory/purchasing.ts'),
   'next/cache': { revalidatePath() { refreshed++; } }
 });
 function form(values) { const data = new FormData(); Object.entries({ locale: 'zh', key, ...values }).forEach(([k, v]) => data.set(k, v)); return data; }

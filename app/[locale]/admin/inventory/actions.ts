@@ -1,5 +1,6 @@
 "use server";
 
+import { moneyMinor } from "@/lib/inventory/purchasing";
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/data";
@@ -27,7 +28,27 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
       }
       throw new Error(error.message);
     }
-    if (v.operation === "material") {
+    if (v.operation === "supplier") {
+      await insertOnce("inventory_suppliers", { id: v.key, brand_id: v.brandId, platform: v.platform,
+        company_name: v.companyName, supplier_name: v.supplierName });
+    } else if (v.operation === "purchase") {
+      const { error } = await db.rpc("create_inventory_purchase", { p_id: v.key, p_supplier: v.supplierId,
+        p_reference: v.reference, p_currency: v.currency, p_ordered_on: v.orderedOn,
+        p_material: v.materialId, p_package_label: v.packageLabel, p_package_quantity: v.packageQuantity,
+        p_conversion: v.conversion, p_goods_minor: moneyMinor(v.goodsAmount).toString() });
+      if (error) throw new Error(error.message);
+    } else if (v.operation === "payment") {
+      const { data: order, error: orderError } = await db.from("inventory_purchase_orders").select("brand_id").eq("id", v.orderId).single();
+      if (orderError || !order) throw new Error("Insufficient inventory permission");
+      const row = { id: v.key, brand_id: order.brand_id, order_id: v.orderId, paid_on: v.paidOn,
+        order_currency_amount_minor: moneyMinor(v.originalAmount).toString(), actual_sgd_minor: moneyMinor(v.actualSgd).toString(),
+        fee_sgd_minor: moneyMinor(v.feeSgd).toString(), reference: v.reference };
+      const { error } = await db.from("inventory_purchase_payments").insert(row);
+      if (error) {
+        const { data: old } = await db.from("inventory_purchase_payments").select("id,brand_id,order_id,paid_on,order_currency_amount_minor::text,actual_sgd_minor::text,fee_sgd_minor::text,reference").eq("id", v.key).maybeSingle();
+        if (error.code !== "23505" || !old || !Object.entries(row).every(([k,value]) => String((old as Record<string, unknown>)[k]) === String(value))) throw new Error(error.message);
+      }
+    } else if (v.operation === "material") {
       await insertOnce("inventory_materials", { id: v.key, brand_id: v.brandId,
         name: v.name, category: v.category, base_unit: v.baseUnit,
         attributes: v.colour ? { colour: v.colour } : {} });
@@ -82,5 +103,6 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
     return { error: inventoryErrorCode(error instanceof Error ? error.message : ""), key: v.key };
   }
   revalidatePath(`/${locale}/admin/inventory`);
+  revalidatePath(`/${locale}/admin/inventory/purchasing`);
   return { ok: true, key: randomUUID(), noChange };
 }
