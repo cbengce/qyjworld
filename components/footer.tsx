@@ -13,7 +13,7 @@ function footerLinks(store: PublicStore | null, locale: Locale) { return [
   { label: "Xiaohongshu", href: "https://xhslink.cn/m/8DgLoyGB3jD" },
   { label: locale === "zh" ? "Take App · 在线点单" : "Take App · Order Online", href: "https://take.app/qingyunjian" },
   ...(storeWhatsAppUrl(store) ? [{ label: "WhatsApp", href: storeWhatsAppUrl(store)! }] : []),
-  { label: "Email", href: `mailto:${store?.public_email || "hello@qyjworld.com"}` },
+  { label: "Email", href: "mailto:info@qyjworld.com" },
   ...(store ? [{ label: "Google Maps", href: storeDirectionsUrl(store) }] : [])
 ]; }
 
