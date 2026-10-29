@@ -154,4 +154,28 @@ select pg_temp.inventory_assert(not has_function_privilege('anon', 'public.post_
 select pg_temp.inventory_assert(not has_table_privilege('service_role', 'public.inventory_balances', 'UPDATE'), 'service role cannot bypass ledger with direct writes');
 select pg_temp.inventory_assert((select bool_and(relrowsecurity) from pg_class where oid in ('public.inventory_materials'::regclass, 'public.inventory_material_units'::regclass, 'public.inventory_locations'::regclass, 'public.inventory_balances'::regclass, 'public.inventory_movements'::regclass, 'public.inventory_reorder_settings'::regclass)), 'RLS enabled on every inventory table');
 
+-- Multiple deliveries, replacement quantity, retries and over-receipt rollback.
+select set_config('request.jwt.claim.sub', '33000000-0000-0000-0000-000000000021', true);
+set local role authenticated;
+do $$
+declare v_line uuid; v_first uuid; v_retry uuid;
+begin
+ select id into strict v_line from public.inventory_purchase_lines where order_id='35000000-0000-0000-0000-000000000002';
+ v_first:=public.receive_inventory_purchase(v_line,'33000000-0000-0000-0000-000000000051',400,380,10,10,'DELIVERY-1','2026-10-30','First partial delivery','receipt-test-one');
+ v_retry:=public.receive_inventory_purchase(v_line,'33000000-0000-0000-0000-000000000051',400,380,10,10,'DELIVERY-1','2026-10-30','First partial delivery','receipt-test-one');
+ perform pg_temp.inventory_assert(v_first=v_retry,'same receipt retry returns same ID');
+ perform pg_temp.inventory_assert((select count(*)=1 from public.inventory_purchase_receipts),'receipt not duplicated');
+ perform pg_temp.inventory_assert((select quantity=1276 from public.inventory_balances where location_id='33000000-0000-0000-0000-000000000051' and material_id='33000000-0000-0000-0000-000000000061'),'only accepted goods enter stock');
+ perform pg_temp.inventory_expect_error(format('select public.receive_inventory_purchase(%L,%L,621,621,0,0,%L,%L,%L,%L)',v_line,'33000000-0000-0000-0000-000000000051','TOO-MANY','2026-10-30','Over receipt','receipt-test-over'),'Receipt exceeds outstanding%');
+ perform pg_temp.inventory_expect_error(format('select public.receive_inventory_purchase(%L,%L,400,399,0,0,%L,%L,%L,%L)',v_line,'33000000-0000-0000-0000-000000000051','BAD-SUM','2026-10-30','Mismatch','receipt-test-sum'),'Invalid receipt quantities');
+ perform pg_temp.inventory_expect_error(format('select public.receive_inventory_purchase(%L,%L,400,380,10,10,%L,%L,%L,%L)',v_line,'33000000-0000-0000-0000-000000000051','DELIVERY-1','2026-10-30','Duplicate reference','receipt-test-ref'),'%unique constraint%');
+ perform public.receive_inventory_purchase(v_line,'33000000-0000-0000-0000-000000000051',620,620,0,0,'DELIVERY-2','2026-10-30','Remaining and replacement goods','receipt-test-two');
+ perform pg_temp.inventory_assert((select sum(accepted_quantity)=1000 from public.inventory_purchase_receipts),'accepted quantity fulfils order');
+ perform pg_temp.inventory_assert((select quantity=1896 from public.inventory_balances where location_id='33000000-0000-0000-0000-000000000051' and material_id='33000000-0000-0000-0000-000000000061'),'duplicate reference rolls back stock and final receipt reconciles');
+end;
+$$;
+reset role;
+select pg_temp.inventory_expect_error($q$update public.inventory_purchase_receipts set notes='changed'$q$,'Inventory movements are immutable%');
+select pg_temp.inventory_assert(not has_table_privilege('authenticated','public.inventory_purchase_receipts','INSERT'),'receipt table is RPC-write only');
+
 rollback;

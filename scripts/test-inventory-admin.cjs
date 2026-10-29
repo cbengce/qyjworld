@@ -87,6 +87,14 @@ const movement = { operation: 'movement', locationId: location, materialId: mate
   failure = { message: 'Inventory changed since this form was loaded; refresh and count again' };
   assert.equal((await saveInventory({}, form({ operation: 'stocktake', locationId: location, materialId: material, counted: '98', expected: '100', reason: 'Count' }))).error, 'stale');
   failure = null;
+  failure = null;
+  result = await saveInventory({}, form({ operation:'receipt', lineId:material, locationId:location, expected:'400', accepted:'380', damaged:'10', short:'10', reference:'DELIVERY-1', receivedOn:'2026-10-30', notes:'Test' }));
+  assert.equal(result.ok,true);
+  assert.equal(calls.at(-1).name,'receive_inventory_purchase');
+  assert.equal(calls.at(-1).args.p_accepted,'380');
+  failure={message:'Receipt exceeds outstanding purchase quantity'};
+  assert.equal((await saveInventory({}, form({operation:'receipt',lineId:material,locationId:location,expected:'400',accepted:'380',damaged:'10',short:'10',reference:'DELIVERY-1',receivedOn:'2026-10-30',notes:''}))).error,'receipt');
+  failure=null;
   const newMaterial = { operation: 'material', brandId: key, name: 'Test cup', category: 'packaging', baseUnit: 'each', colour: '' };
   result = await saveInventory({}, form(newMaterial));
   assert.equal(result.ok, true);

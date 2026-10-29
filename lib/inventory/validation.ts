@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { supplierInput, paymentInput, purchaseInput } from "./purchase-validation";
+import { supplierInput, paymentInput, purchaseInput, receiptInput } from "./purchase-validation";
 
 const id = z.string().uuid();
 // Decimal strings are kept exact. Reject exponent notation, NaN, negatives and excess precision.
@@ -33,10 +33,11 @@ export const reorderInput = z.object({
   minimum: inventoryQuantity, leadDays: z.string().regex(/^\d{1,4}$/)
 });
 export const inventoryInput = z.discriminatedUnion("operation", [
-  materialInput, locationInput, unitInput, movementInput, stocktakeInput, reorderInput, supplierInput, paymentInput, purchaseInput
+  materialInput, locationInput, unitInput, movementInput, stocktakeInput, reorderInput, supplierInput, paymentInput, purchaseInput, receiptInput
 ]);
 
-export function inventoryErrorCode(message: string): "stale" | "stock" | "permission" | "whole" | "duplicate" | "unavailable" | "save" {
+export function inventoryErrorCode(message: string): "receipt" | "stale" | "stock" | "permission" | "whole" | "duplicate" | "unavailable" | "save" {
+  if (/Receipt exceeds|Invalid receipt quantities/.test(message)) return "receipt";
   if (message.includes("changed since")) return "stale";
   if (message.includes("Insufficient inventory stock")) return "stock";
   if (/permission|row-level security|authenticated staff/i.test(message)) return "permission";

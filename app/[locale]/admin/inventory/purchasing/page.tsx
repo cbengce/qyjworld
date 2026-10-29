@@ -22,7 +22,7 @@ export default async function Purchasing({params}:{params:{locale:string}}){
  const form=(operation:string,children:React.ReactNode)=><InventoryForm locale={locale} operation={operation} initialKey={randomUUID()}>{children}</InventoryForm>;
  const select=(name:string,label:string,rows:Record<string,unknown>[],nameKey:string)=><label className="text-sm">{label}<select className={css} name={name} required defaultValue=""><option value="" disabled>{zh?'请选择':'Choose'}</option>{rows.map(r=><option key={String(r.id)} value={String(r.id)}>{String(r[nameKey])}</option>)}</select></label>;
  const box='rounded-xl bg-white p-5 shadow-soft';
- return <main className="min-h-screen bg-paper p-5"><div className="mx-auto max-w-6xl"><Link href={`/${locale}/admin/inventory`}>{zh?'← 库存后台':'← Inventory'}</Link><h1 className="my-6 text-3xl font-bold text-forest">{zh?'供应商与采购记录':'Suppliers & purchasing'}</h1>
+ return <main className="min-h-screen bg-paper p-5"><div className="mx-auto max-w-6xl"><Link href={`/${locale}/admin/inventory`}>{zh?'← 库存后台':'← Inventory'}</Link><Link className="ml-5 underline" href={`/${locale}/admin/inventory/purchasing/receipts`}>{zh?"分批收货":"Partial deliveries"}</Link><h1 className="my-6 text-3xl font-bold text-forest">{zh?'供应商与采购记录':'Suppliers & purchasing'}</h1>
  {!ready?<p role="alert">{zh?'采购模块尚未启用或暂时无法读取。':'Purchasing is not enabled or cannot be read.'}</p>:<>
  <p className="mb-6">{zh?'当前为采购与付款记录，登记采购不会增加库存。到货后另做收货确认。':'Purchase/payment records do not increase stock. Confirm receipt separately when goods arrive.'}</p>
  <div className="grid gap-6 lg:grid-cols-2">

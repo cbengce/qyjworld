@@ -31,6 +31,11 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
     if (v.operation === "supplier") {
       await insertOnce("inventory_suppliers", { id: v.key, brand_id: v.brandId, platform: v.platform,
         company_name: v.companyName, supplier_name: v.supplierName });
+    } else if (v.operation === "receipt") {
+      const { error } = await db.rpc("receive_inventory_purchase", { p_line: v.lineId, p_location: v.locationId,
+        p_expected: v.expected, p_accepted: v.accepted, p_damaged: v.damaged, p_short: v.short,
+        p_reference: v.reference, p_received_on: v.receivedOn, p_notes: v.notes, p_key: v.key });
+      if (error) throw new Error(error.message);
     } else if (v.operation === "purchase") {
       const { error } = await db.rpc("create_inventory_purchase", { p_id: v.key, p_supplier: v.supplierId,
         p_reference: v.reference, p_currency: v.currency, p_ordered_on: v.orderedOn,
@@ -104,5 +109,6 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
   }
   revalidatePath(`/${locale}/admin/inventory`);
   revalidatePath(`/${locale}/admin/inventory/purchasing`);
+  revalidatePath(`/${locale}/admin/inventory/purchasing/receipts`);
   return { ok: true, key: randomUUID(), noChange };
 }

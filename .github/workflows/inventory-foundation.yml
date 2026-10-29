@@ -8,6 +8,7 @@ on:
       - 'supabase/migrations/0033_inventory_foundation.sql'
       - 'supabase/migrations/0034_inventory_stocktake.sql'
       - 'supabase/migrations/0035_purchasing_foundation.sql'
+      - 'supabase/migrations/0036_partial_purchase_receipts.sql'
       - 'app/**/admin/inventory/**'
       - 'components/admin/inventory-form.tsx'
       - 'supabase/tests/inventory_foundation.sql'

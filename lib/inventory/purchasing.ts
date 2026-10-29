@@ -40,3 +40,13 @@ export function displayMinor(value: string) {
   const n = BigInt(value);
   return `${n / 100n}.${(n % 100n).toString().padStart(2, "0")}`;
 }
+
+export function quantityMicro(value: string): bigint {
+  if (!/^(0|[1-9]\d{0,13})(\.\d{1,6})?$/.test(value)) throw new Error('Invalid quantity');
+  const [whole, part=''] = value.split('.');
+  return BigInt(whole)*1000000n+BigInt(part.padEnd(6,'0'));
+}
+export function displayQuantity(micro: bigint) {
+  if (micro < 0n) throw new Error('Negative quantity');
+  return `${micro/1000000n}.${(micro%1000000n).toString().padStart(6,'0')}`.replace(/0+$/,'').replace(/\.$/,'');
+}
