@@ -6,6 +6,7 @@ import { saveInventory } from "@/app/[locale]/admin/inventory/actions";
 import type { InventoryFormState } from "@/lib/inventory/admin";
 
 const errors: Record<string, [string, string]> = {
+  opening: ["物料重复或已有期初记录，请检查；已有库存请使用盘点。", "Duplicate material or opening stock already exists. Review the batch; use stocktake for existing stock."],
   receipt: ["请核对待收数量：合格＋破损＋短缺须等于本批应到，且不得超过剩余待收。", "Check outstanding quantities: accepted + damaged + short must equal this delivery and not exceed the outstanding balance."],
   invalid: ["请检查必填项和数量（最多六位小数）。", "Check required fields and quantities (up to six decimal places)."],
   stale: ["库存已变化，请刷新页面后重新确认盘点。", "Stock has changed. Refresh and confirm the count again."],

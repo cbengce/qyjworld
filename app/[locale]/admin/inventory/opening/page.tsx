@@ -1,0 +1,18 @@
+import Link from 'next/link';
+import {randomUUID} from 'node:crypto';
+import {requireAdmin} from '@/lib/data';
+import {readInventoryTable} from '@/lib/inventory/admin';
+import {InventoryForm} from '@/components/admin/inventory-form';
+import {OpeningRows} from '@/components/admin/opening-rows';
+export const dynamic='force-dynamic';
+export default async function Opening({params}:{params:{locale:string}}){
+ const locale=params.locale==='zh'?'zh':'en',zh=locale==='zh';await requireAdmin(locale);
+ let ready=false,materials:Record<string,unknown>[]=[],locations:Record<string,unknown>[]=[];
+ try{[materials,locations]=await Promise.all([readInventoryTable('inventory_materials'),readInventoryTable('inventory_locations')]);ready=true;}catch{ready=false;}
+ const steps=zh?['先录供应商：平台、公司名称、店铺名称。','录物料：杯型／规格、基本单位及每箱数量。颜色可只作资料。','选一个开始日期，实际盘点每个门店和总仓；把当前剩余数量作为期初库存，不重复补录旧采购。','设备另填固定资产表；租金、停车费、薪水汇总另填每月预算／实际费用。','核对后再启用销售扣料。原料还需要饮品配方和POS商品对应，不能只看销售杯数猜用量。']:['Enter suppliers: platform, company and shop name.','Enter materials: cup size/specification, base unit and units per box. Colour can remain informational.','Choose a starting date and physically count each outlet and warehouse. Enter current remaining stock; do not replay historical purchases into it.','Enter equipment in fixed assets and rent, parking or salary summaries under monthly costs.','Activate sales deductions only after reconciliation. Ingredients also need recipes and POS product mappings.'];
+ return <main className="min-h-screen bg-paper p-5 text-forest"><div className="mx-auto max-w-5xl"><Link href={`/${locale}/admin/inventory`}>{zh?'← 运营后台':'← Operations'}</Link><h1 className="my-6 text-3xl font-bold">{zh?'首次建档与期初库存':'Initial setup & opening stock'}</h1>
+ <section className="mb-6 rounded-xl bg-white p-6 shadow-soft"><h2 className="mb-4 text-xl font-bold">{zh?'第一次怎样录入':'First-entry checklist'}</h2><ol className="list-decimal space-y-3 pl-5">{steps.map(s=><li key={s}>{s}</li>)}</ol><div className="mt-5 flex flex-wrap gap-4 text-sm underline"><Link href={`/${locale}/admin/inventory/purchasing`}>{zh?'供应商／采购':'Suppliers / purchases'}</Link><Link href={`/${locale}/admin/inventory/finance`}>{zh?'固定资产／每月费用':'Assets / monthly costs'}</Link></div></section>
+ {!ready?<p role="alert">{zh?'模块尚未启用或暂时无法读取。':'Module is not enabled or cannot be read.'}</p>:<section className="rounded-xl bg-white p-6 shadow-soft"><h2 className="mb-4 text-xl font-bold">{zh?'批量录入当前实盘数量':'Enter current counts in one batch'}</h2><p className="mb-5 text-sm">{zh?'一次最多100项，整批成功或整批不保存。填0也会保留已盘点记录；已有库存请到盘点调整。不要把历史买入数量当成今天剩余数量。':'Up to 100 items; the complete batch succeeds or none is saved. Zero counts are recorded. Use stocktake for existing stock. Historical purchase quantities are not current remaining quantities.'}</p><InventoryForm locale={locale} operation="openingBatch" initialKey={randomUUID()}><label className="block text-sm">{zh?'本批库存所在位置':'Stock location for this batch'}<select name="locationId" required defaultValue="" className="mt-1 block w-full rounded border p-3"><option value="" disabled>{zh?'选择麦弗森或总仓等位置':'Choose outlet or warehouse'}</option>{locations.filter(l=>l.active).map(l=><option key={String(l.id)} value={String(l.id)}>{String(l.name)}</option>)}</select></label><OpeningRows zh={zh} materials={materials.filter(m=>m.active).map(m=>({id:String(m.id),name:String(m.name),unit:String(m.base_unit)}))}/></InventoryForm></section>}
+ <p className="mt-6 text-sm">{zh?'资料存于网站的Supabase数据库，按品牌及位置关联并受权限保护。当前销售自动扣料和分店调拨尚未启用。':'Records are held in the website’s Supabase database, linked to brand and location and protected by permissions. Automatic sales deductions and inter-outlet transfers are not activated yet.'}</p>
+ </div></main>;
+}

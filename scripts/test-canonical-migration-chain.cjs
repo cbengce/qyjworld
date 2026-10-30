@@ -33,7 +33,8 @@ const expectedActive = [
   "0033_inventory_foundation.sql",
   "0034_inventory_stocktake.sql",
   "0035_purchasing_foundation.sql",
-  "0036_partial_purchase_receipts.sql"
+  "0036_partial_purchase_receipts.sql",
+  "0037_assets_expenses_opening_entry.sql"
 ];
 
 assert.deepEqual(active, expectedActive, "active Supabase migration set must remain canonical");

@@ -178,4 +178,26 @@ reset role;
 select pg_temp.inventory_expect_error($q$update public.inventory_purchase_receipts set notes='changed'$q$,'Inventory movements are immutable%');
 select pg_temp.inventory_assert(not has_table_privilege('authenticated','public.inventory_purchase_receipts','INSERT'),'receipt table is RPC-write only');
 
+-- Finance entry is brand-scoped; opening batches are atomic and safe to retry.
+select set_config('request.jwt.claim.sub','33000000-0000-0000-0000-000000000021',true);
+set local role authenticated;
+insert into public.inventory_fixed_assets(brand_id,store_id,asset_name,asset_reference,acquired_on,depreciation_start,cost_sgd_minor,cost_status)
+ values('33000000-0000-0000-0000-000000000002','33000000-0000-0000-0000-000000000011','Fixture TV','FIXTURE-TV','2026-09-01','2026-10-01',360000,'actual');
+insert into public.inventory_monthly_costs(brand_id,store_id,expense_month,entry_kind,category,amount_sgd_minor,reference)
+ values('33000000-0000-0000-0000-000000000002','33000000-0000-0000-0000-000000000011','2026-10-01','budget','rent',1000000,'BUDGET-RENT');
+select pg_temp.inventory_expect_error($q$insert into public.inventory_monthly_costs(brand_id,store_id,expense_month,entry_kind,category,amount_sgd_minor,reference) values('33000000-0000-0000-0000-000000000002','33000000-0000-0000-0000-000000000013','2026-10-01','actual','rent',100,'WRONG-STORE')$q$,'Inventory finance store belongs%');
+insert into public.inventory_materials(id,brand_id,name,category,base_unit) values
+ ('37000000-0000-0000-0000-000000000001','33000000-0000-0000-0000-000000000002','Opening test cups','packaging','each'),
+ ('37000000-0000-0000-0000-000000000002','33000000-0000-0000-0000-000000000002','Opening zero material','ingredient','g');
+select public.post_inventory_opening_batch('37000000-0000-0000-0000-000000000010','33000000-0000-0000-0000-000000000052','[{"materialId":"37000000-0000-0000-0000-000000000001","quantity":"100"},{"materialId":"37000000-0000-0000-0000-000000000002","quantity":"0"}]');
+select public.post_inventory_opening_batch('37000000-0000-0000-0000-000000000010','33000000-0000-0000-0000-000000000052','[{"materialId":"37000000-0000-0000-0000-000000000001","quantity":"100"},{"materialId":"37000000-0000-0000-0000-000000000002","quantity":"0"}]');
+select pg_temp.inventory_assert((select quantity=100 from public.inventory_balances where location_id='33000000-0000-0000-0000-000000000052' and material_id='37000000-0000-0000-0000-000000000001'),'opening retry does not duplicate quantity');
+select pg_temp.inventory_expect_error($q$select public.post_inventory_opening_batch('37000000-0000-0000-0000-000000000011','33000000-0000-0000-0000-000000000052','[{"materialId":"37000000-0000-0000-0000-000000000002","quantity":"0"}]')$q$,'Opening stock already%');
+select pg_temp.inventory_expect_error($q$select public.post_inventory_opening_batch('37000000-0000-0000-0000-000000000012','33000000-0000-0000-0000-000000000053','[{"materialId":"37000000-0000-0000-0000-000000000001","quantity":"5"},{"materialId":"37000000-0000-0000-0000-000000000099","quantity":"5"}]')$q$,'Inventory material not found%');
+select pg_temp.inventory_assert(not exists(select 1 from public.inventory_balances where location_id='33000000-0000-0000-0000-000000000053' and material_id='37000000-0000-0000-0000-000000000001'),'invalid row rolls back all prior opening rows');
+select set_config('request.jwt.claim.sub','33000000-0000-0000-0000-000000000023',true);
+select pg_temp.inventory_assert((select count(*)=0 from public.inventory_fixed_assets),'ordinary customer cannot read asset costs');
+select pg_temp.inventory_assert((select count(*)=0 from public.inventory_monthly_costs),'ordinary customer cannot read salary/expense records');
+reset role;
+
 rollback;

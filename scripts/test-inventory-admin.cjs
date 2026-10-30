@@ -28,7 +28,18 @@ for(let cents=0n;cents<200n;cents++) {
 }
 assert.equal(purchasing.allocateFreight(1n,[{id:'b',weight:'1'},{id:'a',weight:'1'}]).find(r=>r.id==='a').minor,'1');
 console.log('Purchasing: four platforms, exact SGD fees and 200 freight-cent conservation cases passed.');
-const validation = load('lib/inventory/validation.ts', { './purchase-validation': load('lib/inventory/purchase-validation.ts') });
+const finance = load('lib/inventory/finance.ts');
+for(const cost of ['100','360000','360001','99999999999999']){
+ let total=0n;for(let i=0;i<36;i++){const y=2026+Math.floor(i/12),m=String(i%12+1).padStart(2,'0');total+=BigInt(finance.depreciation36(cost,'0','2026-01',`${y}-${m}`).monthly);}
+ assert.equal(total,BigInt(cost),'36 months exactly equal asset cost');
+}
+assert.deepEqual(finance.depreciation36('360000','0','2026-10','2026-10'),{monthly:'10000',accumulated:'10000',net:'350000',months:1});
+assert.equal(finance.depreciation36('360000','0','2026-10','2026-09').monthly,'0');
+assert.equal(finance.depreciation36('360000','10000','2026-10','2029-10').net,'10000');
+assert.throws(()=>finance.monthIndex('2026-13'));
+assert.throws(()=>finance.depreciation36('100','100','2026-10','2026-10'));
+console.log('Assets: exact 36-month cent totals, before-start, residual and after-end cases passed.');
+const validation = load('lib/inventory/validation.ts', { './purchase-validation': load('lib/inventory/purchase-validation.ts'), './finance-validation': load('lib/inventory/finance-validation.ts') });
 for (const q of ['0', '1', '500', '0.000001', '99999999999999.999999']) assert.equal(validation.inventoryQuantity.safeParse(q).success, true, q);
 for (const q of ['-1', 'NaN', 'Infinity', '1e3', '01', '1.0000001', '100000000000000', '']) assert.equal(validation.inventoryQuantity.safeParse(q).success, false, q);
 

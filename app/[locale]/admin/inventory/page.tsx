@@ -70,6 +70,7 @@ export default async function InventoryAdminPage({ params }: { params: { locale:
   return <main className="min-h-screen bg-paper px-5 py-10"><div className="mx-auto max-w-7xl">
     <h1 className="font-serif text-4xl text-forest">{zh ? "物料与库存" : "Materials & inventory"}</h1>
     <AdminNavigation locale={locale} />
+    <div className="my-5 flex flex-wrap gap-3"><Link className="rounded-full bg-forest px-5 py-3 text-white" href={`/${locale}/admin/inventory/opening`}>{zh?"首次建档／期初库存":"Initial setup / opening stock"}</Link><Link className="rounded-full border border-forest px-5 py-3" href={`/${locale}/admin/inventory/finance`}>{zh?"固定资产／每月费用":"Assets / monthly costs"}</Link></div>
     <Link className="my-5 inline-block rounded-full bg-forest px-5 py-3 text-white" href={`/${locale}/admin/inventory/purchasing`}>{zh ? "供应商与采购" : "Suppliers & purchasing"}</Link>
     {!ready ? <p role="alert" className={`${box} mt-6`}>{zh ? "库存尚未启用或暂时无法读取。没有显示估算库存；请联系管理员完成数据库配置。" : "Inventory is not enabled or cannot be read. No estimated balances are shown. Ask the administrator to check database configuration."}</p> : <>
       <p className="my-6 text-sm text-forest/80">{zh ? "以下为手动记录的库存，尚未启用POS自动扣料。空白表示尚未建档，不代表已完成盘点。" : "These are manually recorded quantities. Automatic POS deductions are not enabled. Missing records mean not yet entered, not a completed stocktake."}</p>

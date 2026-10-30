@@ -28,7 +28,27 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
       }
       throw new Error(error.message);
     }
-    if (v.operation === "supplier") {
+    if (v.operation === "openingBatch") {
+      const {error}=await db.rpc("post_inventory_opening_batch",{p_id:v.key,p_location:v.locationId,p_rows:v.rows});
+      if(error)throw new Error(error.message);
+    } else if (v.operation === "asset" || v.operation === "monthlyCost") {
+      const asset=v.operation === "asset";
+      if(asset && (moneyMinor(v.residual)>=moneyMinor(v.cost) || v.startMonth < v.acquiredOn.slice(0,7)))return {error:"invalid",key:v.key};
+      const table=asset ? "inventory_fixed_assets" : "inventory_monthly_costs";
+      const row:Record<string,unknown>=asset ? {id:v.key,brand_id:v.brandId,store_id:v.storeId||null,supplier_id:v.supplierId||null,
+        asset_name:v.name,asset_reference:v.reference,model:v.model,acquired_on:v.acquiredOn,
+        depreciation_start:v.startMonth+"-01",cost_sgd_minor:moneyMinor(v.cost).toString(),
+        residual_sgd_minor:moneyMinor(v.residual).toString(),cost_status:v.costStatus,notes:v.notes}
+        : {id:v.key,brand_id:v.brandId,store_id:v.storeId||null,expense_month:v.month+"-01",entry_kind:v.kind,
+          category:v.category,amount_sgd_minor:moneyMinor(v.amount).toString(),reference:v.reference,notes:v.notes};
+      const {error}=await db.from(table).insert(row);
+      if(error){
+        const fields=asset ? "id,brand_id,store_id,supplier_id,asset_name,asset_reference,model,acquired_on,depreciation_start,cost_sgd_minor::text,residual_sgd_minor::text,cost_status,notes"
+          : "id,brand_id,store_id,expense_month,entry_kind,category,amount_sgd_minor::text,reference,notes";
+        const {data:old}=await db.from(table).select(fields).eq("id",v.key).maybeSingle();
+        if(error.code!=="23505"||!old||!Object.entries(row).every(([k,value])=>String((old as unknown as Record<string,unknown>)[k])===String(value)))throw new Error(error.message);
+      }
+    } else if (v.operation === "supplier") {
       await insertOnce("inventory_suppliers", { id: v.key, brand_id: v.brandId, platform: v.platform,
         company_name: v.companyName, supplier_name: v.supplierName });
     } else if (v.operation === "receipt") {
@@ -108,6 +128,8 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
     return { error: inventoryErrorCode(error instanceof Error ? error.message : ""), key: v.key };
   }
   revalidatePath(`/${locale}/admin/inventory`);
+  revalidatePath(`/${locale}/admin/inventory/finance`);
+  revalidatePath(`/${locale}/admin/inventory/opening`);
   revalidatePath(`/${locale}/admin/inventory/purchasing`);
   revalidatePath(`/${locale}/admin/inventory/purchasing/receipts`);
   return { ok: true, key: randomUUID(), noChange };
