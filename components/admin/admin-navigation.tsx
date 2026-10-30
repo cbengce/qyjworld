@@ -13,6 +13,7 @@ export async function AdminNavigation({ locale }: { locale: Locale }) {
       <div className="flex flex-wrap items-center gap-3">
         <Link className={button} href={`/${locale}/admin`}>{zh ? "后台首页 · 会员" : "Admin Home · Members"}</Link>
         {role === "super_admin" && <>
+          <Link className={button} href={`/${locale}/admin/operations`}>{zh ? "物料与采购 · 预览" : "Materials & purchasing · Preview"}</Link>
           <Link className="focus-ring rounded-full bg-forest px-5 py-3 text-sm font-bold text-white" href={`/${locale}/admin/sales`}>{zh ? "全店业绩" : "Store Sales · 全店业绩"}</Link>
           <Link className={button} href={`/${locale}/admin/partner-dashboard`}>{zh ? "合作伙伴业绩" : "Partner Dashboard"}</Link>
         </>}
