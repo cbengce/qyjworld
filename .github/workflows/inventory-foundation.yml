@@ -1,0 +1,63 @@
+name: Inventory foundation checks
+
+on:
+  push:
+    branches: [inventory-foundation]
+  pull_request:
+    paths:
+      - 'supabase/migrations/0033_inventory_foundation.sql'
+      - 'supabase/migrations/0034_inventory_stocktake.sql'
+      - 'supabase/migrations/0035_purchasing_foundation.sql'
+      - 'supabase/migrations/0036_partial_purchase_receipts.sql'
+      - 'supabase/migrations/0037_assets_expenses_opening_entry.sql'
+      - 'supabase/migrations/0038_international_suppliers.sql'
+      - 'app/**/admin/inventory/**'
+      - 'components/admin/inventory-form.tsx'
+      - 'components/admin/opening-rows.tsx'
+      - 'scripts/test-finance-export.cjs'
+      - 'supabase/tests/inventory_foundation.sql'
+      - 'lib/inventory/**'
+      - '.github/workflows/inventory-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  application:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder-service-role-key
+
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start disposable Supabase
+        run: supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector
+      - run: supabase db reset --local
+      - name: Inventory stock and RLS assertions
+        run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/inventory_foundation.sql
+      - name: Existing POS and partner regression assertions
+        run: psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -v ON_ERROR_STOP=1 -f supabase/tests/appzpos_getorders_partner_integration.sql
+      - name: Stop disposable Supabase
+        if: always()
+        run: supabase stop --no-backup

@@ -207,3 +207,7 @@ require("./test-menu-catalogue-import.cjs");
 
 require("./test-site-traffic.cjs");
 
+
+require("./test-inventory-admin.cjs");
+
+require("./test-finance-export.cjs");
