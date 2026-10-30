@@ -111,7 +111,7 @@ select public.create_inventory_purchase('35000000-0000-0000-0000-000000000002','
 select pg_temp.inventory_assert((select count(*)=1 from public.inventory_purchase_lines), 'purchase retry is atomic');
 update public.inventory_suppliers set company_name='Renamed company' where id='35000000-0000-0000-0000-000000000001';
 select pg_temp.inventory_assert((select supplier_snapshot->>'company_name'='Fixture company' from public.inventory_purchase_orders), 'historical supplier snapshot survives renaming');
-select pg_temp.inventory_expect_error($q$insert into public.inventory_suppliers(brand_id,platform,company_name,supplier_name) values ('33000000-0000-0000-0000-000000000002','other','Company','Shop')$q$, '%check constraint%');
+select pg_temp.inventory_expect_error($q$insert into public.inventory_suppliers(brand_id,platform,company_name,supplier_name) values ('33000000-0000-0000-0000-000000000002','invalid-platform','Company','Shop')$q$, '%check constraint%');
 select pg_temp.inventory_assert((select quantity=898 from public.inventory_balances where material_id='33000000-0000-0000-0000-000000000061' and location_id='33000000-0000-0000-0000-000000000051'), 'purchasing does not add stock');
 -- Store A can read only its own location, balances, movements and thresholds.
 select set_config('request.jwt.claim.sub', '33000000-0000-0000-0000-000000000022', true);
@@ -200,4 +200,15 @@ select pg_temp.inventory_assert((select count(*)=0 from public.inventory_fixed_a
 select pg_temp.inventory_assert((select count(*)=0 from public.inventory_monthly_costs),'ordinary customer cannot read salary/expense records');
 reset role;
 
+set local role authenticated;
+select set_config('request.jwt.claim.sub','33000000-0000-0000-0000-000000000021',true);
+insert into public.inventory_suppliers(id,brand_id,platform,company_name,supplier_name,country_name,default_currency)
+select '38000000-0000-0000-0000-000000000001',brand_id,'direct','MY company','MY shop','Malaysia','MYR'
+from public.inventory_materials where id='33000000-0000-0000-0000-000000000061';
+select public.create_inventory_purchase('38000000-0000-0000-0000-000000000002','38000000-0000-0000-0000-000000000001','MY-ORDER','MYR','2026-10-30','33000000-0000-0000-0000-000000000061','bag',1,500,12345);
+select pg_temp.inventory_assert((select currency='MYR' and supplier_snapshot->>'country_name'='Malaysia' and supplier_snapshot->>'default_currency'='MYR' from public.inventory_purchase_orders where id='38000000-0000-0000-0000-000000000002'),'MYR order retains international supplier snapshot');
+update public.inventory_suppliers set country_name='Singapore',default_currency='SGD' where id='38000000-0000-0000-0000-000000000001';
+select pg_temp.inventory_assert((select supplier_snapshot->>'country_name'='Malaysia' from public.inventory_purchase_orders where id='38000000-0000-0000-0000-000000000002'),'supplier edits cannot change historical country');
+select pg_temp.inventory_expect_error($q$update public.inventory_suppliers set default_currency='XYZ' where id='38000000-0000-0000-0000-000000000001'$q$,'%violates check constraint%');
+reset role;
 rollback;

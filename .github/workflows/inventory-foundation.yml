@@ -10,6 +10,7 @@ on:
       - 'supabase/migrations/0035_purchasing_foundation.sql'
       - 'supabase/migrations/0036_partial_purchase_receipts.sql'
       - 'supabase/migrations/0037_assets_expenses_opening_entry.sql'
+      - 'supabase/migrations/0038_international_suppliers.sql'
       - 'app/**/admin/inventory/**'
       - 'components/admin/inventory-form.tsx'
       - 'components/admin/opening-rows.tsx'

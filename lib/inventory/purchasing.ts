@@ -1,5 +1,5 @@
 export const PURCHASE_PLATFORMS = {
-  pinduoduo: "拼多多", douyin: "抖音", taobao: "淘宝", wechat: "微信"
+  pinduoduo: "拼多多", douyin: "抖音", taobao: "淘宝", wechat: "微信", direct: "直接采购 / Direct", other: "其他 / Other"
 } as const;
 
 /** Exact nonnegative currency input; never use binary floats to allocate money. */

@@ -135,3 +135,37 @@ the inventory route is isolated from existing sales and public pages. Do not dro
 
 The admin increment adds automated action tests and EN/ZH server rendering tests via
 `scripts/test-inventory-admin.cjs`, included in `npm test`.
+
+## Production activation preparation — 30 October 2026
+
+Owner requested real database persistence while retaining all existing functionality.
+This request authorises activation, but the production Supabase connection is not yet
+available in this session. Do not describe the production module as activated until
+migration and authenticated save/reload checks have succeeded against the verified project.
+
+- Migration 0038 adds supplier country and default currency, direct/other platforms,
+  and MYR alongside CNY/SGD. Existing supplier origins are not guessed. Orders retain
+  supplier origin/currency snapshots even if the supplier is later edited.
+- The existing `/[locale]/admin/operations` entrance selects the live inventory page
+  only after all required inventory tables/columns are readable. Otherwise it clearly
+  reports activation pending and retains the browser preview.
+- Prior preview entries remain accessible at `/[locale]/admin/operations/preview` and
+  are excluded from live stock. Never automatically import sample quantities/costs.
+- Each payment keeps original goods amount, actual SGD debit and separately charged
+  fees. There is no global fixed exchange rate. Freight allocation remains a preview;
+  saved shipment allocation, unpaid-order estimated rates and automatic POS deductions
+  are still separate unfinished workflows, not implied by basic production activation.
+
+Activation procedure after connection:
+1. Confirm the project is the existing qyjworld.com production database using configured
+   website project identity; inspect migration history and existing schema read-only.
+2. Verify backup/recovery availability. Preserve current public tables, RLS, auth,
+   existing role assignments, POS schedules and all existing business records.
+3. Apply only unapplied, ordered migrations 0033–0038 after dependency verification.
+   Never run db reset, seed.sql or the fixture SQL tests against production.
+4. Release the reviewed application tree on top of current main, preserving newer main
+   changes, including info@qyjworld.com and facebook.com/qyjworld footer links.
+5. Under the owner's authenticated session, verify new material and supplier persist
+   across reload/device, permissions reject anonymous/cross-store access, and a receipt
+   increments only its destination stock once. Use clearly identified setup records and
+   no invented opening quantities. Recheck member, sales, partner and public website paths.

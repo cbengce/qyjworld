@@ -50,7 +50,7 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
       }
     } else if (v.operation === "supplier") {
       await insertOnce("inventory_suppliers", { id: v.key, brand_id: v.brandId, platform: v.platform,
-        company_name: v.companyName, supplier_name: v.supplierName });
+        company_name: v.companyName, supplier_name: v.supplierName, country_name: v.countryName, default_currency: v.defaultCurrency });
     } else if (v.operation === "receipt") {
       const { error } = await db.rpc("receive_inventory_purchase", { p_line: v.lineId, p_location: v.locationId,
         p_expected: v.expected, p_accepted: v.accepted, p_damaged: v.damaged, p_short: v.short,
@@ -132,5 +132,6 @@ export async function saveInventory(previous: InventoryFormState, form: FormData
   revalidatePath(`/${locale}/admin/inventory/opening`);
   revalidatePath(`/${locale}/admin/inventory/purchasing`);
   revalidatePath(`/${locale}/admin/inventory/purchasing/receipts`);
+  revalidatePath(`/${locale}/admin/operations`);
   return { ok: true, key: randomUUID(), noChange };
 }

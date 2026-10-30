@@ -17,7 +17,7 @@ function load(file, mocks = {}) {
 }
 
 const purchasing = load('lib/inventory/purchasing.ts');
-assert.deepEqual(purchasing.PURCHASE_PLATFORMS, {pinduoduo:'拼多多',douyin:'抖音',taobao:'淘宝',wechat:'微信'});
+assert.deepEqual(purchasing.PURCHASE_PLATFORMS, {pinduoduo:'拼多多',douyin:'抖音',taobao:'淘宝',wechat:'微信',direct:'直接采购 / Direct',other:'其他 / Other'});
 assert.equal(purchasing.moneyMinor('265.05'),26505n);
 assert.equal(purchasing.actualSgdCost([{actualSgd:'265.05',feeSgd:'1.20'}]),26625n);
 assert.throws(()=>purchasing.moneyMinor('1.001'));
@@ -27,7 +27,7 @@ for(let cents=0n;cents<200n;cents++) {
  assert.equal(shares.reduce((sum,r)=>sum+BigInt(r.minor),0n),cents);
 }
 assert.equal(purchasing.allocateFreight(1n,[{id:'b',weight:'1'},{id:'a',weight:'1'}]).find(r=>r.id==='a').minor,'1');
-console.log('Purchasing: four platforms, exact SGD fees and 200 freight-cent conservation cases passed.');
+console.log('Purchasing: Chinese platforms plus direct/other, exact SGD fees and 200 freight-cent conservation cases passed.');
 const finance = load('lib/inventory/finance.ts');
 for(const cost of ['100','360000','360001','99999999999999']){
  let total=0n;for(let i=0;i<36;i++){const y=2026+Math.floor(i/12),m=String(i%12+1).padStart(2,'0');total+=BigInt(finance.depreciation36(cost,'0','2026-01',`${y}-${m}`).monthly);}
@@ -44,6 +44,11 @@ for (const q of ['0', '1', '500', '0.000001', '99999999999999.999999']) assert.e
 for (const q of ['-1', 'NaN', 'Infinity', '1e3', '01', '1.0000001', '100000000000000', '']) assert.equal(validation.inventoryQuantity.safeParse(q).success, false, q);
 
 const key = '34000000-0000-4000-8000-000000000001';
+const internationalSupplier = {locale:'zh', key, operation:'supplier', brandId:key, platform:'direct', companyName:'Malaysia fixture', supplierName:'Local shop', countryName:'Malaysia', defaultCurrency:'MYR'};
+assert.equal(validation.inventoryInput.safeParse(internationalSupplier).success,true);
+assert.equal(validation.inventoryInput.safeParse({...internationalSupplier, countryName:''}).success,false);
+assert.equal(validation.inventoryInput.safeParse({...internationalSupplier, defaultCurrency:'XYZ'}).success,false);
+
 const location = '34000000-0000-4000-8000-000000000002';
 const material = '34000000-0000-4000-8000-000000000003';
 let authCalls = 0, refreshed = 0, failAuth = false, failure = null, existing = null;
@@ -74,7 +79,11 @@ function form(values) { const data = new FormData(); Object.entries({ locale: 'z
 const movement = { operation: 'movement', locationId: location, materialId: material, kind: 'wastage', quantity: '2', reason: 'Damaged' };
 
 (async () => {
-  let result = await saveInventory({}, form(movement));
+  let result = await saveInventory({}, form(internationalSupplier));
+  assert.equal(result.ok,true);
+  assert.equal(calls.at(-1).row.country_name,'Malaysia');
+  assert.equal(calls.at(-1).row.default_currency,'MYR');
+  result = await saveInventory({}, form(movement));
   assert.equal(result.ok, true);
   assert.notEqual(result.key, key);
   assert.equal(calls.at(-1).name, 'post_inventory_movement');
