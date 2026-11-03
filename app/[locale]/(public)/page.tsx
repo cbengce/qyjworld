@@ -60,6 +60,8 @@ const benefits = ["Daily Member Drink (24–30% OFF)", "Points", "Referral Rewar
 
 export default async function HomePage({ params }: { params: { locale: Locale } }) {
   const zh = params.locale === "zh";
+  const singaporeToday = new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Singapore",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  const isChristmasSeason = singaporeToday >= "2026-11-03" && singaporeToday <= "2026-12-31";
   const [homepagePromotions, store, featuredDrinks] = await Promise.all([getHomepagePromotions(), getPrimaryStore(), getMenuItems({ featuredOnly: true })]);
   const addressLines = store ? storeAddressLines(store) : [];
   const effectiveHours = store ? effectiveStoreHoursForDate(store) : null;
@@ -68,6 +70,42 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
   return (
     <main className="qyj-playful-home bg-[#f8f5ed]">
       <StructuredData data={breadcrumbSchema(params.locale, [{ name: "Home" }])} />
+      {isChristmasSeason ? (
+        <section className="relative overflow-hidden bg-[#7b1024] px-5 py-12 text-white md:px-8 md:py-20" aria-label="QINGYUNJIAN Christmas 2026">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(255,216,135,0.24),transparent_35%),radial-gradient(circle_at_10%_95%,rgba(9,76,47,0.8),transparent_50%),linear-gradient(125deg,#670d1b,#aa1c32_60%,#143e2f)]" aria-hidden="true" />
+          <div className="relative mx-auto max-w-7xl">
+            <div className="text-center">
+              <p className="text-sm font-bold uppercase tracking-[.25em] text-[#f6d79a]">QINGYUNJIAN · Sparkling Tea Reimagined</p>
+              <p className="mt-4 text-base font-semibold tracking-wider text-[#f8e8c2]">Christmas 2026 · Festive Group Specials</p>
+              <h1 className="mt-4 font-serif text-5xl font-bold leading-tight text-[#ffdfa0] md:text-7xl">{zh ? "红红火火，欢聚圣诞！" : "Sparkle Up Your Christmas!"}</h1>
+              <p className="mx-auto mt-5 max-w-3xl text-lg text-white/90 md:text-xl">{zh ? "办公室圣诞派对、公司年终聚会和节日分享，来杯青云间气泡茶！" : "Festive sparkling tea for office parties, corporate celebrations and holiday gatherings."}</p>
+            </div>
+            <div className="mt-10 grid gap-8 lg:grid-cols-[.78fr_1.22fr] lg:items-center">
+              <div className="mx-auto w-full max-w-lg overflow-hidden rounded-3xl border-4 border-[#e8c37e] bg-[#123d30] p-3 shadow-2xl">
+                <Image src="/assets/story/store-cups-photo-v3.webp" width={1000} height={850} sizes="(min-width:1024px) 430px, 90vw" alt="QINGYUNJIAN branded cups at the store" className="h-auto w-full rounded-2xl" priority />
+              </div>
+              <div className="space-y-4">
+                {[
+                  ["Christmas Mini Celebration", "10 × 500ml", "S$59.90"],
+                  ["Christmas Office Cheer", "20 × 500ml", "S$116.00"],
+                  ["Festive Party Sharing", "40 × 500ml", "S$225.00"]
+                ].map(([name,quantity,price])=>(
+                  <div key={name} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#eac784] bg-[#fff6e6] p-5 text-[#591a28] shadow-lg">
+                    <div><h2 className="font-serif text-2xl font-bold md:text-3xl">{name}</h2><p className="mt-2 text-lg font-semibold">{quantity}</p></div>
+                    <strong className="rounded-xl bg-[#921b32] px-4 py-3 text-3xl text-white md:text-4xl">{price}</strong>
+                  </div>
+                ))}
+                <p className="pt-2 text-center text-base leading-7 text-[#f9e8c7]">Luna Tide · Night Nectar · ClearSky · StillEarth · Scarlet Sky</p>
+                <p className="text-center text-sm leading-6 text-[#ffe9c5]">{zh ? "当天订购须经门店确认库存、产能与配送。12月25日暂不开放预订。" : "Same-day orders are subject to outlet confirmation, product availability and delivery. 25 Dec bookings are currently closed."}</p>
+                <div className="flex flex-col justify-center gap-3 pt-3 sm:flex-row">
+                  <ButtonLink href="https://www.foodline.sg/catering/Qing-Yun-Jian/" className="rounded-full bg-[#f0cf88] px-7 py-3 text-center font-bold text-[#521324] hover:bg-white">{zh ? "通过 FoodLine 订购" : "Order on FoodLine"} →</ButtonLink>
+                  <ButtonLink href={localizedPath(params.locale, "/menu")} className="rounded-full border border-[#f3d6a4] px-7 py-3 text-center font-bold text-white hover:bg-white/10">{zh ? "查看完整菜单" : "View Full Menu"} →</ButtonLink>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : (
       <section className="relative overflow-hidden bg-[#fff8ec] text-forest" aria-label={params.locale === "zh" ? "探索你的茶饮性格" : "Discover your tea personality"}>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_80%_25%,#d7eee5_0%,transparent_55%),radial-gradient(ellipse_at_10%_80%,#ffe0cd_0%,transparent_50%)]" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-6 px-5 pb-12 pt-8 md:px-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10 lg:py-16">
@@ -91,6 +129,7 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           </div>
         </div>
       </section>
+      )}
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8">
         <div className="flex flex-col justify-between gap-6 qyj-together bg-[#e6edde] p-7 md:flex-row md:items-center md:p-10">
           <PegasusPortrait name="Cloudlift" className="h-36 w-36 shrink-0" /><div><p className="text-xs font-bold uppercase tracking-[.2em] text-forest/65">{params.locale === "zh" ? "青云间 · 团体订购" : "Tea, together"}</p><h2 className="mt-3 font-serif text-3xl text-forest md:text-4xl">{params.locale === "zh" ? "好茶，一起分享。" : "Bring a little tea to the whole team."}</h2><p className="mt-3 max-w-xl text-forest/70">{params.locale === "zh" ? "办公室茶歇、朋友聚会与活动。选择茶饮和杯数，提交您的团单需求。" : "Office tea breaks, gatherings and events. Choose your drinks and send us your group order request."}</p></div>
