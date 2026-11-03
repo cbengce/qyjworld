@@ -75,6 +75,9 @@ export default async function HomePage({ params }: { params: { locale: Locale } 
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(255,216,135,0.24),transparent_35%),radial-gradient(circle_at_10%_95%,rgba(9,76,47,0.8),transparent_50%),linear-gradient(125deg,#670d1b,#aa1c32_60%,#143e2f)]" aria-hidden="true" />
           <div className="relative mx-auto max-w-7xl">
             <div className="text-center">
+              <div className="mx-auto mb-5 flex max-w-[190px] justify-center rounded-2xl bg-black/85 p-3 shadow-[0_12px_35px_rgba(0,0,0,0.25)]">
+                <Image src="/assets/qing-yun-jian-logo-official.png" width={360} height={360} sizes="190px" alt="QINGYUNJIAN official gold Pegasus logo" className="h-auto w-full object-contain" priority />
+              </div>
               <p className="text-sm font-bold uppercase tracking-[.25em] text-[#f6d79a]">QINGYUNJIAN · Sparkling Tea Reimagined</p>
               <p className="mt-4 text-base font-semibold tracking-wider text-[#f8e8c2]">Christmas 2026 · Festive Group Specials</p>
               <h1 className="mt-4 font-serif text-5xl font-bold leading-tight text-[#ffdfa0] md:text-7xl">{zh ? "红红火火，欢聚圣诞！" : "Sparkle Up Your Christmas!"}</h1>
