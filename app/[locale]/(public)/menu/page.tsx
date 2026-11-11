@@ -5,6 +5,7 @@ import { getMenuItems } from "@/lib/menu";
 import type { MenuItem } from "@/lib/menu-types";
 import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 import { MenuCatalogue } from "@/components/menu/menu-catalogue";
+import { getPrimaryStore } from "@/lib/stores";
 import { StructuredData } from "@/components/structured-data";
 
 function menuSchema(locale: Locale, items: MenuItem[]) {
@@ -52,13 +53,23 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
 }
 
 export default async function MenuPage({ params }: { params: { locale: Locale } }) {
-  const items = await getMenuItems();
+  const [items, store] = await Promise.all([getMenuItems(), getPrimaryStore()]);
   return (
     <>
       <StructuredData data={[
         breadcrumbSchema(params.locale, [{ name: "Home" }, { name: "Menu", path: "/menu" }]),
         menuSchema(params.locale, items)
       ]} />
+      {store?.ordering_url && (
+        <div className="bg-[#f8f5ed] px-5 py-4 text-center">
+          <a
+            className="focus-ring inline-flex min-h-11 items-center rounded-full bg-forest px-6 py-2 text-sm font-bold text-white"
+            href={store.ordering_url}
+          >
+            {params.locale === "zh" ? "在线点单" : "Order online"}
+          </a>
+        </div>
+      )}
       <MenuCatalogue items={items} locale={params.locale} />
       <DiscoveryLinks locale={params.locale} />
     </>
