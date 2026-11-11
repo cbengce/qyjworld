@@ -1,13 +1,46 @@
 "use client";
 import { useEffect, useRef } from "react";
+import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { isPublicTrafficPath, trafficSource, type TrafficEvent } from "@/lib/site-traffic";
 
-/** No cookies, persistent browser IDs, query strings or full referrers are transmitted. */
+const GA_MEASUREMENT_ID = "G-1T3GRNDRG3";
+const GA_DISABLE_KEY = "ga-disable-G-1T3GRNDRG3";
+
+type AnalyticsWindow = Window & {
+  dataLayer?: unknown[];
+  gtag?: (...args: unknown[]) => void;
+  [GA_DISABLE_KEY]?: boolean;
+};
+
+/** The first-party traffic endpoint receives no cookies, browser IDs or full URLs. */
 export function SiteTrafficRecorder() {
   const path = usePathname();
   const source = useRef<TrafficEvent["source"] | null>(null);
   const lastPath = useRef<string | null>(null);
+  const analyticsConfigured = useRef(false);
+  const isPublicPage = !!path && isPublicTrafficPath(path);
+
+  useEffect(() => {
+    const analytics = window as AnalyticsWindow;
+    const optedOut = navigator.doNotTrack === "1" ||
+      (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl;
+    analytics[GA_DISABLE_KEY] = !isPublicPage || !!optedOut;
+
+    if (analytics[GA_DISABLE_KEY] || !path || analyticsConfigured.current) return;
+
+    analytics.dataLayer ??= [];
+    if (!analytics.gtag) {
+      analytics.gtag = function () {
+        analytics.dataLayer!.push(arguments);
+      };
+      analytics.gtag("js", new Date());
+    }
+
+    analyticsConfigured.current = true;
+    analytics.gtag("config", GA_MEASUREMENT_ID);
+  }, [isPublicPage, path]);
+
   useEffect(() => {
     if (!path || !isPublicTrafficPath(path) || navigator.webdriver || navigator.doNotTrack === "1" || (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl) return;
     if (!source.current) source.current = trafficSource(document.referrer, window.location.search);
@@ -28,5 +61,10 @@ export function SiteTrafficRecorder() {
     document.addEventListener("click", click);
     return () => { window.clearTimeout(timer); document.removeEventListener("click", click); };
   }, [path]);
-  return null;
+  return isPublicPage ? (
+    <Script
+      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+      strategy="afterInteractive"
+    />
+  ) : null;
 }
