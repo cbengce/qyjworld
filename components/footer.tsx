@@ -93,7 +93,7 @@ export function Footer({ locale, store }: { locale: Locale; store: PublicStore |
 
       <div className="border-t border-white/10 px-5 py-5 md:px-8">
         <p className="mx-auto max-w-7xl text-xs font-semibold text-white/45">
-          (c) {new Date().getFullYear()} {BRAND.nameEn}. {locale === "zh" ? "版权所有。" : "All rights reserved."}
+          © {new Date().getFullYear()} 青云间. All Rights Reserved. Fully owned by TCM and Healthcare College Private Limited.
         </p>
       </div>
     </footer>
